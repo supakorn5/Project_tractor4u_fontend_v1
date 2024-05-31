@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tractor4your/page/customer/addworkplace.dart';
+import 'package:tractor4your/page/customer/menu/menubottombar.dart';
+import 'package:tractor4your/page/customer/workplace/addworkplace.dart';
 
 class Workplace extends StatefulWidget {
   const Workplace({super.key});
@@ -36,6 +37,12 @@ class _WorkplaceState extends State<Workplace> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
+                ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const MenuBottombar(),
+                        )),
+                    child: Text("Route")),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tractor4your/page/map_page.dart';
+import 'package:tractor4your/page/customer/workplace/map_page.dart';
 
 class Addworkplace extends StatefulWidget {
   const Addworkplace({super.key});

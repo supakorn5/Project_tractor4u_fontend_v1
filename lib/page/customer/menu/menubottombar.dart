@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:tractor4your/page/customer/menu/menupage/mainMenu.dart';
-import 'package:tractor4your/page/customer/menu/menupage/paymoney.dart';
+import 'package:tractor4your/page/customer/menu/mainMenu.dart';
+import 'package:tractor4your/page/customer/menu/paymoney.dart';
 
 class MenuBottombar extends StatefulWidget {
   const MenuBottombar({super.key});

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tractor4your/page/customer/menu/menupage/selectowner.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -33,11 +34,14 @@ class _MainMenuState extends State<MainMenu> {
         ),
         body: GridView.count(
           crossAxisCount: 2,
+          padding: EdgeInsets.only(top: 30),
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
-                onTap: () => print(1),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const SelectOwner(),
+                )),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -126,6 +130,39 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "ประวัติ",
+                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () => print(4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey.shade50,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        offset: Offset(5, 5),
+                        blurRadius: 1,
+                      )
+                    ],
+                  ),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: AssetImage("assets/icon/user.png"),
+                        width: 100,
+                        height: 100,
+                      ),
+                      Text(
+                        "ข้อมูลส่วนตัว",
                         style: TextStyle(fontFamily: "Itim", fontSize: 20),
                       ),
                     ],

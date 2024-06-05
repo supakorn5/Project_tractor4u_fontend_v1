@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tractor4your/Start/Register.dart';
 import 'package:tractor4your/page/customer/workplace/workplace.dart';
+import 'package:http/http.dart' as http;
 
 class Login_Page extends StatefulWidget {
   const Login_Page({Key? key});
@@ -142,7 +144,7 @@ class _Login_PageState extends State<Login_Page> {
                                   const Color.fromARGB(255, 246, 177, 122)),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              WellcomeDialog(context);
+                              _Login(usersController, passwordController);
                             }
                           },
                           child: const Text(
@@ -163,7 +165,27 @@ class _Login_PageState extends State<Login_Page> {
     );
   }
 
-  Future<dynamic> WellcomeDialog(BuildContext context) {
+  Future<void> _Login(
+      TextEditingController users, TextEditingController password) async {
+    final url = Uri.parse(
+        "http://192.168.211.126:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      "users_username": users.text,
+      "users_password": password.text,
+    });
+
+    final respone = await http.post(url, headers: headers, body: body);
+    if (respone.statusCode == 200) {
+      final data = jsonDecode(respone.body);
+      print(data['data']['users_image']);
+      WellcomeDialog();
+    } else if (respone.statusCode == 404 || respone.statusCode == 401) {
+      print("FAIL LOAD DATA");
+    }
+  }
+
+  Future<dynamic> WellcomeDialog() {
     return showDialog(
       context: context,
       builder: (BuildContext context) {

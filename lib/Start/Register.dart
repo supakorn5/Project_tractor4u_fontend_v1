@@ -16,13 +16,13 @@ class Register_page extends StatefulWidget {
 }
 
 class _Register_pageState extends State<Register_page> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController users = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController phone = TextEditingController();
   final TextEditingController address = TextEditingController();
 
   Uint8List? _img;
-  final _formKey = GlobalKey<FormState>();
   void selectImage() async {
     try {
       Uint8List img = await pickImage(ImageSource.gallery);
@@ -210,6 +210,33 @@ class _Register_pageState extends State<Register_page> {
         );
       },
     );
+  }
+
+  Future<void> _Register(
+      TextEditingController users,
+      TextEditingController password,
+      TextEditingController phone,
+      TextEditingController address,
+      String img) async {
+    final url = Uri.parse(
+        "http://192.168.211.126:5000/api/users/register_users"); // Replace with your machine's IP address
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      "users_username": users.text,
+      "users_password": password.text,
+      "users_phone": phone.text,
+      "users_image": img.toString(),
+      "users_address": address.text
+    });
+
+    final respone = await http.post(url, headers: headers, body: body);
+    if (respone.statusCode == 200) {
+      final data = jsonDecode(respone.body);
+      print(data['message']);
+    } else {
+      final data = jsonDecode(respone.body);
+      print(data['message']);
+    }
   }
 
   @override
@@ -407,7 +434,9 @@ class _Register_pageState extends State<Register_page> {
                             if (_formKey.currentState!.validate()) {
                               try {
                                 _imgbase64 = _getImageBase64(_img!);
-                                print(_imgbase64);
+
+                                _Register(users, password, phone, address,
+                                    _imgbase64);
                                 _AlertResgisterComplete(context);
                               } catch (e) {
                                 _AlertNoImg(context);

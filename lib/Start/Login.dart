@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -168,7 +167,7 @@ class _Login_PageState extends State<Login_Page> {
   Future<void> _Login(
       TextEditingController users, TextEditingController password) async {
     final url = Uri.parse(
-        "http://192.168.211.126:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+        "http://192.168.167.31:5000/api/users/LoginUsers"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
@@ -178,14 +177,14 @@ class _Login_PageState extends State<Login_Page> {
     final respone = await http.post(url, headers: headers, body: body);
     if (respone.statusCode == 200) {
       final data = jsonDecode(respone.body);
-      print(data['data']['users_image']);
-      WellcomeDialog();
+      print(data['data']['users_id']);
+      WellcomeDialog(data['data']['users_id']);
     } else if (respone.statusCode == 404 || respone.statusCode == 401) {
       print("FAIL LOAD DATA");
     }
   }
 
-  Future<dynamic> WellcomeDialog() {
+  Future<dynamic> WellcomeDialog(int id) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -202,7 +201,7 @@ class _Login_PageState extends State<Login_Page> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const Workplace(),
+                  builder: (context) => Workplace(id: id),
                 )); // Close the dialog
               },
               child: const Text('ตกลง'),

@@ -54,9 +54,3 @@ class _MenuBottombarState extends State<MenuBottombar> {
     );
   }
 }
-
-void main() {
-  runApp(const MaterialApp(
-    home: MenuBottombar(),
-  ));
-}

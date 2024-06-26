@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tractor4your/widget/splash_screen.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 

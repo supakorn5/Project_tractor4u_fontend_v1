@@ -120,10 +120,9 @@ class _SelectOwnerState extends State<SelectOwner> {
     );
   }
 
-
   Future<void> _SelectOwnerOpen() async {
     final url = Uri.parse(
-        "http://10.0.2.4:5000/api/owners/GetOwnersOpen"); //My laptop
+        "http://192.168.165.188:5000/api/owners/GetOwnersOpen"); //My laptop
     final headers = {'Content-Type': 'application/json'};
 
     final response = await http.post(url, headers: headers);

@@ -11,6 +11,7 @@ class Workplace extends StatefulWidget {
 }
 
 class _WorkplaceState extends State<Workplace> {
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

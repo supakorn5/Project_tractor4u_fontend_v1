@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:tractor4your/Start/Login.dart';
+import 'package:tractor4your/page/customer/menu/menupage/profile/profile.dart';
 import 'package:tractor4your/page/customer/menu/menupage/selectowner.dart';
 
 class MainMenu extends StatefulWidget {
-  const MainMenu({super.key});
+  final int? id;
+  const MainMenu({super.key, this.id});
 
   @override
   State<MainMenu> createState() => _MainMenuState();
 }
 
 class _MainMenuState extends State<MainMenu> {
+  int? id;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    id = widget.id;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -140,7 +151,9 @@ class _MainMenuState extends State<MainMenu> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
-                onTap: () => print(4),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Profile(id: id!),
+                )),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -163,6 +176,44 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "ข้อมูลส่วนตัว",
+                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => const Login_Page(),
+                  ),
+                  (Route<dynamic> route) => false, // Remove all routes
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey.shade50,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        offset: Offset(5, 5),
+                        blurRadius: 1,
+                      )
+                    ],
+                  ),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: AssetImage("assets/icon/logout.png"),
+                        width: 100,
+                        height: 100,
+                      ),
+                      Text(
+                        "ออกจากระบบ",
                         style: TextStyle(fontFamily: "Itim", fontSize: 20),
                       ),
                     ],

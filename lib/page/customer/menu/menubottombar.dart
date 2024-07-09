@@ -4,16 +4,27 @@ import 'package:tractor4your/page/customer/menu/mainMenu.dart';
 import 'package:tractor4your/page/customer/menu/paymoney.dart';
 
 class MenuBottombar extends StatefulWidget {
-  const MenuBottombar({super.key});
+  final int? id;
+  const MenuBottombar({super.key, this.id});
 
   @override
   State<MenuBottombar> createState() => _MenuBottombarState();
 }
 
 class _MenuBottombarState extends State<MenuBottombar> {
+  int? Id;
   int _pageIndex = 0;
+  late List<Widget> _pages;
 
-  final List _pages = [const MainMenu(), const PayMoney()];
+  @override
+  void initState() {
+    super.initState();
+    Id = widget.id;
+    _pages = <Widget>[
+      MainMenu(id: Id!),
+      const PayMoney()
+    ]; // Explicitly specify the type as List<Widget>
+  }
 
   Widget _buildIconWithText(IconData icon, String text) {
     return Column(

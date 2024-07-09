@@ -79,7 +79,7 @@ class _WorkplaceState extends State<Workplace> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "ไม่มีข้อมูลที่ดินคลิกที่บนมุมขว้าเพื่อเพิ่ม",
+                              "ไม่มีข้อมูลที่ดินคลิกที่บนมุมขวาเพื่อเพิ่ม",
                               style: TextStyle(fontFamily: "Itim"),
                             ),
                           ],
@@ -104,7 +104,9 @@ class _WorkplaceState extends State<Workplace> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const MenuBottombar()));
+                                                      MenuBottombar(
+                                                        id: widget.id!,
+                                                      )));
                                           print(land.landsId);
                                         },
                                         child: Container(

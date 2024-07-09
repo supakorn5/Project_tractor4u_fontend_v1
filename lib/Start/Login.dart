@@ -23,7 +23,7 @@ class _Login_PageState extends State<Login_Page> {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(12.0),
           child: Form(
             key: _formKey,
             child: Center(
@@ -167,7 +167,7 @@ class _Login_PageState extends State<Login_Page> {
   Future<void> _Login(
       TextEditingController users, TextEditingController password) async {
     final url = Uri.parse(
-        "http://192.168.167.31:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+        "http://192.168.165.188:5000/api/users/LoginUsers"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,

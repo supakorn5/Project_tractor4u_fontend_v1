@@ -20,7 +20,7 @@ class _Register_pageState extends State<Register_page> {
   final TextEditingController users = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController phone = TextEditingController();
-  final TextEditingController address = TextEditingController();
+  late int GroupValue = 0;
 
   Uint8List? _img;
   void selectImage() async {
@@ -216,17 +216,17 @@ class _Register_pageState extends State<Register_page> {
       TextEditingController users,
       TextEditingController password,
       TextEditingController phone,
-      TextEditingController address,
+      int userType,
       String img) async {
     final url = Uri.parse(
-        "http://192.168.211.126:5000/api/users/register_users"); // Replace with your machine's IP address
+        "http://192.168.165.188:5000/api/users/register_users"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
       "users_password": password.text,
       "users_phone": phone.text,
+      "users_type": userType,
       "users_image": img.toString(),
-      "users_address": address.text
     });
 
     final respone = await http.post(url, headers: headers, body: body);
@@ -393,32 +393,50 @@ class _Register_pageState extends State<Register_page> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: TextFormField(
-                        controller: address,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          labelText: "ที่อยู่",
-                          labelStyle: TextStyle(
-                            fontFamily: "Itim",
-                            color: Colors.black,
-                          ),
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.mapLocationDot,
-                            color: Colors.black,
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: RadioMenuButton(
+                      value: 0,
+                      groupValue: GroupValue,
+                      onChanged: (value) {
+                        setState(() {
+                          GroupValue = value!;
+                          print(GroupValue);
+                        });
+                      },
+                      style: ButtonStyle(
+                        shape: MaterialStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "กรุณากรอกที่อยู่";
-                          }
-                          return null;
-                        },
+                      ),
+                      child: const Text(
+                        "ลูกค้า",
+                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: RadioMenuButton(
+                      value: 1,
+                      groupValue: GroupValue,
+                      onChanged: (value) {
+                        setState(() {
+                          GroupValue = value!;
+                          print(GroupValue);
+                        });
+                      },
+                      style: ButtonStyle(
+                        shape: MaterialStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        "เจ้าของรถไถ",
+                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
                       ),
                     ),
                   ),
@@ -435,7 +453,7 @@ class _Register_pageState extends State<Register_page> {
                               try {
                                 _imgbase64 = _getImageBase64(_img!);
 
-                                _Register(users, password, phone, address,
+                                _Register(users, password, phone, GroupValue,
                                     _imgbase64);
                                 _AlertResgisterComplete(context);
                               } catch (e) {

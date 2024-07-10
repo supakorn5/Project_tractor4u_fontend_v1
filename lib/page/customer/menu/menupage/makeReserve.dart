@@ -9,7 +9,9 @@ import 'package:http/http.dart' as http;
 
 class makeReserve extends StatefulWidget {
   final dynamic ownersData;
-  const makeReserve({super.key, required this.ownersData});
+  final int? users_id;
+  final int? lands_id;
+  const makeReserve({super.key, required this.ownersData, this.users_id, this.lands_id});
 
   @override
   State<makeReserve> createState() => _makeReserveState();
@@ -32,6 +34,9 @@ class _makeReserveState extends State<makeReserve> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // print('-------------------Make Reserve-----------------');
+    // print('-------------------${widget.lands_id}-----------------');
+    // print('-------------------${widget.users_id}-----------------');
     _GetOwnerInfo();
   }
 
@@ -47,7 +52,7 @@ class _makeReserveState extends State<makeReserve> {
           child: Column(
             children: <Widget>[
               if (ownersInfo.isNotEmpty) ...[
-                _buildOwnerInfo(widget.ownersData),
+                _buildOwnerInfo(),
                 _buildCalendar(),
               ]
             ],
@@ -95,6 +100,19 @@ class _makeReserveState extends State<makeReserve> {
           },
         ),
         SizedBox(height: 20),
+ 
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 246, 177, 122)),
+            onPressed: () {
+              print('reserveDate: ${DateFormat('dd-MM-yyyy').format(_selectedDay!)}, landID: ${widget.lands_id}, usersID: ${widget.users_id}, ownersID: ${ownersInfo[0]['owners_id']},');
+              _Reserve();
+            },
+            child: const Text(
+              "จองคิว",
+              style: TextStyle(
+                  fontSize: 20, fontFamily: "Itim", color: Colors.black),
+            )),
         // Text(
         //   _selectedDay != null
         //       ? DateFormat('dd-MM-yyyy').format(_selectedDay!)
@@ -105,7 +123,7 @@ class _makeReserveState extends State<makeReserve> {
     );
   }
 
-  Widget _buildOwnerInfo(dynamic ownersData) {
+  Widget _buildOwnerInfo() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -180,7 +198,7 @@ class _makeReserveState extends State<makeReserve> {
 
   Future<void> _GetOwnerInfo() async {
     final url = Uri.parse(
-        "http://10.0.2.4:5000/api/owners/GetOwnersInfo"); //My laptop
+        "http://10.0.2.199:5000/api/owners/GetOwnersInfo"); //My laptop
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "owners_id": widget.ownersData['owners_id'],
@@ -195,6 +213,29 @@ class _makeReserveState extends State<makeReserve> {
 
       print('----------------GetOwnerInfo----------');
       print(ownersInfo);
+    } else if (response.statusCode == 404 || response.statusCode == 401) {
+      print("FAIL LOAD DATA");
+    }
+  }
+
+
+  Future<void> _Reserve() async {
+    final url = Uri.parse(
+        "http://10.0.2.199:5000/api/users/Reserve"); //My laptop
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      "orders_reserve_date": DateFormat('yyyy-MM-dd').format(_selectedDay!),
+      "orders_lands_id": widget.lands_id,
+      "orders_users_id": widget.users_id,
+      "orders_owners_id": ownersInfo[0]['owners_id']
+    });
+
+    final response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      final decodeResponse = jsonDecode(response.body);
+      
+      print('----------------reserve--------------');
+      print(decodeResponse);
     } else if (response.statusCode == 404 || response.statusCode == 401) {
       print("FAIL LOAD DATA");
     }

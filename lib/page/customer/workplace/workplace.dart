@@ -69,10 +69,12 @@ class _WorkplaceState extends State<Workplace> {
                         return const Center(
                           child: CircularProgressIndicator(),
                         ); // Loading indicator
-                      } else if (snapshot.hasError) {
-                        return Text(
-                            'Error: ${snapshot.error}'); // Error message
-                      } else if (!snapshot.hasData ||
+                      } 
+                      // else if (snapshot.hasError) {
+                      //   return Text(
+                      //       'Error: ${snapshot.error}'); // Error message
+                      // } 
+                      else if (!snapshot.hasData ||
                           snapshot.data!.success == false ||
                           snapshot.data!.data!.isEmpty) {
                         return const Column(
@@ -105,7 +107,7 @@ class _WorkplaceState extends State<Workplace> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       MenuBottombar(
-                                                        id: widget.id!,
+                                                        id: widget.id!,lands_id: land.landsId
                                                       )));
                                           print(land.landsId);
                                         },

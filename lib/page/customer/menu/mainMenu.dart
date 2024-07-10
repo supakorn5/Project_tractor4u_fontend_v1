@@ -5,7 +5,8 @@ import 'package:tractor4your/page/customer/menu/menupage/selectowner.dart';
 
 class MainMenu extends StatefulWidget {
   final int? id;
-  const MainMenu({super.key, this.id});
+  final int? lands_id;
+  const MainMenu({super.key, this.id, this.lands_id});
 
   @override
   State<MainMenu> createState() => _MainMenuState();
@@ -18,6 +19,7 @@ class _MainMenuState extends State<MainMenu> {
     // TODO: implement initState
     super.initState();
     id = widget.id;
+    
   }
 
   @override
@@ -51,7 +53,7 @@ class _MainMenuState extends State<MainMenu> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const SelectOwner(),
+                  builder: (context) => SelectOwner(users_id : id!,lands_id: widget.lands_id),
                 )),
                 child: Container(
                   decoration: BoxDecoration(

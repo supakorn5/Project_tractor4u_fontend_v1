@@ -4,7 +4,7 @@ import '../../../model/lands/getlandsbyuser_id.dart';
 
 class LandService {
   final String apiUrl =
-      'http://192.168.165.188:5000/api/lands/GetLandsByUserid';
+      'http://10.0.2.199:5000/api/lands/GetLandsByUserid';
 
   Future<Getlandsbyuserid> fetchLand(int id) async {
     final response = await http.get(

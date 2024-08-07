@@ -5,7 +5,8 @@ import 'package:tractor4your/page/customer/menu/paymoney.dart';
 
 class MenuBottombar extends StatefulWidget {
   final int? id;
-  const MenuBottombar({super.key, this.id});
+  final int? lands_id;
+  const MenuBottombar({super.key, this.id, this.lands_id});
 
   @override
   State<MenuBottombar> createState() => _MenuBottombarState();
@@ -19,9 +20,10 @@ class _MenuBottombarState extends State<MenuBottombar> {
   @override
   void initState() {
     super.initState();
+    
     Id = widget.id;
     _pages = <Widget>[
-      MainMenu(id: Id!),
+      MainMenu(id: Id!,lands_id: widget.lands_id),
       const PayMoney()
     ]; // Explicitly specify the type as List<Widget>
   }

@@ -1,28 +1,27 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:tractor4your/service/users/users_services.dart';
-import 'selectowner.dart';
-import 'selectOwnerList.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/service/users/users_services.dart';
+import 'makeReserve.dart';
 import 'package:tractor4your/service/owners/owners_services.dart';
 
-class makeReserve extends StatefulWidget {
-  final int? owners_id;
+class SelectOwnerList extends StatefulWidget {
   final int? users_id;
   final int? lands_id;
-  const makeReserve(
-      {super.key, required this.owners_id, this.users_id, this.lands_id});
+
+  const SelectOwnerList(
+      {super.key, required this.users_id, this.lands_id}); //from main menu
 
   @override
-  State<makeReserve> createState() => _makeReserveState();
+  State<SelectOwnerList> createState() => _SelectOwnerListState();
 }
 
-class _makeReserveState extends State<makeReserve> {
-  String ip = '10.0.2.35';
+class _SelectOwnerListState extends State<SelectOwnerList> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -33,39 +32,132 @@ class _makeReserveState extends State<makeReserve> {
   final kLastDay = DateTime(
       DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
 
-  List<dynamic> ownersInfo = [];
+  List<dynamic> ownersData = [];
   Map<int, List<dynamic>> ownersDateStatus =
       {}; //ไว้รับข้อมูลจาก load_api_getDateStatus
+  final searchController = TextEditingController();
   List<dynamic> orderBydate = [];
-  List<dynamic> dateStatus = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    load_api_getOwnerInfo();
+    load_api_selectOwnerOpenFullInfo();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(
-        title: Text('จองคิว'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              if (ownersInfo.isNotEmpty && ownersDateStatus.isNotEmpty) ...[
-                _buildOwnerInfo(ownersInfo[0]),
-                _buildCalendar(dateStatus, ownersInfo[0]['owners_id']),
-              ]
-            ],
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 238, 177, 127),
+        title: const Text(
+          "เลือกเข้าของรถไถ",
+          style: TextStyle(fontFamily: "Itim"),
+        ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+            )),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
           ),
         ),
       ),
+      body: Container(
+        margin: EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            _search(),
+            _OwnerList(),
+          ],
+        ),
+      ),
+    ));
+  }
+
+  Widget _OwnerList() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: ownersData.length,
+        itemBuilder: (context, index) {
+          final dateStatus =
+              ownersDateStatus[ownersData[index]['owners_id']] ?? [];
+          return Card(
+            child: Column(
+              children: [
+                if (dateStatus.isNotEmpty) ...[
+                  _buildOwnerInfo(ownersData[index]),
+                  _buildCalendar(dateStatus, ownersData[index]['owners_id']),
+                ] else ...[
+                  _buildOwnerInfo(ownersData[index]),
+                  _buildCalendarNoDateStatus(ownersData[index]['owners_id']),
+                ]
+              ],
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  // Widget _OwnerList() {
+  //   return FutureBuilder<List<dynamic>>(
+  //     future: load_api_selectOwnerOpenFullInfo(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return CircularProgressIndicator();
+  //       } else if (snapshot.hasError) {
+  //         return Text("Error: ${snapshot.error}");
+  //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+  //         return Text("No owners available");
+  //       } else {
+  //         ownersData = snapshot.data!;
+  //         return Expanded(
+  //           child: ListView.builder(
+  //             itemCount: ownersData.length,
+  //             itemBuilder: (context, index) {
+  //               final dateStatus =
+  //                   ownersDateStatus[ownersData[index]['owners_id']] ?? [];
+  //               return Card(
+  //                 child: Column(
+  //                   children: [
+  //                     if (dateStatus.isNotEmpty) ...[
+  //                       _buildOwnerInfo(ownersData[index]),
+  //                       _buildCalendar(
+  //                           dateStatus, ownersData[index]['owners_id']),
+  //                     ] else ...[
+  //                       _buildOwnerInfo(ownersData[index]),
+  //                       _buildCalendarNoDateStatus(ownersData[index]['owners_id']),
+  //                     ]
+  //                   ],
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         );
+  //       }
+  //     },
+  //   );
+  // }
+
+  Widget _search() {
+    return TextFormField(
+        controller: searchController,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16))),
+          labelText: "ค้นหา",
+          labelStyle: TextStyle(
+            fontFamily: "Itim",
+            color: Colors.black,
+          ),
+        ));
   }
 
   Widget _buildOwnerInfo(dynamic owner) {
@@ -190,21 +282,82 @@ class _makeReserveState extends State<makeReserve> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 246, 177, 122)),
             onPressed: () {
-              print('on press');
-              //print('Current focused date: $_focusedDay, Selected date: $_selectedDay');
-              if (_selectedDay!.isAfter(DateTime.now())) {
-                //print('select is future');
-                load_api_Reserve(DateTime.now(), _selectedDay, widget.lands_id,
-                    widget.users_id, owners_id);
-                load_api_getOwnerInfo();
-              } else {
-                //print('select is past');
-                load_api_getOwnerInfo();
-                alertDateNotCorrect(2);
-              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => makeReserve(
+                      owners_id: owners_id,
+                      users_id: widget.users_id,
+                      lands_id: widget.lands_id),
+                ),
+              );
             },
             child: const Text(
-              "จองคิว",
+              "เพิ่มเติม",
+              style: TextStyle(
+                  fontSize: 20, fontFamily: "Itim", color: Colors.black),
+            )),
+      ]),
+    );
+  }
+
+  Widget _buildCalendarNoDateStatus(int owners_id) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   border: Border.all(color: Colors.black, width: 1),
+      // ),
+      child: Column(children: [
+        TableCalendar(
+          locale: 'th_TH',
+          firstDay: kFirstDay,
+          lastDay: kLastDay,
+          headerStyle: HeaderStyle(
+            titleTextFormatter: (date, locale) =>
+                '${DateFormat.MMMMd(locale).format(date)} $year',
+            titleCentered: true,
+            leftChevronPadding: EdgeInsets.all(0),
+            rightChevronPadding: EdgeInsets.all(0),
+          ),
+          daysOfWeekHeight: 16.0,
+          focusedDay: _focusedDay,
+          calendarFormat: _calendarFormat,
+          availableCalendarFormats: {CalendarFormat.month: 'Month'},
+          selectedDayPredicate: (day) {
+            return isSameDay(_selectedDay, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            if (!isSameDay(_selectedDay, selectedDay)) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+              showQueueByDate(context, owners_id, selectedDay);
+            }
+          },
+          onPageChanged: (focusedDay) {
+            _focusedDay = focusedDay;
+            year = '${(focusedDay.year + 543)}';
+          },
+        ),
+        SizedBox(height: 10),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 246, 177, 122)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => makeReserve(
+                      owners_id: owners_id,
+                      users_id: widget.users_id,
+                      lands_id: widget.lands_id),
+                ),
+              );
+            },
+            child: const Text(
+              "เพิ่มเติม",
               style: TextStyle(
                   fontSize: 20, fontFamily: "Itim", color: Colors.black),
             )),
@@ -244,7 +397,8 @@ class _makeReserveState extends State<makeReserve> {
               } else {
                 List orderBydate = snapshot.data!;
                 return Container(
-                  height: 400,
+                  height:
+                      400, // You can set a specific height for the container
                   width: double.maxFinite,
                   child: ListView.builder(
                     itemCount: orderBydate.length,
@@ -252,7 +406,7 @@ class _makeReserveState extends State<makeReserve> {
                       return Column(
                         children: [
                           Text(
-                              "user_id: ${orderBydate[index]['orders_users_id']}")
+                              "Order_id: ${orderBydate[index]['orders_users_id']}")
                         ],
                       );
                     },
@@ -274,81 +428,16 @@ class _makeReserveState extends State<makeReserve> {
     );
   }
 
-  Widget _buildOwnerTractor(dynamic ownersData) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Container(
-            width: 75,
-            height: 75,
-            child: Image.memory(
-              base64Decode(ownersInfo[0]['users_image']),
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(height: 5),
-        ],
-      ),
-    );
-  }
-
-  //แจ้งว่าจองไม่ได้เพราะวันที่เลือกเป็นอดีต
-  Future<void> alertDateNotCorrect(int status) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        if (status == 1) {
-          return AlertDialog(
-            title: const Text(
-              'จองคิวสำร็จ',
-              style: TextStyle(fontFamily: "Itim"),
-            ),
-            // content: const Text(
-            //   'วันที่เลือกไม่ถูกต้อง',
-            //   style: TextStyle(fontFamily: "Itim"),
-            // ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('ตกลง'),
-              ),
-            ],
-          );
-        } else {
-          return AlertDialog(
-            title: const Text(
-              'ไม่สามารถจองคิวได้',
-              style: TextStyle(fontFamily: "Itim"),
-            ),
-            content: const Text(
-              'วันที่เลือกไม่ถูกต้อง',
-              style: TextStyle(fontFamily: "Itim"),
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('ตกลง'),
-              ),
-            ],
-          );
-        }
-      },
-    );
-  }
-
-  Future<void> load_api_getOwnerInfo() async {
-    List<dynamic> data = await api_getOwnerInfo(widget.owners_id);
+  Future<void> load_api_selectOwnerOpenFullInfo() async {
+    List<dynamic> data = await api_selectOwnerOpenFullInfo();
     for (var owner in data) {
       await load_api_getDateStatus(owner['owners_id']);
     }
     setState(() {
-      ownersInfo = data;
-      dateStatus = ownersDateStatus[ownersInfo[0]['owners_id']] ?? [];
+      ownersData = data;
+      print(
+          "============= load api select owner open full info====================");
+      print(ownersData);
     });
   }
 
@@ -356,26 +445,18 @@ class _makeReserveState extends State<makeReserve> {
     List<dynamic> data = await api_getDateStatus(owners_id);
     setState(() {
       ownersDateStatus[owners_id] = data;
-
-      //   print("---------------- this in load api getDateStatus make reserve ---------------");
-      //   print(ownersDateStatus);
     });
+    //print('---------------this in load_api_getDateStatus ---------------');
   }
 
   Future<List<dynamic>>? load_api_getOrderByDate(
       int owners_id, DateTime selectedDay) async {
     List<dynamic> data = await api_getOrderByDate(owners_id, selectedDay);
     return data;
-  }
-
-  Future<void> load_api_Reserve(DateTime reserve_date, DateTime? start_date,
-      int? lands_id, int? users_id, int owners_id) async {
-    // print('----------------reserve--------------');
-    // print('Current focused date: $reserve_date, Selected date: $start_date');
-    // print(lands_id);
-    // print(users_id);
-    // print(owners_id);
-    await api_Reserve(reserve_date, start_date, lands_id, users_id, owners_id);
-    alertDateNotCorrect(1);
+    // setState(() {
+    //   orderBydate = data;
+    // });
+    // print('---------------this in load_api_getOrderByDate ---------------');
+    // print(orderBydate);
   }
 }

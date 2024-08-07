@@ -7,9 +7,13 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'makeReserve.dart';
+import 'package:tractor4your/service/owners/owners_services.dart';
 
 class SelectOwner extends StatefulWidget {
-  const SelectOwner({super.key});
+  final int? users_id;
+  final int? lands_id;
+
+  const SelectOwner({super.key, required this.users_id, this.lands_id});
 
   @override
   State<SelectOwner> createState() => _SelectOwnerState();
@@ -33,6 +37,7 @@ class _SelectOwnerState extends State<SelectOwner> {
   void initState() {
     super.initState();
     _center = LatLng(landLat, landLon);
+    
     _SelectOwnerOpen();
   }
 
@@ -52,7 +57,7 @@ class _SelectOwnerState extends State<SelectOwner> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => makeReserve(ownersData: ownersData[i]),
+                  builder: (context) => makeReserve(owners_id: ownersData[i]['owners_id'], users_id: widget.users_id, lands_id: widget.lands_id),
                 ),
               );
             },
@@ -122,7 +127,7 @@ class _SelectOwnerState extends State<SelectOwner> {
 
   Future<void> _SelectOwnerOpen() async {
     final url = Uri.parse(
-        "http://192.168.165.188:5000/api/owners/GetOwnersOpen"); //My laptop
+        "http://10.0.2.10:5000/api/owners/GetOwnersOpen"); //My laptop
     final headers = {'Content-Type': 'application/json'};
 
     final response = await http.post(url, headers: headers);

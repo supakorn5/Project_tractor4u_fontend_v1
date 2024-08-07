@@ -180,7 +180,7 @@ class _makeReserveState extends State<makeReserve> {
 
   Future<void> _GetOwnerInfo() async {
     final url = Uri.parse(
-        "http://10.0.2.4:5000/api/owners/GetOwnersInfo"); //My laptop
+        "http://192.168.122.213:5000/api/owners/GetOwnersInfo"); //My laptop
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "owners_id": widget.ownersData['owners_id'],

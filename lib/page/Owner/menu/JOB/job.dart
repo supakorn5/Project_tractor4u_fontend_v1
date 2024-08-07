@@ -122,7 +122,9 @@ class _JobState extends State<Job> {
                           for (var dateStatus in dateStatusData) {
                             dateStatusMap[dateStatus.date!.toString()] =
                                 dateStatus.dateStatusStatus!;
+                           
                           }
+                          
 
                           return ListView.builder(
                             shrinkWrap: true,
@@ -139,115 +141,72 @@ class _JobState extends State<Job> {
                               int month = int.parse(dateParts[1]);
                               int year = int.parse(dateParts[0]) + 543;
 
-                              return dateStatusData[index].dateStatusId == 1
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 12),
-                                      child: GestureDetector(
-                                        onTap: () => Navigator.of(context)
-                                            .push(MaterialPageRoute(
-                                          builder: (context) => JobManege(
-                                              date: orderDate,
-                                              id: widget.id,
-                                              datestatusID:
-                                                  dateStatusData[index]
-                                                      .dateStatusId),
-                                        )),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Colors.grey,
-                                                offset: Offset(3, 4),
-                                                blurRadius: 1,
+                              print("-=----dateStatusdata---");
+                              print(dateStatusMap);
+                              if (index < dateStatusData.length) {
+                                int? currentStatusId =
+                                    dateStatusData[index].dateStatusId;
+
+                                return currentStatusId == 1 ||
+                                        currentStatusId == 2
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(top: 12),
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => JobManege(
+                                                date: orderDate,
+                                                id: widget.id,
+                                                datestatusID: currentStatusId,
                                               ),
-                                            ],
-                                            color:
-                                                getColorForStatus(dateStatus),
+                                            ),
                                           ),
-                                          width: 350,
-                                          height: 90,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(8),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text(
-                                                  "วันที่ $day ${Month[month - 1]} $year",
-                                                  style: TextStyle(
-                                                      fontFamily: "Itim",
-                                                      fontSize: 17),
-                                                ),
-                                                Text(
-                                                  "$queueCount คิว",
-                                                  style: TextStyle(
-                                                      fontFamily: "Itim",
-                                                      fontSize: 17),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: Colors.grey,
+                                                  offset: Offset(3, 4),
+                                                  blurRadius: 1,
                                                 ),
                                               ],
+                                              color: getColorForStatus(
+                                                  dateStatus),
+                                            ),
+                                            width: 350,
+                                            height: 90,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Text(
+                                                    "วันที่ $day ${Month[month - 1]} $year",
+                                                    style: TextStyle(
+                                                        fontFamily: "Itim",
+                                                        fontSize: 17),
+                                                  ),
+                                                  Text(
+                                                    "$queueCount คิว",
+                                                    style: TextStyle(
+                                                        fontFamily: "Itim",
+                                                        fontSize: 17),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  : dateStatusData[index].dateStatusId == 2
-                                      ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 12),
-                                          child: GestureDetector(
-                                            onTap: () => Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                              builder: (context) => JobManege(
-                                                  date: orderDate,
-                                                  id: widget.id,
-                                                  datestatusID:
-                                                      dateStatusData[index]
-                                                          .dateStatusId),
-                                            )),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Colors.grey,
-                                                    offset: Offset(3, 4),
-                                                    blurRadius: 1,
-                                                  ),
-                                                ],
-                                                color: getColorForStatus(
-                                                    dateStatus),
-                                              ),
-                                              width: 350,
-                                              height: 90,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(8),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  children: [
-                                                    Text(
-                                                      "วันที่ $day ${Month[month - 1]} $year",
-                                                      style: TextStyle(
-                                                          fontFamily: "Itim",
-                                                          fontSize: 17),
-                                                    ),
-                                                    Text(
-                                                      "$queueCount คิว",
-                                                      style: TextStyle(
-                                                          fontFamily: "Itim",
-                                                          fontSize: 17),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Container();
+                                      )
+                                    : Container();
+                              } else {
+                                return Container();
+                              }
                             },
                           );
                         },

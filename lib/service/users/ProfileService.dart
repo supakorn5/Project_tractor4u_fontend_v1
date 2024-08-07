@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:tractor4your/model/users/getuserbyid.dart'; // Correct import path
 
 class ProfileService {
-  final String apiUrl = 'http://10.0.2.23:5000/api/users/GetUserById';
+  final String apiUrl = 'http://10.0.2.6:5000/api/users/GetUserById';
 
   Future<Getuserbyid> getUsersById(int id) async {
     final response = await http.get(

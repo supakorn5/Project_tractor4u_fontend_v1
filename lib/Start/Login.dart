@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tractor4your/Start/Register.dart';
+import 'package:tractor4your/page/Owner/Owner_mainMenu.dart';
 import 'package:tractor4your/page/customer/workplace/workplace.dart';
 import 'package:http/http.dart' as http;
 
@@ -167,7 +168,7 @@ class _Login_PageState extends State<Login_Page> {
   Future<void> _Login(
       TextEditingController users, TextEditingController password) async {
     final url = Uri.parse(
-        "http://192.168.165.188:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+        "http://192.168.144.69:5000/api/users/LoginUsers"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
@@ -178,13 +179,13 @@ class _Login_PageState extends State<Login_Page> {
     if (respone.statusCode == 200) {
       final data = jsonDecode(respone.body);
       print(data['data']['users_id']);
-      WellcomeDialog(data['data']['users_id']);
+      WellcomeDialog(data['data']['users_id'], data['data']['users_type']);
     } else if (respone.statusCode == 404 || respone.statusCode == 401) {
       print("FAIL LOAD DATA");
     }
   }
 
-  Future<dynamic> WellcomeDialog(int id) {
+  Future<dynamic> WellcomeDialog(int id, int type) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -200,9 +201,13 @@ class _Login_PageState extends State<Login_Page> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => Workplace(id: id),
-                )); // Close the dialog
+                type == 0
+                    ? Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => Workplace(id: id),
+                      ))
+                    : Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => Owner_mainMenu(id: id),
+                      ));
               },
               child: const Text('ตกลง'),
             ),

@@ -219,13 +219,13 @@ class _Register_pageState extends State<Register_page> {
       int userType,
       String img) async {
     final url = Uri.parse(
-        "http://192.168.165.188:5000/api/users/register_users"); // Replace with your machine's IP address
+        "http://192.168.144.69:5000/api/users/register_users"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
       "users_password": password.text,
       "users_phone": phone.text,
-      "users_type": userType,
+      "users_type": userType.toInt(),
       "users_image": img.toString(),
     });
 

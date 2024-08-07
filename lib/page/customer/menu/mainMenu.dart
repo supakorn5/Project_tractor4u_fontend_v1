@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/page/customer/menu/menupage/profile/profile.dart';
+import 'package:tractor4your/page/customer/menu/menupage/selectOwnerList.dart';
 import 'package:tractor4your/page/customer/menu/menupage/selectowner.dart';
 
 class MainMenu extends StatefulWidget {
@@ -19,7 +20,6 @@ class _MainMenuState extends State<MainMenu> {
     // TODO: implement initState
     super.initState();
     id = widget.id;
-    
   }
 
   @override
@@ -52,9 +52,15 @@ class _MainMenuState extends State<MainMenu> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SelectOwner(users_id : id!,lands_id: widget.lands_id),
-                )),
+                onTap: () {
+                  if (widget.lands_id == 0) {
+                    alertGobackSelectLand();
+                  } else {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SelectOwnerList(
+                            users_id: id!, lands_id: widget.lands_id)));
+                  }
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -226,6 +232,39 @@ class _MainMenuState extends State<MainMenu> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> alertGobackSelectLand() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'คำตือน!',
+            style: TextStyle(fontFamily: "Itim"),
+          ),
+          content: const Text(
+            'กรุณาเลือกที่ดินก่อนที่จะเลือกเจ้าของรถไถ',
+            style: TextStyle(fontFamily: "Itim"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();  //exit from alert to main
+                Navigator.of(context).pop();  //exit from main to select Land
+              },
+              child: const Text('เลือกเจ้าของรถไถ'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('เลือกภายหลัง'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

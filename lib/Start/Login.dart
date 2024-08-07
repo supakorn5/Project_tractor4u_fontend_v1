@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tractor4your/Start/Register.dart';
 import 'package:tractor4your/page/customer/workplace/workplace.dart';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/service/users/users_services.dart';
 
 class Login_Page extends StatefulWidget {
   const Login_Page({Key? key});
@@ -143,7 +144,7 @@ class _Login_PageState extends State<Login_Page> {
                                   const Color.fromARGB(255, 246, 177, 122)),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              _Login(usersController, passwordController);
+                              load_api_Login(usersController, passwordController);
                             }
                           },
                           child: const Text(
@@ -164,25 +165,25 @@ class _Login_PageState extends State<Login_Page> {
     );
   }
 
-  Future<void> _Login(
-      TextEditingController users, TextEditingController password) async {
-    final url = Uri.parse(
-        "http://10.0.2.199:5000/api/users/LoginUsers"); // Replace with your machine's IP address
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({
-      "users_username": users.text,
-      "users_password": password.text,
-    });
+  // Future<void> _Login(
+  //     TextEditingController users, TextEditingController password) async {
+  //   final url = Uri.parse(
+  //       "http://10.0.2.45:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+  //   final headers = {'Content-Type': 'application/json'};
+  //   final body = jsonEncode({
+  //     "users_username": users.text,
+  //     "users_password": password.text,
+  //   });
 
-    final respone = await http.post(url, headers: headers, body: body);
-    if (respone.statusCode == 200) {
-      final data = jsonDecode(respone.body);
-      print(data['data']['users_id']);
-      WellcomeDialog(data['data']['users_id']);
-    } else if (respone.statusCode == 404 || respone.statusCode == 401) {
-      print("FAIL LOAD DATA");
-    }
-  }
+  //   final respone = await http.post(url, headers: headers, body: body);
+  //   if (respone.statusCode == 200) {
+  //     final data = jsonDecode(respone.body);
+  //     print(data['data']['users_id']);
+  //     WellcomeDialog(data['data']['users_id']);
+  //   } else if (respone.statusCode == 404 || respone.statusCode == 401) {
+  //     print("FAIL LOAD DATA");
+  //   }
+  // }
 
   Future<dynamic> WellcomeDialog(int id) {
     return showDialog(
@@ -211,4 +212,17 @@ class _Login_PageState extends State<Login_Page> {
       },
     );
   }
+
+
+  
+
+  Future<void> load_api_Login(TextEditingController users, TextEditingController password) async {
+    Map<String, dynamic>? data = await api_Login(users, password);
+    if (data != null) {
+      WellcomeDialog(data['users_id']);
+    } else {
+      print("Login failed");
+    }
+  }
+
 }

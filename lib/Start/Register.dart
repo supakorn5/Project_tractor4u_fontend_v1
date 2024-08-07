@@ -7,6 +7,7 @@ import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/widget/selectimage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/service/users/users_services.dart';
 
 class Register_page extends StatefulWidget {
   const Register_page({super.key});
@@ -212,32 +213,32 @@ class _Register_pageState extends State<Register_page> {
     );
   }
 
-  Future<void> _Register(
-      TextEditingController users,
-      TextEditingController password,
-      TextEditingController phone,
-      int userType,
-      String img) async {
-    final url = Uri.parse(
-        "http://10.0.2.199:5000/api/users/register_users"); // Replace with your machine's IP address
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({
-      "users_username": users.text,
-      "users_password": password.text,
-      "users_phone": phone.text,
-      "users_type": userType,
-      "users_image": img.toString(),
-    });
+  // Future<void> _Register(
+  //     TextEditingController users,
+  //     TextEditingController password,
+  //     TextEditingController phone,
+  //     int userType,
+  //     String img) async {
+  //   final url = Uri.parse(
+  //       "http://10.0.2.10:5000/api/users/register_users"); // Replace with your machine's IP address
+  //   final headers = {'Content-Type': 'application/json'};
+  //   final body = jsonEncode({
+  //     "users_username": users.text,
+  //     "users_password": password.text,
+  //     "users_phone": phone.text,
+  //     "users_type": userType,
+  //     "users_image": img.toString(),
+  //   });
 
-    final respone = await http.post(url, headers: headers, body: body);
-    if (respone.statusCode == 200) {
-      final data = jsonDecode(respone.body);
-      print(data['message']);
-    } else {
-      final data = jsonDecode(respone.body);
-      print(data['message']);
-    }
-  }
+  //   final respone = await http.post(url, headers: headers, body: body);
+  //   if (respone.statusCode == 200) {
+  //     final data = jsonDecode(respone.body);
+  //     print(data['message']);
+  //   } else {
+  //     final data = jsonDecode(respone.body);
+  //     print(data['message']);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -453,7 +454,7 @@ class _Register_pageState extends State<Register_page> {
                               try {
                                 _imgbase64 = _getImageBase64(_img!);
 
-                                _Register(users, password, phone, GroupValue,
+                                load_api_Register(users, password, phone, GroupValue,
                                     _imgbase64);
                                 _AlertResgisterComplete(context);
                               } catch (e) {
@@ -479,5 +480,13 @@ class _Register_pageState extends State<Register_page> {
         ),
       ),
     );
+  }
+
+  Future<void> load_api_Register(TextEditingController users,
+      TextEditingController password,
+      TextEditingController phone,
+      int userType,
+      String img) async {
+    await api_Register(users, password, phone, userType, img);
   }
 }

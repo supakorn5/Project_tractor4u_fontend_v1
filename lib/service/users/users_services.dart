@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/Start/Register.dart';
 
-String ip = '10.0.2.45';
+String ip = '192.168.144.69';
 
 //Login
 Future<Map<String, dynamic>?> api_Login(
@@ -59,9 +59,9 @@ Future<void> api_Register(
   }
 }
 
-
 //กดจองคิว
-Future<void> api_Reserve(DateTime reserve_date, DateTime? start_date, int? lands_id, int? users_id, int owners_id) async {
+Future<void> api_Reserve(DateTime reserve_date, DateTime? start_date,
+    int? lands_id, int? users_id, int owners_id) async {
   final url = Uri.parse("http://" + ip + ":5000/api/users/Reserve"); //My laptop
   final headers = {'Content-Type': 'application/json'};
   final body = jsonEncode({
@@ -81,4 +81,3 @@ Future<void> api_Reserve(DateTime reserve_date, DateTime? start_date, int? lands
     print("FAIL LOAD DATA");
   }
 }
-

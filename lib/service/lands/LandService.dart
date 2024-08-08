@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../model/lands/getlandsbyuser_id.dart';
 
-String ip = '10.0.2.45';
-
-String ip = '10.0.2.45';
+String ip = '192.168.144.69';
 
 class LandService {
-  final String apiUrl = 'http://10.0.2.45:5000/api/lands/GetLandsByUserid';
+  final String apiUrl = 'http://192.168.144.69:5000/api/lands/GetLandsByUserid';
 
   Future<Getlandsbyuserid> fetchLand(int id) async {
     final response = await http.get(

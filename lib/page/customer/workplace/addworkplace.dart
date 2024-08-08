@@ -264,7 +264,7 @@ class _AddworkplaceState extends State<Addworkplace> {
   Future<void> _addnewlands(String landinfoControllers, int raiControllers,
       int nganControllers, double lat, double lon, int id) async {
     final url = Uri.parse(
-        "http://10.0.2.45:5000/api/lands/Addnewlands"); // Replace with your machine's IP address
+        "http://192.168.144.69:5000/api/lands/Addnewlands"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "lands_info": landinfoControllers,

@@ -6,10 +6,10 @@ import 'package:tractor4your/model/orders/getdatestatus.dart';
 import '../../model/orders/getordersbyuser_id.dart';
 
 class OrderService {
-  final String apiUrl = 'http://192.168.144.69:5000/api/orders/GetJobByUserId';
-  final String apiUrl2 = 'http://192.168.144.69:5000/api/orders/GetQueueByDate';
-  final String apiUrl3 = "http://192.168.144.69:5000/api/orders/GetOwnerID";
-  final String apiUrl4 = "http://192.168.144.69:5000/api/orders/GetDateStatus";
+  final String apiUrl = 'http://10.0.2.6:5000/api/orders/GetJobByUserId';
+  final String apiUrl2 = 'http://10.0.2.6:5000/api/orders/GetQueueByDate';
+  final String apiUrl3 = "http://10.0.2.6:5000/api/orders/GetOwnerID";
+  final String apiUrl4 = "http://10.0.2.6:5000/api/orders/GetDateStatus";
 
   Future<GetOrdersByuserId> fetchOrders(int id) async {
     final response = await http.get(

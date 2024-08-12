@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/Start/Register.dart';
 
-String ip = '192.168.144.69';
+String ip = '192.168.122.226';
 
 //Login
 Future<Map<String, dynamic>?> api_Login(

@@ -5,19 +5,21 @@ import 'package:tractor4your/model/orders/getqueuebydate.dart';
 import 'package:tractor4your/model/orders/getdatestatus.dart';
 import '../../model/orders/getordersbyuser_id.dart';
 
-class OrderService {
-  final String apiUrl = 'http://10.0.2.6:5000/api/orders/GetJobByUserId';
-  final String apiUrl2 = 'http://10.0.2.6:5000/api/orders/GetQueueByDate';
-  final String apiUrl3 = "http://10.0.2.6:5000/api/orders/GetOwnerID";
-  final String apiUrl4 = "http://10.0.2.6:5000/api/orders/GetDateStatus";
+String IP = "192.168.122.226";
 
-  Future<GetOrdersByuserId> fetchOrders(int id) async {
+class OrderService {
+  final String apiUrl = 'http://${IP}:5000/api/orders/GetJobByUserId';
+  final String apiUrl2 = 'http://${IP}:5000/api/orders/GetQueueByDate';
+  final String apiUrl3 = "http://${IP}:5000/api/orders/GetOwnerID";
+  final String apiUrl4 = "http://${IP}:5000/api/orders/GetDateStatus";
+
+  Future<GetQueueById> fetchOrders(int id) async {
     final response = await http.get(
       Uri.parse('$apiUrl/$id'), // Append the ID to the URL
       headers: {'Content-Type': 'application/json'},
     );
 
-    return getOrdersByuserIdFromJson(response.body);
+    return getQueueByIdFromJson(response.body);
   }
 
   Future<GetQueueByDate> fetchQueue(String date, int id) async {

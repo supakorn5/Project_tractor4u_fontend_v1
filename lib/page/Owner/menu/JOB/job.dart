@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:tractor4your/model/orders/getdatestatus.dart';
 import 'package:tractor4your/model/orders/getordersbyuser_id.dart';
@@ -27,26 +30,14 @@ class _JobState extends State<Job> {
     "พฤศจิกายน",
     "ธันวาคม",
   ];
-  Map<String, int> dateCount = {};
-  late Future<GetOrdersByuserId> futureOrders;
   late Future<GetDateStatus> futureDateStatus;
+  late Future<GetQueueById> futureQueue;
 
   @override
   void initState() {
     super.initState();
-    futureOrders = OrderService().fetchOrders(widget.id!);
+    futureQueue = OrderService().fetchOrders(widget.id!);
     futureDateStatus = OrderService().fetchDatestatus(widget.id!);
-  }
-
-  void countDates(List orders) {
-    dateCount.clear();
-    for (var order in orders) {
-      if (dateCount.containsKey(order.date)) {
-        dateCount[order.date] = dateCount[order.date]! + 1;
-      } else {
-        dateCount[order.date!] = 1;
-      }
-    }
   }
 
   Color getColorForStatus(int status) {
@@ -54,10 +45,23 @@ class _JobState extends State<Job> {
       case 1:
         return Color.fromARGB(255, 211, 215, 245); // สีฟ้า
       case 2:
-        return Colors.yellow; // สีเหลือง // สีแดง
+        return Colors.yellow; // สีเหลือง
       default:
         return Color.fromARGB(255, 211, 215, 245);
     }
+  }
+
+  Map<String, int> _groupDates(orders) {
+    Map<String, int> dateCount = {};
+    for (var order in orders) {
+      String date = order.date!;
+      if (dateCount.containsKey(date)) {
+        dateCount[date] = dateCount[date]! + 1;
+      } else {
+        dateCount[date] = 1;
+      }
+    }
+    return dateCount;
   }
 
   @override
@@ -93,126 +97,104 @@ class _JobState extends State<Job> {
             child: Center(
               child: Column(
                 children: [
-                  FutureBuilder<GetOrdersByuserId>(
-                    future: futureOrders,
+                  FutureBuilder(
+                    future: futureQueue,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
                       }
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-
-                      final orders = snapshot.data!.data!;
-                      countDates(orders);
-
-                      return FutureBuilder<GetDateStatus>(
+                      final queue = snapshot.data!.data!;
+                      return FutureBuilder(
                         future: futureDateStatus,
-                        builder: (context, dateSnapshot) {
-                          if (dateSnapshot.connectionState ==
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return CircularProgressIndicator();
-                          }
-                          if (dateSnapshot.hasError) {
-                            return Text('Error: ${dateSnapshot.error}');
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
                           }
 
-                          final dateStatusData = dateSnapshot.data!.data!;
-                          Map<String, int> dateStatusMap = {};
-                          for (var dateStatus in dateStatusData) {
-                            dateStatusMap[dateStatus.date!.toString()] =
-                                dateStatus.dateStatusStatus!;
-                           
-                          }
-                          
+                          final ordersDatestatus = snapshot.data!.data!;
+                          final groupedDates = _groupDates(queue);
 
                           return ListView.builder(
                             shrinkWrap: true,
-                            physics: const ClampingScrollPhysics(),
-                            itemCount: dateCount.length,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: groupedDates.length,
                             itemBuilder: (context, index) {
-                              String orderDate =
-                                  dateCount.keys.elementAt(index);
-                              int queueCount = dateCount[orderDate] ?? 0;
-                              int dateStatus = dateStatusMap[orderDate] ?? 0;
+                              String date = groupedDates.keys.elementAt(index);
+                              int queueCount = groupedDates[date]!;
+                              List<String> dateParts = date.split('-');
 
-                              List<String> dateParts = orderDate.split("-");
-                              String day = int.parse(dateParts[2]).toString();
-                              int month = int.parse(dateParts[1]);
-                              int year = int.parse(dateParts[0]) + 543;
-
-                              print("-=----dateStatusdata---");
-                              print(dateStatusMap);
-                              if (index < dateStatusData.length) {
-                                int? currentStatusId =
-                                    dateStatusData[index].dateStatusId;
-
-                                return currentStatusId == 1 ||
-                                        currentStatusId == 2
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(top: 12),
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => JobManege(
-                                                date: orderDate,
+                              return ordersDatestatus[index].dateStatusStatus ==
+                                          1 ||
+                                      ordersDatestatus[index]
+                                              .dateStatusStatus ==
+                                          2
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          print(ordersDatestatus[index].date);
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) => JobManege(
                                                 id: widget.id,
-                                                datestatusID: currentStatusId,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
+                                                date: ordersDatestatus[index]
+                                                    .date!,
+                                                datestatusID:
+                                                    ordersDatestatus[index]
+                                                        .dateStatusId),
+                                          ));
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(16),
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  color: Colors.grey,
-                                                  offset: Offset(3, 4),
-                                                  blurRadius: 1,
-                                                ),
-                                              ],
                                               color: getColorForStatus(
-                                                  dateStatus),
-                                            ),
-                                            width: 350,
-                                            height: 90,
-                                            child: Padding(
-                                              padding: EdgeInsets.all(8),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Text(
-                                                    "วันที่ $day ${Month[month - 1]} $year",
+                                                  ordersDatestatus[index]
+                                                      .dateStatusStatus!), // Adjust the status color
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    spreadRadius: 1,
+                                                    blurRadius: 1,
+                                                    color: Colors.grey,
+                                                    offset: Offset(3, 4))
+                                              ]),
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.12,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  "${int.parse(dateParts[2])} ${Month[int.parse(dateParts[1]) - 1]} ${int.parse(dateParts[0]) + 543}",
+                                                  style: TextStyle(
+                                                      fontFamily: "Itim",
+                                                      fontSize: 17),
+                                                ),
+                                                Text(" $queueCount คิว",
                                                     style: TextStyle(
                                                         fontFamily: "Itim",
-                                                        fontSize: 17),
-                                                  ),
-                                                  Text(
-                                                    "$queueCount คิว",
-                                                    style: TextStyle(
-                                                        fontFamily: "Itim",
-                                                        fontSize: 17),
-                                                  ),
-                                                ],
-                                              ),
+                                                        fontSize: 17)),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                      )
-                                    : Container();
-                              } else {
-                                return Container();
-                              }
+                                      ),
+                                    )
+                                  : Container();
                             },
                           );
                         },
                       );
                     },
-                  )
+                  ),
                 ],
               ),
             ),

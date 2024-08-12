@@ -24,8 +24,8 @@ class _JobManegeState extends State<JobManege> {
   @override
   void initState() {
     super.initState();
-    dateParts = widget.date!.split("-");
     date = widget.date!;
+    dateParts = date.split('-');
     futureQueue = OrderService().fetchQueue(widget.date!, widget.id!);
   }
 
@@ -73,7 +73,7 @@ class _JobManegeState extends State<JobManege> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "งานของวันที่ ${dateParts[2]}",
+                        "งานของวันที่ ${int.parse(dateParts[2])}",
                         style: TextStyle(fontFamily: "Itim", fontSize: 25),
                       ),
                     ],
@@ -232,7 +232,8 @@ class _JobManegeState extends State<JobManege> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _Reserve(OrderID, 6);
+                    _ConfirmJob(OrderID, 6);
+
                     Navigator.of(context).pop();
                   },
                   child: Row(
@@ -250,7 +251,8 @@ class _JobManegeState extends State<JobManege> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    _Reserve(OrderID, 2);
+                    _ConfirmJob(OrderID, 2);
+                    _updateDateStatus(2, widget.datestatusID!);
                     Navigator.of(context).pop();
                   },
                   child: Row(
@@ -274,11 +276,28 @@ class _JobManegeState extends State<JobManege> {
     );
   }
 
-  Future<void> _Reserve(int OrderID, int status) async {
+  Future<void> _ConfirmJob(int OrderID, int status) async {
     final url = Uri.parse(
-        "http://192.168.144.69:5000/api/orders/Resever"); // Replace with your machine's IP address
+        "http://192.168.122.226:5000/api/orders/Resever"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({"orders_id": OrderID, "orders_status": status});
+
+    final response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print(data['data']);
+      _refreshQueue(); // Refresh the queue after successful status update
+    } else if (response.statusCode == 404 || response.statusCode == 401) {
+      print("FAIL LOAD DATA");
+    }
+  }
+
+  Future<void> _updateDateStatus(int datestatus, int statusID) async {
+    final url = Uri.parse(
+        "http://192.168.122.226:5000/api/orders/UpdateDateStatus"); // Replace with your machine's IP address
+    final headers = {'Content-Type': 'application/json'};
+    final body =
+        jsonEncode({"datestatus": datestatus, "dateStatus_id": statusID});
 
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
@@ -313,7 +332,10 @@ class _JobManegeState extends State<JobManege> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _updateDateStatus(3, widget.datestatusID!);
+                    Navigator.of(context).pop();
+                  },
                   child: Row(
                     children: const [
                       Icon(

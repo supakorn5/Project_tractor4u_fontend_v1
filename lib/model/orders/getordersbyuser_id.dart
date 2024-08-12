@@ -1,28 +1,26 @@
 // To parse this JSON data, do
 //
-//     final getOrdersByuserId = getOrdersByuserIdFromJson(jsonString);
+//     final getQueueById = getQueueByIdFromJson(jsonString);
 
 import 'dart:convert';
 
-GetOrdersByuserId getOrdersByuserIdFromJson(String str) =>
-    GetOrdersByuserId.fromJson(json.decode(str));
+GetQueueById getQueueByIdFromJson(String str) =>
+    GetQueueById.fromJson(json.decode(str));
 
-String getOrdersByuserIdToJson(GetOrdersByuserId data) =>
-    json.encode(data.toJson());
+String getQueueByIdToJson(GetQueueById data) => json.encode(data.toJson());
 
-class GetOrdersByuserId {
+class GetQueueById {
   bool? success;
   String? message;
   List<Datum>? data;
 
-  GetOrdersByuserId({
+  GetQueueById({
     this.success,
     this.message,
     this.data,
   });
 
-  factory GetOrdersByuserId.fromJson(Map<String, dynamic> json) =>
-      GetOrdersByuserId(
+  factory GetQueueById.fromJson(Map<String, dynamic> json) => GetQueueById(
         success: json["success"],
         message: json["message"],
         data: json["data"] == null
@@ -40,29 +38,17 @@ class GetOrdersByuserId {
 }
 
 class Datum {
-  int? ordersId;
-  String? usersUsername;
-  int? ordersUsersId;
   String? date;
 
   Datum({
-    this.ordersId,
-    this.usersUsername,
-    this.ordersUsersId,
     this.date,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        ordersId: json["orders_id"],
-        usersUsername: json["users_username"],
-        ordersUsersId: json["orders_users_id"],
         date: json["date"],
       );
 
   Map<String, dynamic> toJson() => {
-        "orders_id": ordersId,
-        "users_username": usersUsername,
-        "orders_users_id": ordersUsersId,
-        "date": date,
+        "date": "${date!}",
       };
 }

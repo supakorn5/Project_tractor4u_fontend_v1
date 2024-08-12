@@ -169,8 +169,8 @@ class _WorkplaceState extends State<Workplace> {
                       onPressed: () {
                         print('on press');
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => MenuBottombar(
-                                id: widget.id!, lands_id: 0)));
+                            builder: (context) =>
+                                MenuBottombar(id: widget.id!, lands_id: 0)));
                       },
                       child: const Text(
                         "เลือกภายหลัง",

@@ -53,7 +53,7 @@ class _Register_pageState extends State<Register_page> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                'เลือกรูปภาพจากในคลังเท่านั้น !!!',
+                'กรุณาเลือกรูปภาพ !!!',
                 style: TextStyle(fontFamily: "Itim"),
               ),
             ],
@@ -141,7 +141,7 @@ class _Register_pageState extends State<Register_page> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                'กรุณากรอกข้อมูลให้ครบ !!!',
+                'กรุณาตรวจสอบข้อมูลของคุณ !!!',
                 style: TextStyle(fontFamily: "Itim"),
               ),
             ],
@@ -172,46 +172,6 @@ class _Register_pageState extends State<Register_page> {
     );
   }
 
-  void _AlertResgisterComplete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'สมัครสำเร็จเสร็จสิ้น',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'ขอบคุณที่มาเข้าร่วมกับ ขอบคุณครับ/ค่ะ',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                try {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Login_Page(),
-                      ));
-                } catch (e) {}
-              },
-              child: const Text(
-                'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> _Register(
       TextEditingController users,
       TextEditingController password,
@@ -219,7 +179,7 @@ class _Register_pageState extends State<Register_page> {
       int userType,
       String img) async {
     final url = Uri.parse(
-        "http://192.168.122.226:5000/api/users/register_users"); // Replace with your machine's IP address
+        "http://192.168.96.151:5000/api/users/register_users"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
@@ -242,242 +202,253 @@ class _Register_pageState extends State<Register_page> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back_ios_new)),
-        ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(16, 58, 16, 0),
-                    child: Text(
-                      "สมัครสมาชิก",
-                      style: TextStyle(
-                          fontFamily: "Itim",
-                          fontSize: 50,
-                          color: Color.fromARGB(255, 246, 177, 122)),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                    child: Stack(
+        child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new)),
+            ),
+            body: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _img != null
-                            ? CircleAvatar(
-                                radius: 50,
-                                backgroundImage: MemoryImage(_img!),
-                              )
-                            : const CircleAvatar(
-                                radius: 50,
-                                backgroundImage:
-                                    AssetImage("assets/image/user.png"),
-                              ),
-                        Positioned(
-                          bottom: -10,
-                          right: -10,
-                          child: IconButton(
-                              onPressed: selectImage,
-                              icon: const Icon(
-                                Icons.add_a_photo,
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                    child: SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: TextFormField(
-                        controller: users,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          labelText: "ชื่อผู้ใช้",
-                          labelStyle: TextStyle(
-                            fontFamily: "Itim",
-                            color: Colors.black,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.person,
-                            color: Colors.black,
-                          ),
-                        ),
-                        validator: (value) {
-                          String pattern = r'^[a-zA-Z0-9]{0,500}$';
-                          RegExp regex = RegExp(pattern);
-                          if (value == null || value.isEmpty) {
-                            return "กรุณากรอกชื่อผู้ใช้";
-                          } else if (!regex.hasMatch(value)) {
-                            return 'ตรวจสอบชื่อผู้ใช้ของคุณว่ามี อักขระพิเศษ';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: TextFormField(
-                        controller: password,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          labelText: "รหัสผ่าน",
-                          labelStyle: TextStyle(
-                            fontFamily: "Itim",
-                            color: Colors.black,
-                          ),
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.unlockKeyhole,
-                            color: Colors.black,
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "กรุณากรอกรหัสผ่าน";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: TextFormField(
-                        controller: phone,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          labelText: "เบอร์โทรศัพท์",
-                          labelStyle: TextStyle(
-                            fontFamily: "Itim",
-                            color: Colors.black,
-                          ),
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.phone,
-                            color: Colors.black,
-                          ),
-                        ),
-                        validator: (value) {
-                          String pattern = r'^(0[689]\d{8}|0\d{1,2}\d{6,7})$';
-                          RegExp regex = RegExp(pattern);
-                          if (value == null || value.isEmpty) {
-                            return "กรุณาเบอร์โทรศัพท์";
-                          } else if (!regex.hasMatch(value)) {
-                            return 'ตรวจสอบหมายเลขโทรศัพท์ของคุณ';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.phone,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: RadioMenuButton(
-                      value: 0,
-                      groupValue: GroupValue,
-                      onChanged: (value) {
-                        setState(() {
-                          GroupValue = value!;
-                          print(GroupValue);
-                        });
-                      },
-                      style: ButtonStyle(
-                        shape: MaterialStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        "ลูกค้า",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child: RadioMenuButton(
-                      value: 1,
-                      groupValue: GroupValue,
-                      onChanged: (value) {
-                        setState(() {
-                          GroupValue = value!;
-                          print(GroupValue);
-                        });
-                      },
-                      style: ButtonStyle(
-                        shape: MaterialStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        "เจ้าของรถไถ",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: SizedBox(
-                      width: 300,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 246, 177, 122)),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              try {
-                                _imgbase64 = _getImageBase64(_img!);
-
-                                _Register(users, password, phone, GroupValue,
-                                    _imgbase64);
-                                _AlertResgisterComplete(context);
-                              } catch (e) {
-                                _AlertNoImg(context);
-                              }
-                            } else {
-                              _AlertCheckBox(context);
-                            }
-                          },
-                          child: const Text(
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(16, 58, 16, 0),
+                          child: Text(
                             "สมัครสมาชิก",
                             style: TextStyle(
-                                fontSize: 20,
                                 fontFamily: "Itim",
-                                color: Colors.black),
-                          )),
-                    ),
-                  ),
-                ],
+                                fontSize: 50,
+                                color: Color.fromARGB(255, 246, 177, 122)),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                          child: Stack(
+                            children: [
+                              _img != null
+                                  ? CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: MemoryImage(_img!),
+                                    )
+                                  : const CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage:
+                                          AssetImage("assets/image/user.png"),
+                                    ),
+                              Positioned(
+                                bottom: -10,
+                                right: -10,
+                                child: IconButton(
+                                    onPressed: selectImage,
+                                    icon: const Icon(
+                                      Icons.add_a_photo,
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: 300,
+                                height: 100,
+                                child: TextFormField(
+                                  controller: users,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16))),
+                                    labelText: "ชื่อผู้ใช้",
+                                    labelStyle: TextStyle(
+                                      fontFamily: "Itim",
+                                      color: Colors.black,
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.person,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    String pattern = r'^[a-zA-Z0-9]{0,500}$';
+                                    RegExp regex = RegExp(pattern);
+                                    if (value == null || value.isEmpty) {
+                                      return "กรุณากรอกชื่อผู้ใช้";
+                                    } else if (!regex.hasMatch(value)) {
+                                      return 'ตรวจสอบชื่อผู้ใช้ของคุณ';
+                                    } else if (RegExp(r'[ก-๙]')
+                                        .hasMatch(value)) {
+                                      return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 300,
+                                height: 100,
+                                child: TextFormField(
+                                  controller: password,
+                                  obscureText: true,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16))),
+                                    labelText: "รหัสผ่าน",
+                                    labelStyle: TextStyle(
+                                      fontFamily: "Itim",
+                                      color: Colors.black,
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.lock,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "กรุณากรอกรหัสผ่าน";
+                                    } else if (value.length < 6) {
+                                      return "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";
+                                    } else if (RegExp(r'[ก-๙]')
+                                        .hasMatch(value)) {
+                                      return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 300,
+                                height: 100,
+                                child: TextFormField(
+                                  controller: phone,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16))),
+                                    labelText: "เบอร์โทรศัพท์",
+                                    labelStyle: TextStyle(
+                                      fontFamily: "Itim",
+                                      color: Colors.black,
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.phone,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.phone,
+                                  validator: (value) {
+                                    String pattern = r'^\d{10}$';
+                                    RegExp regex = RegExp(pattern);
+                                    if (value == null || value.isEmpty) {
+                                      return "กรุณากรอกเบอร์โทรศัพท์";
+                                    } else if (!regex.hasMatch(value)) {
+                                      return "เบอร์โทรศัพท์ไม่ถูกต้อง";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Radio(
+                                        value: 0,
+                                        groupValue: GroupValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            print(value);
+                                            GroupValue = value as int;
+                                          });
+                                        },
+                                      ),
+                                      const Text(
+                                        "เกษตรกร",
+                                        style: TextStyle(
+                                            fontFamily: "Itim",
+                                            fontSize: 20,
+                                            color: Colors.black),
+                                      ),
+                                      Radio(
+                                        value: 1,
+                                        groupValue: GroupValue,
+                                        onChanged: (value) {
+                                          print(value);
+                                          setState(() {
+                                            GroupValue = value as int;
+                                          });
+                                        },
+                                      ),
+                                      const Text(
+                                        "เจ้าของรถไถ",
+                                        style: TextStyle(
+                                            fontFamily: "Itim",
+                                            fontSize: 20,
+                                            color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 250,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      try {
+                                        await _Register(users, password, phone,
+                                            GroupValue, _getImageBase64(_img!));
+                                      } catch (e) {
+                                        _AlertNoImg(context);
+                                      }
+                                    } else {
+                                      _AlertCheckBox(context);
+                                    }
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Color.fromARGB(255, 246, 177, 122)),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 246, 177, 122)),
+                                    )),
+                                  ),
+                                  child: const Text(
+                                    "ลงทะเบียน",
+                                    style: TextStyle(
+                                      fontFamily: "Itim",
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
+                ),
               ),
-            ),
-          ),
-        ),
-      ),
-    );
+            )));
   }
 }

@@ -1,28 +1,28 @@
 // To parse this JSON data, do
 //
-//     final getLandsByUserid = getLandsByUseridFromJson(jsonString);
+//     final getLandNotReserve = getLandNotReserveFromJson(jsonString);
 
 import 'dart:convert';
 
-GetLandsByUserid getLandsByUseridFromJson(String str) =>
-    GetLandsByUserid.fromJson(json.decode(str));
+GetLandNotReserve getLandNotReserveFromJson(String str) =>
+    GetLandNotReserve.fromJson(json.decode(str));
 
-String getLandsByUseridToJson(GetLandsByUserid data) =>
+String getLandNotReserveToJson(GetLandNotReserve data) =>
     json.encode(data.toJson());
 
-class GetLandsByUserid {
+class GetLandNotReserve {
   bool? success;
   String? message;
   List<Datum>? data;
 
-  GetLandsByUserid({
+  GetLandNotReserve({
     this.success,
     this.message,
     this.data,
   });
 
-  factory GetLandsByUserid.fromJson(Map<String, dynamic> json) =>
-      GetLandsByUserid(
+  factory GetLandNotReserve.fromJson(Map<String, dynamic> json) =>
+      GetLandNotReserve(
         success: json["success"],
         message: json["message"],
         data: json["data"] == null
@@ -42,32 +42,19 @@ class GetLandsByUserid {
 class Datum {
   int? landsId;
   String? landsInfo;
-  int? ordersStatus;
-  DateTime? date;
-  String? usersUsername;
 
   Datum({
     this.landsId,
     this.landsInfo,
-    this.ordersStatus,
-    this.date,
-    this.usersUsername,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         landsId: json["lands_id"],
         landsInfo: json["lands_info"],
-        ordersStatus: json["orders_status"],
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        usersUsername: json["users_username"],
       );
 
   Map<String, dynamic> toJson() => {
         "lands_id": landsId,
         "lands_info": landsInfo,
-        "orders_status": ordersStatus,
-        "date":
-            "${date!.year.toString().padLeft(4, '0')}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}",
-        "users_username": usersUsername,
       };
 }

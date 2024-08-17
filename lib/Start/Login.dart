@@ -20,6 +20,8 @@ class _Login_PageState extends State<Login_Page> {
   final usersController = TextEditingController();
   final passwordController = TextEditingController();
   bool passToggle = true;
+  List<int> userData = [0, 0]; // Initialized with default values
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -143,9 +145,25 @@ class _Login_PageState extends State<Login_Page> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromARGB(255, 246, 177, 122)),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              _Login(usersController, passwordController);
+                              await _Login(usersController, passwordController);
+                              if (userData.isNotEmpty) {
+                                if (userData[1] == 0) {
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Workplace(id: userData[0])));
+                                } else {
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Owner_mainMenu(id: userData[0])));
+                                }
+                              } else {
+                                // Handle login failure
+                                print("Login failed");
+                              }
                             }
                           },
                           child: const Text(
@@ -169,61 +187,22 @@ class _Login_PageState extends State<Login_Page> {
   Future<void> _Login(
       TextEditingController users, TextEditingController password) async {
     final url = Uri.parse(
-        "http://192.168.122.226:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+        "http://192.168.96.151:5000/api/users/LoginUsers"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
       "users_password": password.text,
     });
 
-    final respone = await http.post(url, headers: headers, body: body);
-    if (respone.statusCode == 200) {
-      final data = jsonDecode(respone.body);
-      print(data['data']['users_id']);
-      WellcomeDialog(data['data']['users_id'], data['data']['users_type']);
-    } else if (respone.statusCode == 404 || respone.statusCode == 401) {
-      print("FAIL LOAD DATA");
+    final response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        userData[0] = data['data']['users_id'];
+        userData[1] = data['data']['users_type'];
+      });
+    } else {
+      print("Login failed with status code: ${response.statusCode}");
     }
   }
-
-  Future<dynamic> WellcomeDialog(int id, int type) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'เข้าสู่ระบบสำเร็จ',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Text(
-            'ยินดีต้อนรับเข้าสู่แอปของเรา',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                type == 0
-                    ? Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => Workplace(id: id),
-                      ))
-                    : Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => Owner_mainMenu(id: id),
-                      ));
-              },
-              child: const Text('ตกลง'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Future<void> load_api_Login(TextEditingController users, TextEditingController password) async {
-  //   Map<String, dynamic>? data = await api_Login(users, password);
-  //   if (data != null) {
-  //     WellcomeDialog(data['users_id']);
-  //   } else {
-  //     print("Login failed");
-  //   }
-  // }
 }

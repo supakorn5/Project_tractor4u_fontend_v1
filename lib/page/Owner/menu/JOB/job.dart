@@ -3,7 +3,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:tractor4your/model/orders/getdatestatus.dart';
-import 'package:tractor4your/model/orders/getordersbyuser_id.dart';
+import 'package:tractor4your/model/orders/getQueuesbyuser_id.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/Jobmanage.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 
@@ -31,12 +31,12 @@ class _JobState extends State<Job> {
     "ธันวาคม",
   ];
   late Future<GetDateStatus> futureDateStatus;
-  late Future<GetQueueById> futureQueue;
+  late Future<GetQueueById> futureOrders;
 
   @override
   void initState() {
     super.initState();
-    futureQueue = OrderService().fetchOrders(widget.id!);
+    futureOrders = OrderService().fetchOrders(widget.id!);
     futureDateStatus = OrderService().fetchDatestatus(widget.id!);
   }
 
@@ -98,7 +98,7 @@ class _JobState extends State<Job> {
               child: Column(
                 children: [
                   FutureBuilder(
-                    future: futureQueue,
+                    future: futureOrders,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();

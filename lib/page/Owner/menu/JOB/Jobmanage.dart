@@ -278,7 +278,7 @@ class _JobManegeState extends State<JobManege> {
 
   Future<void> _ConfirmJob(int OrderID, int status) async {
     final url = Uri.parse(
-        "http://192.168.122.226:5000/api/orders/Resever"); // Replace with your machine's IP address
+        "http://192.168.122.217:5000/api/orders/Resever"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({"orders_id": OrderID, "orders_status": status});
 
@@ -294,7 +294,7 @@ class _JobManegeState extends State<JobManege> {
 
   Future<void> _updateDateStatus(int datestatus, int statusID) async {
     final url = Uri.parse(
-        "http://192.168.122.226:5000/api/orders/UpdateDateStatus"); // Replace with your machine's IP address
+        "http://192.168.122.217:5000/api/orders/UpdateDateStatus"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body =
         jsonEncode({"datestatus": datestatus, "dateStatus_id": statusID});

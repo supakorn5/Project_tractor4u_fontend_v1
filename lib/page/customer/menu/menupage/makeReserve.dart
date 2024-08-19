@@ -50,7 +50,11 @@ class _makeReserveState extends State<makeReserve> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('จองคิว'),
+        title: Text(
+          'จองคิว',
+          style: TextStyle(fontFamily: "Prompt"),
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(2.0),
@@ -156,7 +160,7 @@ class _makeReserveState extends State<makeReserve> {
             }
             //ถ้าเป็นไม่เป็นอดีต แสดง popup
             if (selectedDay!.isAfter(DateTime.now())) {
-              showQueueByDate(context, owners_id, selectedDay);
+              //showQueueByDate(context, owners_id, selectedDay);
             }
           },
           onPageChanged: (focusedDay) {

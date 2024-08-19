@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tractor4your/model/orders/getdatestatus_id.dart';
 import 'package:tractor4your/model/orders/getqueuebydate.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
@@ -9,9 +10,10 @@ import 'package:http/http.dart' as http;
 
 class JobManege extends StatefulWidget {
   final int? id;
-  final int? datestatusID;
   final String? date;
-  JobManege({super.key, this.date, this.id, this.datestatusID});
+  final VoidCallback? onRefresh; // Callback function
+
+  JobManege({super.key, this.date, this.id, this.onRefresh});
 
   @override
   State<JobManege> createState() => _JobManegeState();
@@ -21,14 +23,19 @@ class _JobManegeState extends State<JobManege> {
   List<String> dateParts = [];
   late String date;
   int? owner_ID;
+  late Future<GetDateStatusId> futuredataStatusID;
   late Future<GetQueueByDate> futureQueue;
+  int? statusID;
 
   @override
   void initState() {
     super.initState();
+    print(widget.id);
     owner_ID = widget.id;
-    date = widget.date!;
+    date = widget.date ?? "default-date"; // Handle null case for date
     dateParts = date.split('-');
+    futuredataStatusID =
+        OrderService().fetchdateStatusID(widget.date!, widget.id!);
     futureQueue = OrderService().fetchQueue(widget.date!, widget.id!);
   }
 
@@ -51,7 +58,7 @@ class _JobManegeState extends State<JobManege> {
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -65,153 +72,178 @@ class _JobManegeState extends State<JobManege> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "งานของวันที่ ${int.parse(dateParts[2])}",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 25),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height - 200,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: FutureBuilder<GetQueueByDate>(
-                            future: futureQueue,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text("${snapshot.error}");
-                              }
-                              final ordersQueue = snapshot.data!.data!;
-                              return ListView.builder(
-                                itemCount: ordersQueue.length,
-                                itemBuilder: (context, index) {
-                                  Color backgroundColor;
-                                  switch (ordersQueue[index].ordersStatus) {
-                                    case 1:
-                                      backgroundColor = Colors.amber;
-                                      break;
-                                    case 6:
-                                      backgroundColor = Colors.red;
-                                      break;
-                                    case 2:
-                                      backgroundColor =
-                                          Color.fromARGB(255, 161, 233, 161);
-                                      break;
-                                    default:
-                                      backgroundColor = Colors.grey;
-                                  }
-                                  return Center(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        if (ordersQueue[index].ordersStatus ==
-                                            1) {
-                                          _AlertJobconfirm(context,
-                                              ordersQueue[index].ordersId!);
-                                        }
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.grey,
-                                                blurRadius: 2,
-                                                offset: Offset(4, 5)),
-                                          ],
-                                          color: backgroundColor,
-                                        ),
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 5),
-                                        width: 350,
-                                        height: 70,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
+        body: FutureBuilder<GetDateStatusId>(
+          future: futuredataStatusID,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("${snapshot.error}"));
+            } else if (!snapshot.hasData ||
+                snapshot.data == null ||
+                snapshot.data!.data == null) {
+              return Center(child: Text("No data found"));
+            }
+
+            final dateStatusData = snapshot.data!.data!;
+
+            return FutureBuilder<GetQueueByDate>(
+              future: futureQueue,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("${snapshot.error}"));
+                } else if (!snapshot.hasData ||
+                    snapshot.data == null ||
+                    snapshot.data!.data == null) {
+                  return Center(child: Text("No queue data found"));
+                }
+
+                final ordersQueue = snapshot.data!.data!;
+
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "งานของวันที่ ${int.parse(dateParts[2])}",
+                                style:
+                                    TextStyle(fontFamily: "Itim", fontSize: 25),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height - 200,
+                            child: ListView.builder(
+                              itemCount: ordersQueue.length,
+                              itemBuilder: (context, index) {
+                                Color backgroundColor;
+                                switch (ordersQueue[index].ordersStatus) {
+                                  case 1:
+                                    backgroundColor = Colors.amber;
+                                    break;
+                                  case 6:
+                                    backgroundColor = Colors.red;
+                                    break;
+                                  case 2:
+                                    backgroundColor =
+                                        Color.fromARGB(255, 161, 233, 161);
+                                    break;
+                                  default:
+                                    backgroundColor = Colors.grey;
+                                }
+
+                                for (var data in dateStatusData) {
+                                  statusID = data.dateStatusId!;
+                                }
+                                return GestureDetector(
+                                  onTap: () async {
+                                    print("date : " + widget.date!);
+                                    print("ID : " + widget.id.toString());
+                                    print("statusID : " + statusID.toString());
+                                    if (ordersQueue[index].ordersStatus == 1) {
+                                      _AlertJobconfirm(
+                                        context,
+                                        ordersQueue[index].ordersId!,
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 2,
+                                            offset: Offset(4, 5)),
+                                      ],
+                                      color: backgroundColor,
+                                    ),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    width: 350,
+                                    height: 70,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "ลำดับคิวที่ ${index + 1}",
-                                                    style: const TextStyle(
-                                                        fontFamily: "Itim",
-                                                        fontSize: 15),
-                                                  ),
-                                                ],
-                                              ),
                                               Text(
-                                                "${ordersQueue[index].usersUsername}",
+                                                "ลำดับคิวที่ ${index + 1}",
+                                                style: const TextStyle(
+                                                    fontFamily: "Itim",
+                                                    fontSize: 15),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            "${ordersQueue[index].usersUsername}",
+                                            style: TextStyle(
+                                                fontFamily: "Itim",
+                                                fontSize: 15),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "${ordersQueue[index].landsSizeRai} ไร่",
                                                 style: TextStyle(
                                                     fontFamily: "Itim",
                                                     fontSize: 15),
                                               ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "${ordersQueue[index].landsSizeRai} ไร่",
-                                                    style: TextStyle(
-                                                        fontFamily: "Itim",
-                                                        fontSize: 15),
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                },
-                              );
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                            ),
+                            onPressed: () {
+                              print(statusID);
+                              _AlertCloseJob(context, statusID!);
                             },
+                            child: const Text(
+                              "ปิดรับงาน",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Itim",
+                                  fontSize: 12),
+                            ),
                           ),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
-                          ),
-                          onPressed: () {
-                            _AlertCloseJob(context);
-                          },
-                          child: const Text(
-                            "ปิดรับงาน",
-                            style: TextStyle(
-                                color: Colors.black, fontFamily: "Itim"),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
   }
 
-  void _AlertJobconfirm(BuildContext context, int OrderID) {
+  void _AlertJobconfirm(BuildContext context, int OrderID) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -236,7 +268,6 @@ class _JobManegeState extends State<JobManege> {
                 ElevatedButton(
                   onPressed: () {
                     _ConfirmJob(OrderID, 6);
-
                     Navigator.of(context).pop();
                   },
                   child: Row(
@@ -254,9 +285,8 @@ class _JobManegeState extends State<JobManege> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    print(widget.datestatusID);
-                    // _ConfirmJob(OrderID, 2);
-                    // _updateDateStatus(2, widget.datestatusID!);
+                    _ConfirmJob(OrderID, 2);
+                    _updateDateStatus(2, statusID!);
                     Navigator.of(context).pop();
                   },
                   child: Row(
@@ -281,8 +311,7 @@ class _JobManegeState extends State<JobManege> {
   }
 
   Future<void> _ConfirmJob(int OrderID, int status) async {
-    final url = Uri.parse(
-        "http://10.0.2.47:5000/api/orders/Resever"); // Replace with your machine's IP address
+    final url = Uri.parse("http://192.168.96.151:5000/api/orders/Resever");
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({"orders_id": OrderID, "orders_status": status});
 
@@ -297,24 +326,23 @@ class _JobManegeState extends State<JobManege> {
   }
 
   Future<void> _updateDateStatus(int datestatus, int statusID) async {
-    final url = Uri.parse(
-        "http://192.168.122.217:5000/api/orders/UpdateDateStatus"); // Replace with your machine's IP address
+    final url =
+        Uri.parse("http://192.168.96.151:5000/api/orders/UpdateDateStatus");
     final headers = {'Content-Type': 'application/json'};
     final body =
         jsonEncode({"datestatus": datestatus, "dateStatus_id": statusID});
 
-    final response = await http.post(url, headers: headers, body: body);
+    final response = await http.put(url, headers: headers, body: body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      print("COMPLETE");
       print(data['data']);
-      print("UpdateComplete");
-      _refreshQueue(); // Refresh the queue after successful status update
     } else if (response.statusCode == 404 || response.statusCode == 401) {
       print("FAIL LOAD DATA");
     }
   }
 
-  void _AlertCloseJob(BuildContext context) {
+  Future<void> _AlertCloseJob(BuildContext context, int statusID) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -327,52 +355,56 @@ class _JobManegeState extends State<JobManege> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                'ท่านต้องการปิดรับงานของวันนี้หรือไม่',
+                'คุณต้องการปิดรับงานของวันที่นี้หรือไม่',
                 style: TextStyle(fontFamily: "Itim"),
               ),
             ],
           ),
           actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _updateDateStatus(3, widget.datestatusID!);
-                    Navigator.of(context).pop();
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(
-                        FontAwesomeIcons.check,
-                        color: Colors.greenAccent,
-                      ),
-                      Text(
-                        "  ปิด",
-                        style: TextStyle(fontFamily: "Itim"),
-                      ),
-                    ],
-                  ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      FontAwesomeIcons.xmark,
+                      color: Colors.redAccent,
+                    ),
+                    Text(
+                      " ยกเลิก",
+                      style: TextStyle(fontFamily: "Itim", fontSize: 12),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(
-                        FontAwesomeIcons.xmark,
-                        color: Colors.redAccent,
-                      ),
-                      Text(
-                        "  ไม่ปิด",
-                        style: TextStyle(fontFamily: "Itim"),
-                      ),
-                    ],
-                  ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _updateDateStatus(3, statusID);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Job(id: owner_ID),
+                      ));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      FontAwesomeIcons.check,
+                      color: Colors.greenAccent,
+                    ),
+                    Text(
+                      " ปิดรับงาน",
+                      style: TextStyle(fontFamily: "Itim", fontSize: 12),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ]),
           ],
         );
       },

@@ -6,7 +6,6 @@ import 'package:tractor4your/Start/Register.dart';
 import 'package:tractor4your/page/Owner/Owner_mainMenu.dart';
 import 'package:tractor4your/page/customer/workplace/workplace.dart';
 import 'package:http/http.dart' as http;
-import 'package:tractor4your/service/users/users_services.dart';
 
 class Login_Page extends StatefulWidget {
   const Login_Page({Key? key});
@@ -20,7 +19,7 @@ class _Login_PageState extends State<Login_Page> {
   final usersController = TextEditingController();
   final passwordController = TextEditingController();
   bool passToggle = true;
-  List<int> userData = [0, 0]; // Initialized with default values
+  List<int> userData = []; // Initialized with default values
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +186,7 @@ class _Login_PageState extends State<Login_Page> {
   Future<void> _Login(
       TextEditingController users, TextEditingController password) async {
     final url = Uri.parse(
-        "http://10.0.2.47:5000/api/users/LoginUsers"); // Replace with your machine's IP address
+        "http://192.168.96.151:5000/api/users/LoginUsers"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
@@ -197,11 +196,20 @@ class _Login_PageState extends State<Login_Page> {
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      setState(() {
-        userData[0] = data['data']['users_id'];
-        userData[1] = data['data']['users_type'];
-      });
+      if (response.body.isNotEmpty) {
+        setState(() {
+          userData.add(data['data']['users_id']);
+          userData.add(data['data']['users_type']);
+        });
+      }
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+          'เข้าสู่ระบบล้มเหลว',
+          style: TextStyle(fontFamily: "Prompt"),
+        )),
+      );
       print("Login failed with status code: ${response.statusCode}");
     }
   }

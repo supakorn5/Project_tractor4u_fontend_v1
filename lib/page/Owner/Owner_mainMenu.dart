@@ -20,6 +20,7 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
   @override
   void initState() {
     super.initState();
+    print(widget.id);
     // Initialize futureOwnerID with a default value
     owner_ID = widget.id;
     futureOwnerID = Future.value(GetOwnerId());
@@ -76,6 +77,7 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
+                          settings: RouteSettings(name: '/screenA'),
                           builder: (context) => Job(id: ownerId[0].ownersId),
                         ));
                       },

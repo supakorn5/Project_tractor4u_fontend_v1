@@ -277,14 +277,14 @@ class _WorkplaceState extends State<Workplace> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MenuBottombar(
-                                                      id: widget.id,
-                                                      lands_id: LandsData[index]
-                                                          .landsId),
-                                            ));
+                                            // Navigator.of(context)
+                                            //     .push(MaterialPageRoute(
+                                            //   builder: (context) =>
+                                            //       MenuBottombar(
+                                            //           id: widget.id,
+                                            //           lands_id: LandsData[index]
+                                            //               .landsId),
+                                            // ));
                                           },
                                           child: Container(
                                             width: double.infinity,
@@ -344,10 +344,27 @@ class _WorkplaceState extends State<Workplace> {
                               }
                             },
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 246, 177, 122)),
+                      onPressed: () {
+                        print('on press');
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                MenuBottombar(id: widget.id!, lands_id: 0)));
+                      },
+                      child: const Text(
+                        "เลือกภายหลัง",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: "Itim",
+                            color: Colors.black),
+                      )),
                 ],
               ),
             ),

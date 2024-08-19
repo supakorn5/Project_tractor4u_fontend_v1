@@ -5,7 +5,7 @@ import 'package:tractor4your/model/orders/getqueuebydate.dart';
 import 'package:tractor4your/model/orders/getdatestatus.dart';
 import '../../model/orders/getJobbyuser_id.dart';
 
-String IP = "192.168.96.151";
+String IP = "10.0.2.47";
 
 class OrderService {
   final String apiUrl = 'http://${IP}:5000/api/orders/GetJobByUserId';

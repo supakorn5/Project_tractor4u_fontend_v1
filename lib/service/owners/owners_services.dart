@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-String ip = '192.168.96.151';
+String ip = '10.0.2.47';
 
 // Future<List<dynamic>> api_selectOwnerOpenFullInfo() async {
 //   final url = Uri.parse("http://" +

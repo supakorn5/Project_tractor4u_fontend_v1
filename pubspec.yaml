@@ -97,14 +97,13 @@ flutter:
   fonts:
     - family: Bebas
       fonts:
-        - asset: assets/Fonts/BebasNeue-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+        - asset: assets/Fonts/Prompt-Regular.ttf
     - family: Itim
       fonts:
         - asset: assets/Fonts/Itim-Regular.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+    - family: Prompt
+      fonts:
+        - asset: assets/Fonts/Prompt-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

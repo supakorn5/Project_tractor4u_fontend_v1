@@ -20,10 +20,10 @@ class _MenuBottombarState extends State<MenuBottombar> {
   @override
   void initState() {
     super.initState();
-    
+
     Id = widget.id;
     _pages = <Widget>[
-      MainMenu(id: Id!,lands_id: widget.lands_id),
+      MainMenu(id: Id!, lands_id: widget.lands_id),
       const PayMoney()
     ]; // Explicitly specify the type as List<Widget>
   }
@@ -36,7 +36,7 @@ class _MenuBottombarState extends State<MenuBottombar> {
         const SizedBox(height: 4),
         Text(
           text,
-          style: const TextStyle(fontSize: 15, fontFamily: "Itim"),
+          style: const TextStyle(fontSize: 15, fontFamily: "Prompt"),
         ),
       ],
     );

@@ -17,7 +17,7 @@ class _PayMoneyState extends State<PayMoney> {
         backgroundColor: const Color.fromARGB(255, 246, 177, 122),
         title: const Text(
           "ชำระเงิน",
-          style: TextStyle(fontFamily: "Itim"),
+          style: TextStyle(fontFamily: "Prompt"),
         ),
         leading: IconButton(
             onPressed: () {

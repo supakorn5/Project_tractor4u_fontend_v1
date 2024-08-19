@@ -1,9 +1,7 @@
-import 'dart:collection';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:tractor4your/model/orders/getJobbyuser_id.dart' as job;
 import 'package:tractor4your/model/orders/getdatestatus.dart';
-import 'package:tractor4your/model/orders/getQueuesbyuser_id.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/Jobmanage.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 
@@ -16,6 +14,15 @@ class Job extends StatefulWidget {
 }
 
 class _JobState extends State<Job> {
+  DateTime Today = DateTime.now();
+  DateTime? _selectedDay;
+  int? owner_ID;
+  Map<DateTime, List<String>> _events = {};
+  late Future<Getdatestatus> futuredateStatusList;
+  late Future<job.GetJobbyuserId> futureQueue;
+
+  Map<DateTime, int> dateStatusMap = {};
+
   List<String> Month = [
     "มกราคม",
     "กุมภาพันธ์",
@@ -30,38 +37,122 @@ class _JobState extends State<Job> {
     "พฤศจิกายน",
     "ธันวาคม",
   ];
-  late Future<GetDateStatus> futureDateStatus;
-  late Future<GetQueueById> futureOrders;
 
   @override
   void initState() {
     super.initState();
-    futureOrders = OrderService().fetchOrders(widget.id!);
-    futureDateStatus = OrderService().fetchDatestatus(widget.id!);
+    owner_ID = widget.id;
+    futureQueue = OrderService().fetchOrders(widget.id!);
+    futuredateStatusList = OrderService().fetchdateStatus(widget.id!);
+    _initializeEvents();
+    _initializeDateStatus();
   }
 
-  Color getColorForStatus(int status) {
-    switch (status) {
-      case 1:
-        return Color.fromARGB(255, 211, 215, 245); // สีฟ้า
-      case 2:
-        return Colors.yellow; // สีเหลือง
-      default:
-        return Color.fromARGB(255, 211, 215, 245);
-    }
-  }
+  bool _eventsInitialized = false;
+  bool _dateStatusInitialized = false;
 
-  Map<String, int> _groupDates(orders) {
-    Map<String, int> dateCount = {};
-    for (var order in orders) {
-      String date = order.date!;
-      if (dateCount.containsKey(date)) {
-        dateCount[date] = dateCount[date]! + 1;
-      } else {
-        dateCount[date] = 1;
+  Future<void> _initializeDateStatus() async {
+    if (!_dateStatusInitialized) {
+      try {
+        final dateStatus = await futuredateStatusList;
+        final dateStatusList = dateStatus.data;
+
+        for (var dateStatus in dateStatusList!) {
+          if (dateStatus.date != null && dateStatus.dateStatusStatus != null) {
+            DateTime dateKey = DateTime.parse(dateStatus.date!.toString());
+            DateTime strippedDateKey =
+                DateTime(dateKey.year, dateKey.month, dateKey.day);
+            dateStatusMap[strippedDateKey] = dateStatus.dateStatusStatus!;
+          }
+        }
+
+        setState(() {
+          _dateStatusInitialized = true;
+        });
+      } catch (e) {
+        print('Error fetching date statuses: $e');
       }
     }
-    return dateCount;
+  }
+
+  Future<void> _initializeEvents() async {
+    if (!_eventsInitialized) {
+      try {
+        final result = await futureQueue;
+        final List<job.Datum>? orders = result.data;
+
+        if (orders != null && orders.isNotEmpty) {
+          final Map<DateTime, List<String>> events = {};
+
+          for (var order in orders) {
+            if (order.date != null) {
+              final date = order.date!;
+              DateTime strippedDate = DateTime(date.year, date.month, date.day);
+
+              if (events[strippedDate] == null) {
+                events[strippedDate] = [];
+              }
+
+              events[strippedDate]!.add(order.usersUsername ?? 'Unknown User');
+            }
+          }
+
+          setState(() {
+            _events = events;
+            _eventsInitialized = true;
+          });
+        }
+      } catch (e) {
+        print('Error fetching orders: $e');
+      }
+    }
+  }
+
+  List<String> _getEventsForDay(DateTime day) {
+    DateTime strippedDay = DateTime(day.year, day.month, day.day);
+    return _events[strippedDay] ?? [];
+  }
+
+  String _formatYearToBE(int year) {
+    return (year + 543).toString();
+  }
+
+  void _navigateToDetailsPage() {
+    if (_selectedDay != null) {
+      // Print the selected day and the keys of dateStatusMap for debugging
+      DateTime strippedSelectedDay =
+          DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+      print('Selected Day: $strippedSelectedDay');
+      print('Date Status Map Keys: ${dateStatusMap.keys}');
+
+      int? dateStatusId = dateStatusMap[strippedSelectedDay];
+      print('Date Status ID: $dateStatusMap');
+      print('Widget ID: ${widget.id}');
+      print(_selectedDay!.toString().split(" ").first);
+      if (dateStatusId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => JobManege(
+              date: _selectedDay!.toString().split(" ").first,
+              datestatusID: dateStatusId,
+              id: widget.id!,
+            ),
+          ),
+        );
+      } else {
+        // Handle case where dateStatusId is null
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('No date status available for the selected day.')),
+        );
+      }
+    } else {
+      // Handle case where no day is selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('กรุณากดเลือกวันที่.')),
+      );
+    }
   }
 
   @override
@@ -93,111 +184,136 @@ class _JobState extends State<Job> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(12),
-            child: Center(
-              child: Column(
-                children: [
-                  FutureBuilder(
-                    future: futureOrders,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      final queue = snapshot.data!.data!;
-                      return FutureBuilder(
-                        future: futureDateStatus,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-
-                          final ordersDatestatus = snapshot.data!.data!;
-                          final groupedDates = _groupDates(queue);
-
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: groupedDates.length,
-                            itemBuilder: (context, index) {
-                              String date = groupedDates.keys.elementAt(index);
-                              int queueCount = groupedDates[date]!;
-                              List<String> dateParts = date.split('-');
-
-                              return ordersDatestatus[index].dateStatusStatus ==
-                                          1 ||
-                                      ordersDatestatus[index]
-                                              .dateStatusStatus ==
-                                          2
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          print(ordersDatestatus[index].date);
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (context) => JobManege(
-                                                id: widget.id,
-                                                date: ordersDatestatus[index]
-                                                    .date!,
-                                                datestatusID:
-                                                    ordersDatestatus[index]
-                                                        .dateStatusId),
-                                          ));
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              color: getColorForStatus(
-                                                  ordersDatestatus[index]
-                                                      .dateStatusStatus!), // Adjust the status color
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    spreadRadius: 1,
-                                                    blurRadius: 1,
-                                                    color: Colors.grey,
-                                                    offset: Offset(3, 4))
-                                              ]),
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
-                                              0.12,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text(
-                                                  "${int.parse(dateParts[2])} ${Month[int.parse(dateParts[1]) - 1]} ${int.parse(dateParts[0]) + 543}",
-                                                  style: TextStyle(
-                                                      fontFamily: "Itim",
-                                                      fontSize: 17),
-                                                ),
-                                                Text(" $queueCount คิว",
-                                                    style: TextStyle(
-                                                        fontFamily: "Itim",
-                                                        fontSize: 17)),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Container();
-                            },
-                          );
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: [
+                FutureBuilder(
+                  future: Future.delayed(Duration(seconds: 2)),
+                  builder: (context, snapshot) {
+                    return Container(
+                      child: TableCalendar(
+                        locale: "th_TH",
+                        rowHeight: 43,
+                        calendarFormat: CalendarFormat.month,
+                        availableGestures: AvailableGestures.all,
+                        headerStyle: HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                          titleTextFormatter: (date, locale) {
+                            final formattedYear = _formatYearToBE(date.year);
+                            return '${Month[date.month - 1]} พ.ศ. $formattedYear';
+                          },
+                        ),
+                        focusedDay: Today,
+                        firstDay: DateTime.utc(2020, 1, 1),
+                        lastDay: DateTime.utc(2040, 12, 31),
+                        selectedDayPredicate: (day) {
+                          return isSameDay(_selectedDay, day);
                         },
-                      );
-                    },
-                  ),
-                ],
-              ),
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _selectedDay = selectedDay;
+                            Today = focusedDay;
+                          });
+                        },
+                        eventLoader: (day) {
+                          return _getEventsForDay(day);
+                        },
+                        calendarBuilders: CalendarBuilders(
+                          defaultBuilder: (context, day, focusedDay) {
+                            DateTime strippedDay =
+                                DateTime(day.year, day.month, day.day);
+
+                            if (dateStatusMap.containsKey(strippedDay)) {
+                              int status = dateStatusMap[strippedDay]!;
+                              Color bgColor;
+
+                              if (status == 2) {
+                                bgColor = Colors.yellow.withOpacity(0.6);
+                              } else if (status == 3) {
+                                bgColor = Colors.red.withOpacity(0.6);
+                              } else {
+                                bgColor = Colors.blue.withOpacity(0.3);
+                              }
+
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: bgColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${day.day}',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return null;
+                          },
+                          markerBuilder: (context, day, events) {
+                            if (events.isNotEmpty) {
+                              return Positioned(
+                                bottom: 1,
+                                right: -1,
+                                child: _buildEventMarker(events.length),
+                              );
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 20),
+                _selectedDay != null
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: ElevatedButton(
+                              onPressed: _navigateToDetailsPage,
+                              child: Text(''),
+                            ),
+                          ),
+                          Text(
+                            'ลูกค้าที่มาจองวันที่ ${_selectedDay!.day} ${Month[_selectedDay!.month - 1]} ${_formatYearToBE(_selectedDay!.year)}',
+                            style: TextStyle(fontSize: 16, fontFamily: "Itim"),
+                          ),
+                          ..._getEventsForDay(_selectedDay!).map(
+                            (event) => ListTile(
+                              title: Text(event),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(""),
+              ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEventMarker(int eventCount) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.blue,
+      ),
+      width: 15.0,
+      height: 15.0,
+      child: Center(
+        child: Text(
+          eventCount.toString(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

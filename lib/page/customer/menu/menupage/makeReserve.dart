@@ -206,7 +206,7 @@ class _makeReserveState extends State<makeReserve> {
             child: const Text(
               "จองคิว",
               style: TextStyle(
-                  fontSize: 20, fontFamily: "Itim", color: Colors.black),
+                  fontSize: 20, fontFamily: "Prompt", color: Colors.black),
             )),
       ]),
     );
@@ -302,7 +302,7 @@ class _makeReserveState extends State<makeReserve> {
           return AlertDialog(
             title: const Text(
               'จองคิวสำร็จ',
-              style: TextStyle(fontFamily: "Itim"),
+              style: TextStyle(fontFamily: "Prompt"),
             ),
             // content: const Text(
             //   'วันที่เลือกไม่ถูกต้อง',
@@ -321,11 +321,11 @@ class _makeReserveState extends State<makeReserve> {
           return AlertDialog(
             title: const Text(
               'ไม่สามารถจองคิวได้',
-              style: TextStyle(fontFamily: "Itim"),
+              style: TextStyle(fontFamily: "Prompt"),
             ),
             content: const Text(
               'วันที่เลือกไม่ถูกต้อง',
-              style: TextStyle(fontFamily: "Itim"),
+              style: TextStyle(fontFamily: "Prompt"),
             ),
             actions: <Widget>[
               TextButton(

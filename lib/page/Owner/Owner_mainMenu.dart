@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tractor4your/Start/Login.dart';
-import 'package:tractor4your/model/orders/getQueuesbyuser_id.dart';
 import 'package:tractor4your/model/orders/getownerID.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
+import 'package:lottie/lottie.dart';
 
 class Owner_mainMenu extends StatefulWidget {
   final int? id;
@@ -15,14 +15,16 @@ class Owner_mainMenu extends StatefulWidget {
 
 class _Owner_mainMenuState extends State<Owner_mainMenu> {
   late Future<GetOwnerId> futureOwnerID;
+  int? owner_ID;
 
   @override
   void initState() {
     super.initState();
     // Initialize futureOwnerID with a default value
+    owner_ID = widget.id;
     futureOwnerID = Future.value(GetOwnerId());
     if (widget.id != null) {
-      futureOwnerID = OrderService().fetchOwnerID(widget.id!);
+      futureOwnerID = OrderService().fetchOwnerID(owner_ID!);
     }
   }
 
@@ -52,10 +54,13 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
           ),
         ),
         body: FutureBuilder<GetOwnerId>(
-          future: futureOwnerID,
+          future: Future.delayed(Duration(seconds: 2), () => futureOwnerID),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                child: Lottie.asset(
+                    "assets/animation/Animation - 1723570737186.json"),
+              );
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data?.data == null) {

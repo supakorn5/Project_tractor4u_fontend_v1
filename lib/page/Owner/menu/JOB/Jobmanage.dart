@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tractor4your/model/orders/getqueuebydate.dart';
+import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,11 +20,13 @@ class JobManege extends StatefulWidget {
 class _JobManegeState extends State<JobManege> {
   List<String> dateParts = [];
   late String date;
+  int? owner_ID;
   late Future<GetQueueByDate> futureQueue;
 
   @override
   void initState() {
     super.initState();
+    owner_ID = widget.id;
     date = widget.date!;
     dateParts = date.split('-');
     futureQueue = OrderService().fetchQueue(widget.date!, widget.id!);
@@ -251,8 +254,9 @@ class _JobManegeState extends State<JobManege> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    _ConfirmJob(OrderID, 2);
-                    _updateDateStatus(2, widget.datestatusID!);
+                    print(widget.datestatusID);
+                    // _ConfirmJob(OrderID, 2);
+                    // _updateDateStatus(2, widget.datestatusID!);
                     Navigator.of(context).pop();
                   },
                   child: Row(
@@ -278,7 +282,7 @@ class _JobManegeState extends State<JobManege> {
 
   Future<void> _ConfirmJob(int OrderID, int status) async {
     final url = Uri.parse(
-        "http://192.168.122.217:5000/api/orders/Resever"); // Replace with your machine's IP address
+        "http://192.168.96.151:5000/api/orders/Resever"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({"orders_id": OrderID, "orders_status": status});
 
@@ -294,7 +298,7 @@ class _JobManegeState extends State<JobManege> {
 
   Future<void> _updateDateStatus(int datestatus, int statusID) async {
     final url = Uri.parse(
-        "http://192.168.122.217:5000/api/orders/UpdateDateStatus"); // Replace with your machine's IP address
+        "http://192.168.96.151:5000/api/orders/UpdateDateStatus"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body =
         jsonEncode({"datestatus": datestatus, "dateStatus_id": statusID});
@@ -303,6 +307,7 @@ class _JobManegeState extends State<JobManege> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       print(data['data']);
+      print("UpdateComplete");
       _refreshQueue(); // Refresh the queue after successful status update
     } else if (response.statusCode == 404 || response.statusCode == 401) {
       print("FAIL LOAD DATA");

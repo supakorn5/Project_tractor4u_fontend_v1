@@ -41,7 +41,8 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
   @override
   void initState() {
     super.initState();
-    load_api_selectOwnerOpenFullInfo();
+    loadOwnersData(); // Preload data
+    //load_api_selectOwnerOpenFullInfo();
   }
 
   @override
@@ -107,41 +108,27 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
   }
 
   // Widget _OwnerList() {
-  //   return FutureBuilder<List<dynamic>>(
-  //     future: load_api_selectOwnerOpenFullInfo(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting) {
-  //         return CircularProgressIndicator();
-  //       } else if (snapshot.hasError) {
-  //         return Text("Error: ${snapshot.error}");
-  //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-  //         return Text("No owners available");
-  //       } else {
-  //         ownersData = snapshot.data!;
-  //         return Expanded(
-  //           child: ListView.builder(
-  //             itemCount: ownersData.length,
-  //             itemBuilder: (context, index) {
-  //               final dateStatus =
-  //                   ownersDateStatus[ownersData[index]['owners_id']] ?? [];
-  //               return Card(
-  //                 child: Column(
-  //                   children: [
-  //                     if (dateStatus.isNotEmpty) ...[
-  //                       _buildOwnerInfo(ownersData[index]),
-  //                       _buildCalendar(
-  //                           dateStatus, ownersData[index]['owners_id']),
-  //                     ] else ...[
-  //                       _buildOwnerInfo(ownersData[index]),
-  //                       _buildCalendarNoDateStatus(ownersData[index]['owners_id']),
-  //                     ]
-  //                   ],
-  //                 ),
-  //               );
-  //             },
+  //   print("call ownerlist ");
+  //   return ListView.builder(
+  //     itemCount: ownersData.length,
+  //     physics: BouncingScrollPhysics(),
+  //     itemBuilder: (context, index) {
+  //       final dateStatus =
+  //           ownersDateStatus[ownersData[index]['owners_id']] ?? [];
+  //       return RepaintBoundary(
+  //         // Added for performance
+  //         child: Card(
+  //           child: Column(
+  //             children: [
+  //               _buildOwnerInfo(ownersData[index]),
+  //               dateStatus.isNotEmpty
+  //                   ? _buildCalendar(dateStatus, ownersData[index]['owners_id'])
+  //                   : _buildCalendarNoDateStatus(
+  //                       ownersData[index]['owners_id']),
+  //             ],
   //           ),
-  //         );
-  //       }
+  //         ),
+  //       );
   //     },
   //   );
   // }
@@ -216,10 +203,6 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
   Widget _buildCalendar(List<dynamic> data, int owners_id) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   border: Border.all(color: Colors.black, width: 1),
-      // ),
       child: Column(children: [
         TableCalendar(
           locale: 'th_TH',
@@ -304,10 +287,6 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
   Widget _buildCalendarNoDateStatus(int owners_id) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   border: Border.all(color: Colors.black, width: 1),
-      // ),
       child: Column(children: [
         TableCalendar(
           locale: 'th_TH',
@@ -333,6 +312,9 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
+            }
+            //ถ้าเป็นไม่เป็นอดีต แสดง popup
+            if (selectedDay!.isAfter(DateTime.now())) {
               showQueueByDate(context, owners_id, selectedDay);
             }
           },
@@ -378,42 +360,82 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
     }
   }
 
+  // Future<void> showQueueByDate(
+  //     BuildContext context, int owners_id, DateTime selectedDay) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("Owner_ID: $owners_id" + " จำนวนคิว"),
+  //         content: FutureBuilder<List>(
+  //           future: load_api_getOrderByDate(owners_id, selectedDay),
+  //           builder: (context, snapshot) {
+  //             if (snapshot.connectionState == ConnectionState.waiting) {
+  //               return CircularProgressIndicator();
+  //             } else if (snapshot.hasError) {
+  //               return Text("Error: ${snapshot.error}");
+  //             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+  //               return Text("ไม่มีการจองคิวในวันนี้");
+  //             } else {
+  //               List orderBydate = snapshot.data!;
+  //               return Container(
+  //                 height:
+  //                     400, // You can set a specific height for the container
+  //                 width: double.maxFinite,
+  //                 child: ListView.builder(
+  //                   itemCount: orderBydate.length,
+  //                   itemBuilder: (context, index) {
+  //                     return Column(
+  //                       children: [
+  //                         Text(
+  //                             "Order_id: ${orderBydate[index]['orders_users_id']}")
+  //                       ],
+  //                     );
+  //                   },
+  //                 ),
+  //               );
+  //             }
+  //           },
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: Text("OK"),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   Future<void> showQueueByDate(
       BuildContext context, int owners_id, DateTime selectedDay) async {
+    final orderByDate = await load_api_getOrderByDate(owners_id, selectedDay);
+    if (orderByDate == null || orderByDate.isEmpty) {
+      print("ว่าง");
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Owner_ID: $owners_id" + " จำนวนคิว"),
-          content: FutureBuilder<List>(
-            future: load_api_getOrderByDate(owners_id, selectedDay),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text("Error: ${snapshot.error}");
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Text("ไม่มีการจองคิวในวันนี้");
-              } else {
-                List orderBydate = snapshot.data!;
-                return Container(
-                  height:
-                      400, // You can set a specific height for the container
-                  width: double.maxFinite,
-                  child: ListView.builder(
-                    itemCount: orderBydate.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Text(
-                              "Order_id: ${orderBydate[index]['orders_users_id']}")
-                        ],
-                      );
-                    },
-                  ),
+          content: Container(
+            height: 400, // You can set a specific height for the container
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: orderByDate.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Text("Order_id: ${orderByDate[index]['orders_users_id']}"),
+                  ],
                 );
-              }
-            },
+              },
+            ),
           ),
           actions: [
             TextButton(
@@ -426,6 +448,16 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
         );
       },
     );
+  }
+
+  Future<void> loadOwnersData() async {
+    List<dynamic> data = await api_selectOwnerOpenFullInfo();
+    for (var owner in data) {
+      await load_api_getDateStatus(owner['owners_id']);
+    }
+    setState(() {
+      ownersData = data;
+    });
   }
 
   Future<void> load_api_selectOwnerOpenFullInfo() async {

@@ -153,6 +153,9 @@ class _makeReserveState extends State<makeReserve> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
+            }
+            //ถ้าเป็นไม่เป็นอดีต แสดง popup
+            if (selectedDay!.isAfter(DateTime.now())) {
               showQueueByDate(context, owners_id, selectedDay);
             }
           },
@@ -227,39 +230,30 @@ class _makeReserveState extends State<makeReserve> {
 
   Future<void> showQueueByDate(
       BuildContext context, int owners_id, DateTime selectedDay) async {
+    final orderByDate = await load_api_getOrderByDate(owners_id, selectedDay);
+    if (orderByDate == null || orderByDate.isEmpty) {
+      print("ว่าง");
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Owner_ID: $owners_id" + " จำนวนคิว"),
-          content: FutureBuilder<List>(
-            future: load_api_getOrderByDate(owners_id, selectedDay),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text("Error: ${snapshot.error}");
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Text("ไม่มีการจองคิวในวันนี้");
-              } else {
-                List orderBydate = snapshot.data!;
-                return Container(
-                  height: 400,
-                  width: double.maxFinite,
-                  child: ListView.builder(
-                    itemCount: orderBydate.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Text(
-                              "user_id: ${orderBydate[index]['orders_users_id']}")
-                        ],
-                      );
-                    },
-                  ),
+          content: Container(
+            height: 400, // You can set a specific height for the container
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: orderByDate.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Text("Order_id: ${orderByDate[index]['orders_users_id']}"),
+                  ],
                 );
-              }
-            },
+              },
+            ),
           ),
           actions: [
             TextButton(
@@ -273,6 +267,55 @@ class _makeReserveState extends State<makeReserve> {
       },
     );
   }
+
+  // Future<void> showQueueByDate(
+  //     BuildContext context, int owners_id, DateTime selectedDay) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("Owner_ID: $owners_id" + " จำนวนคิว"),
+  //         content: FutureBuilder<List>(
+  //           future: load_api_getOrderByDate(owners_id, selectedDay),
+  //           builder: (context, snapshot) {
+  //             if (snapshot.connectionState == ConnectionState.waiting) {
+  //               return CircularProgressIndicator();
+  //             } else if (snapshot.hasError) {
+  //               return Text("Error: ${snapshot.error}");
+  //             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+  //               return Text("ไม่มีการจองคิวในวันนี้");
+  //             } else {
+  //               List orderBydate = snapshot.data!;
+  //               return Container(
+  //                 height: 400,
+  //                 width: double.maxFinite,
+  //                 child: ListView.builder(
+  //                   itemCount: orderBydate.length,
+  //                   itemBuilder: (context, index) {
+  //                     return Column(
+  //                       children: [
+  //                         Text(
+  //                             "user_id: ${orderBydate[index]['orders_users_id']}")
+  //                       ],
+  //                     );
+  //                   },
+  //                 ),
+  //               );
+  //             }
+  //           },
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: Text("OK"),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildOwnerTractor(dynamic ownersData) {
     return Padding(

@@ -485,7 +485,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> UpdateProfile(TextEditingController password,
       TextEditingController phone, String img, int _ID) async {
     final url = Uri.parse(
-        "http://192.168.122.213:5000/api/users/updataProfile/${_ID}"); // Replace with your machine's IP address
+        "http://10.0.2.47:5000/api/users/updataProfile/${_ID}"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_password": password.text,

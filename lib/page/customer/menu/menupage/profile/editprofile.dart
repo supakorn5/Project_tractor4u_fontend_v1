@@ -57,7 +57,7 @@ class _EditProfileState extends State<EditProfile> {
           backgroundColor: const Color.fromARGB(255, 246, 177, 122),
           title: const Text(
             "แก้ไขข้อมูลส่วนตัว",
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           leading: IconButton(
             onPressed: () {
@@ -161,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
                                   BorderRadius.all(Radius.circular(16))),
                           labelText: "รหัสผ่าน",
                           labelStyle: TextStyle(
-                            fontFamily: "Itim",
+                            fontFamily: "Prompt",
                             color: Colors.black,
                           ),
                           prefixIcon: Icon(
@@ -191,7 +191,7 @@ class _EditProfileState extends State<EditProfile> {
                                   BorderRadius.all(Radius.circular(16))),
                           labelText: "เบอร์โทรศัพท์",
                           labelStyle: TextStyle(
-                            fontFamily: "Itim",
+                            fontFamily: "Prompt",
                             color: Colors.black,
                           ),
                           prefixIcon: Icon(
@@ -240,7 +240,7 @@ class _EditProfileState extends State<EditProfile> {
                               "ยืนยัน",
                               style: TextStyle(
                                   fontSize: 12,
-                                  fontFamily: "Itim",
+                                  fontFamily: "Prompt",
                                   color: Colors.black),
                             )),
                       ),

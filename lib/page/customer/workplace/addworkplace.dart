@@ -70,7 +70,7 @@ class _AddworkplaceState extends State<Addworkplace> {
           backgroundColor: const Color.fromARGB(255, 246, 177, 122),
           title: const Text(
             "เพิ่มตำแหน่งของงาน",
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           leading: IconButton(
             onPressed: () {
@@ -119,7 +119,7 @@ class _AddworkplaceState extends State<Addworkplace> {
                               Text(
                                 "เพิ่มตำแหน่งของที่ทำงาน",
                                 style: TextStyle(
-                                  fontFamily: "Itim",
+                                  fontFamily: "Prompt",
                                   color: Colors.black,
                                 ),
                               ),
@@ -140,7 +140,7 @@ class _AddworkplaceState extends State<Addworkplace> {
                                     Text(
                                       "ที่ดินที่ ${mapdata[index]['index']}",
                                       style: const TextStyle(
-                                        fontFamily: "Itim",
+                                        fontFamily: "Prompt",
                                         fontSize: 30,
                                       ),
                                     ),
@@ -158,10 +158,12 @@ class _AddworkplaceState extends State<Addworkplace> {
                                         ),
                                       ),
                                       labelText: "กรอกข้อมูลที่ดิน",
-                                      labelStyle: TextStyle(fontFamily: "Itim"),
+                                      labelStyle:
+                                          TextStyle(fontFamily: "Prompt"),
                                       hintText:
                                           "เช่น นายายศรี ข้างบ้านลุงหมื่น ใกล้ๆเมรุ",
-                                      hintStyle: TextStyle(fontFamily: "Itim"),
+                                      hintStyle:
+                                          TextStyle(fontFamily: "Prompt"),
                                     ),
                                   ),
                                 ),
@@ -177,9 +179,11 @@ class _AddworkplaceState extends State<Addworkplace> {
                                         ),
                                       ),
                                       labelText: "กรอกข้อมูลจำนวนไร่",
-                                      labelStyle: TextStyle(fontFamily: "Itim"),
+                                      labelStyle:
+                                          TextStyle(fontFamily: "Prompt"),
                                       hintText: "เช่น 15 ไร่ 20 ไร่",
-                                      hintStyle: TextStyle(fontFamily: "Itim"),
+                                      hintStyle:
+                                          TextStyle(fontFamily: "Prompt"),
                                     ),
                                     keyboardType: TextInputType.number,
                                   ),
@@ -196,9 +200,11 @@ class _AddworkplaceState extends State<Addworkplace> {
                                         ),
                                       ),
                                       labelText: "กรอกข้อมูลจำนวนงาน",
-                                      labelStyle: TextStyle(fontFamily: "Itim"),
+                                      labelStyle:
+                                          TextStyle(fontFamily: "Prompt"),
                                       hintText: "เช่น 3 งาน 1 งาน",
-                                      hintStyle: TextStyle(fontFamily: "Itim"),
+                                      hintStyle:
+                                          TextStyle(fontFamily: "Prompt"),
                                     ),
                                     keyboardType: TextInputType.number,
                                   ),
@@ -245,7 +251,7 @@ class _AddworkplaceState extends State<Addworkplace> {
                         child: const Text(
                           "ยืนยัน",
                           style: TextStyle(
-                            fontFamily: "Itim",
+                            fontFamily: "Prompt",
                             color: Colors.black,
                           ),
                         ),
@@ -290,11 +296,11 @@ class _AddworkplaceState extends State<Addworkplace> {
         return AlertDialog(
           title: const Text(
             'บันทึกข้อมูลสำเร็จ',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           content: const Text(
             'ไปกันต่อ !!!!!!',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           actions: <Widget>[
             TextButton(

@@ -43,7 +43,7 @@ class _MapPageState extends State<MapPage> {
           elevation: 0,
           title: const Text(
             "MAP",
-            style: TextStyle(fontFamily: "Itim", color: Colors.white),
+            style: TextStyle(fontFamily: "Prompt", color: Colors.white),
           ),
           leading: IconButton(
             onPressed: () {
@@ -68,7 +68,7 @@ class _MapPageState extends State<MapPage> {
                     ColorizeAnimatedText(
                       "กำลังโหลด...",
                       textStyle: const TextStyle(
-                        fontFamily: "Itim",
+                        fontFamily: "Prompt",
                         fontSize: 25,
                       ),
                       colors: [
@@ -112,11 +112,11 @@ class _MapPageState extends State<MapPage> {
           return AlertDialog(
             title: const Text(
               'คุณต้องการเลือกที่ดินตรงนี้ ?',
-              style: TextStyle(fontFamily: "Itim"),
+              style: TextStyle(fontFamily: "Prompt"),
             ),
             content: const Text(
               'ใช่ที่ดินของคุณแล้วใช่ใหม่',
-              style: TextStyle(fontFamily: "Itim"),
+              style: TextStyle(fontFamily: "Prompt"),
             ),
             actions: <Widget>[
               TextButton(
@@ -125,7 +125,7 @@ class _MapPageState extends State<MapPage> {
                 },
                 child: const Text(
                   'ไม่',
-                  style: TextStyle(fontFamily: "Itim"),
+                  style: TextStyle(fontFamily: "Prompt"),
                 ),
               ),
               TextButton(
@@ -144,8 +144,8 @@ class _MapPageState extends State<MapPage> {
                   });
                   Navigator.of(context).pop();
                 },
-                child:
-                    const Text('ยืนยัน', style: TextStyle(fontFamily: "Itim")),
+                child: const Text('ยืนยัน',
+                    style: TextStyle(fontFamily: "Prompt")),
               ),
             ],
           );

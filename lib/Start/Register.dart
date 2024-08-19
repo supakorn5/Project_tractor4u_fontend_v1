@@ -47,14 +47,14 @@ class _Register_pageState extends State<Register_page> {
         return AlertDialog(
           title: const Text(
             'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
                 'กรุณาเลือกรูปภาพ !!!',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ],
           ),
@@ -65,7 +65,7 @@ class _Register_pageState extends State<Register_page> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ),
             TextButton(
@@ -75,7 +75,7 @@ class _Register_pageState extends State<Register_page> {
               },
               child: const Text(
                 'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ),
           ],
@@ -91,14 +91,14 @@ class _Register_pageState extends State<Register_page> {
         return AlertDialog(
           title: const Text(
             'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
                 'ไม่มีรูปภาพ !!!',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ],
           ),
@@ -109,7 +109,7 @@ class _Register_pageState extends State<Register_page> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ),
             TextButton(
@@ -119,7 +119,7 @@ class _Register_pageState extends State<Register_page> {
               },
               child: const Text(
                 'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ),
           ],
@@ -135,14 +135,14 @@ class _Register_pageState extends State<Register_page> {
         return AlertDialog(
           title: const Text(
             'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
                 'กรุณาตรวจสอบข้อมูลของคุณ !!!',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ],
           ),
@@ -153,7 +153,7 @@ class _Register_pageState extends State<Register_page> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ),
             TextButton(
@@ -163,7 +163,7 @@ class _Register_pageState extends State<Register_page> {
               },
               child: const Text(
                 'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt"),
               ),
             ),
           ],
@@ -222,7 +222,7 @@ class _Register_pageState extends State<Register_page> {
                           child: Text(
                             "สมัครสมาชิก",
                             style: TextStyle(
-                                fontFamily: "Itim",
+                                fontFamily: "Prompt",
                                 fontSize: 50,
                                 color: Color.fromARGB(255, 246, 177, 122)),
                           ),
@@ -268,7 +268,7 @@ class _Register_pageState extends State<Register_page> {
                                             Radius.circular(16))),
                                     labelText: "ชื่อผู้ใช้",
                                     labelStyle: TextStyle(
-                                      fontFamily: "Itim",
+                                      fontFamily: "Prompt",
                                       color: Colors.black,
                                     ),
                                     prefixIcon: Icon(
@@ -303,7 +303,7 @@ class _Register_pageState extends State<Register_page> {
                                             Radius.circular(16))),
                                     labelText: "รหัสผ่าน",
                                     labelStyle: TextStyle(
-                                      fontFamily: "Itim",
+                                      fontFamily: "Prompt",
                                       color: Colors.black,
                                     ),
                                     prefixIcon: Icon(
@@ -335,7 +335,7 @@ class _Register_pageState extends State<Register_page> {
                                             Radius.circular(16))),
                                     labelText: "เบอร์โทรศัพท์",
                                     labelStyle: TextStyle(
-                                      fontFamily: "Itim",
+                                      fontFamily: "Prompt",
                                       color: Colors.black,
                                     ),
                                     prefixIcon: Icon(
@@ -374,7 +374,7 @@ class _Register_pageState extends State<Register_page> {
                                       const Text(
                                         "เกษตรกร",
                                         style: TextStyle(
-                                            fontFamily: "Itim",
+                                            fontFamily: "Prompt",
                                             fontSize: 20,
                                             color: Colors.black),
                                       ),
@@ -391,7 +391,7 @@ class _Register_pageState extends State<Register_page> {
                                       const Text(
                                         "เจ้าของรถไถ",
                                         style: TextStyle(
-                                            fontFamily: "Itim",
+                                            fontFamily: "Prompt",
                                             fontSize: 20,
                                             color: Colors.black),
                                       ),
@@ -433,7 +433,7 @@ class _Register_pageState extends State<Register_page> {
                                   child: const Text(
                                     "ลงทะเบียน",
                                     style: TextStyle(
-                                      fontFamily: "Itim",
+                                      fontFamily: "Prompt",
                                       fontSize: 20,
                                       color: Colors.black,
                                     ),

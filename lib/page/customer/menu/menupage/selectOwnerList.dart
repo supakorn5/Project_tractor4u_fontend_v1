@@ -53,7 +53,7 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
         backgroundColor: Color.fromARGB(255, 238, 177, 127),
         title: const Text(
           "เลือกเข้าของรถไถ",
-          style: TextStyle(fontFamily: "Itim"),
+          style: TextStyle(fontFamily: "Prompt"),
         ),
         leading: IconButton(
             onPressed: () {
@@ -154,7 +154,7 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
               borderRadius: BorderRadius.all(Radius.circular(16))),
           labelText: "ค้นหา",
           labelStyle: TextStyle(
-            fontFamily: "Itim",
+            fontFamily: "Prompt",
             color: Colors.black,
           ),
         ));
@@ -295,7 +295,7 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             child: const Text(
               "เพิ่มเติม",
               style: TextStyle(
-                  fontSize: 20, fontFamily: "Itim", color: Colors.black),
+                  fontSize: 20, fontFamily: "Prompt", color: Colors.black),
             )),
       ]),
     );
@@ -359,7 +359,7 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             child: const Text(
               "เพิ่มเติม",
               style: TextStyle(
-                  fontSize: 20, fontFamily: "Itim", color: Colors.black),
+                  fontSize: 20, fontFamily: "Prompt", color: Colors.black),
             )),
       ]),
     );

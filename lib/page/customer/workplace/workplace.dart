@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:tractor4your/model/lands/getlandsnotreserve.dart';
 import 'package:tractor4your/page/customer/menu/menubottombar.dart';
 import 'package:tractor4your/page/customer/workplace/addworkplace.dart';
-import 'package:tractor4your/service/orders/OderService.dart';
 import '../../../service/lands/LandService.dart';
 import '../../../model/lands/getlandsbyuser_id.dart';
 import 'package:lottie/lottie.dart';
@@ -86,7 +85,7 @@ class _WorkplaceState extends State<Workplace> {
         backgroundColor: const Color.fromARGB(255, 246, 177, 122),
         title: const Text(
           "เลือกพื้นที่ต้องการไถ",
-          style: TextStyle(fontFamily: "Itim"),
+          style: TextStyle(fontFamily: "Prompt"),
         ),
         leading: IconButton(
           onPressed: () {},
@@ -137,7 +136,8 @@ class _WorkplaceState extends State<Workplace> {
                           padding: const EdgeInsets.only(bottom: 15),
                           child: Text(
                             "ที่ดินที่ยังไม่ถูกจอง",
-                            style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                            style:
+                                TextStyle(fontFamily: "Prompt", fontSize: 20),
                           ),
                         ),
                         Expanded(
@@ -157,62 +157,68 @@ class _WorkplaceState extends State<Workplace> {
                               itemCount: LandsDataNotReserve.length,
                               itemBuilder: (context, index) {
                                 return Column(children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) => MenuBottombar(
-                                            id: widget.id,
-                                            lands_id: LandsDataNotReserve[index]
-                                                .landsId),
-                                      ));
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 120,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(16),
-                                        color: getColorForStatus(7),
-                                      ),
-                                      padding: EdgeInsets.all(16.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "ข้อมูลที่ดิน: ${LandsDataNotReserve[index].landsInfo}",
-                                                style: TextStyle(
-                                                    fontFamily: "Itim",
-                                                    fontSize: 15),
-                                              ),
-                                              Text(
-                                                "วันที่จอง: - ",
-                                                style: TextStyle(
-                                                    fontFamily: "Itim",
-                                                    fontSize: 15),
-                                              ),
-                                              Text(
-                                                "สถานะการทำงาน: - ",
-                                                style: TextStyle(
-                                                    fontFamily: "Itim",
-                                                    fontSize: 15),
-                                              ),
-                                              Text(
-                                                "เจ้าของรถไถที่จอง: - ",
-                                                style: TextStyle(
-                                                    fontFamily: "Itim",
-                                                    fontSize: 15),
-                                              ),
-                                            ],
+                                  LandsDataNotReserve.isNotEmpty
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MenuBottombar(
+                                                      id: widget.id,
+                                                      lands_id:
+                                                          LandsDataNotReserve[
+                                                                  index]
+                                                              .landsId),
+                                            ));
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 120,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              color: getColorForStatus(7),
+                                            ),
+                                            padding: EdgeInsets.all(16.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "ข้อมูลที่ดิน: ${LandsDataNotReserve[index].landsInfo}",
+                                                      style: TextStyle(
+                                                          fontFamily: "Prompt",
+                                                          fontSize: 15),
+                                                    ),
+                                                    Text(
+                                                      "วันที่จอง: - ",
+                                                      style: TextStyle(
+                                                          fontFamily: "Prompt",
+                                                          fontSize: 15),
+                                                    ),
+                                                    Text(
+                                                      "สถานะการทำงาน: - ",
+                                                      style: TextStyle(
+                                                          fontFamily: "Prompt",
+                                                          fontSize: 15),
+                                                    ),
+                                                    Text(
+                                                      "เจ้าของรถไถที่จอง: - ",
+                                                      style: TextStyle(
+                                                          fontFamily: "Itim",
+                                                          fontSize: 15),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                        )
+                                      : Container(),
                                   SizedBox(
                                     height: 16,
                                   )
@@ -239,7 +245,8 @@ class _WorkplaceState extends State<Workplace> {
                           padding: const EdgeInsets.only(bottom: 15),
                           child: Text(
                             "ที่ดินที่ถูกจอง",
-                            style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                            style:
+                                TextStyle(fontFamily: "Prompt", fontSize: 20),
                           ),
                         ),
                         Expanded(
@@ -300,25 +307,25 @@ class _WorkplaceState extends State<Workplace> {
                                                     Text(
                                                       "ข้อมูลที่ดิน: ${LandsData[index].landsInfo}",
                                                       style: TextStyle(
-                                                          fontFamily: "Itim",
+                                                          fontFamily: "Prompt",
                                                           fontSize: 15),
                                                     ),
                                                     Text(
                                                       "วันที่จอง: ${int.parse(DateSplite[2])} ${Month[int.parse(DateSplite[1]) - 1]} ${DateSplite[0]}",
                                                       style: TextStyle(
-                                                          fontFamily: "Itim",
+                                                          fontFamily: "Prompt",
                                                           fontSize: 15),
                                                     ),
                                                     Text(
                                                       "สถานะการทำงาน: ${Status[LandsData[index].ordersStatus! - 1]}",
                                                       style: TextStyle(
-                                                          fontFamily: "Itim",
+                                                          fontFamily: "Prompt",
                                                           fontSize: 15),
                                                     ),
                                                     Text(
                                                       "เจ้าของรถไถที่จอง: ${LandsData[index].usersUsername}",
                                                       style: TextStyle(
-                                                          fontFamily: "Itim",
+                                                          fontFamily: "Prompt",
                                                           fontSize: 15),
                                                     ),
                                                   ],

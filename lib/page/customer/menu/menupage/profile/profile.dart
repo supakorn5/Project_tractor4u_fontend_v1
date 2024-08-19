@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
         backgroundColor: const Color.fromARGB(255, 246, 177, 122),
         title: const Text(
           "ข้อมูลส่วนตัว",
-          style: TextStyle(fontFamily: "Itim"),
+          style: TextStyle(fontFamily: "Prompt"),
         ),
         leading: IconButton(
           onPressed: () {
@@ -118,7 +118,7 @@ class _ProfileState extends State<Profile> {
                                             Text(
                                               "${user.usersUsername}",
                                               style: const TextStyle(
-                                                  fontFamily: "Bebas",
+                                                  fontFamily: "Prompt",
                                                   fontSize: 30,
                                                   fontWeight: FontWeight.bold),
                                             )
@@ -149,7 +149,7 @@ class _ProfileState extends State<Profile> {
                                                     Text(
                                                       "${user.usersPhone}",
                                                       style: const TextStyle(
-                                                          fontFamily: "Itim",
+                                                          fontFamily: "Prompt",
                                                           fontSize: 20),
                                                     ),
                                                   ],
@@ -179,7 +179,7 @@ class _ProfileState extends State<Profile> {
                                                   Text(
                                                     "กดเพื่อเพิ่มที่อยู่",
                                                     style: TextStyle(
-                                                        fontFamily: "Itim",
+                                                        fontFamily: "Prompt",
                                                         fontSize: 20),
                                                   ),
                                                 ],

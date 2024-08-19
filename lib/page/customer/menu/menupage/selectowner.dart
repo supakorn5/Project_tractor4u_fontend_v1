@@ -37,7 +37,7 @@ class _SelectOwnerState extends State<SelectOwner> {
   void initState() {
     super.initState();
     _center = LatLng(landLat, landLon);
-    
+
     _SelectOwnerOpen();
   }
 
@@ -57,7 +57,10 @@ class _SelectOwnerState extends State<SelectOwner> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => makeReserve(owners_id: ownersData[i]['owners_id'], users_id: widget.users_id, lands_id: widget.lands_id),
+                  builder: (context) => makeReserve(
+                      owners_id: ownersData[i]['owners_id'],
+                      users_id: widget.users_id,
+                      lands_id: widget.lands_id),
                 ),
               );
             },
@@ -89,7 +92,7 @@ class _SelectOwnerState extends State<SelectOwner> {
         backgroundColor: const Color.fromARGB(255, 246, 177, 122),
         title: const Text(
           "เลือกเข้าของรถไถ",
-          style: TextStyle(fontFamily: "Itim"),
+          style: TextStyle(fontFamily: "Prompt"),
         ),
         leading: IconButton(
             onPressed: () {
@@ -126,8 +129,8 @@ class _SelectOwnerState extends State<SelectOwner> {
   }
 
   Future<void> _SelectOwnerOpen() async {
-    final url = Uri.parse(
-        "http://10.0.2.10:5000/api/owners/GetOwnersOpen"); //My laptop
+    final url =
+        Uri.parse("http://10.0.2.10:5000/api/owners/GetOwnersOpen"); //My laptop
     final headers = {'Content-Type': 'application/json'};
 
     final response = await http.post(url, headers: headers);

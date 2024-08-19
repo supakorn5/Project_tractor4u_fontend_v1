@@ -31,7 +31,7 @@ class _MainMenuState extends State<MainMenu> {
           backgroundColor: const Color.fromARGB(255, 246, 177, 122),
           title: const Text(
             "หน้าหลัก",
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           leading: IconButton(
               onPressed: () {
@@ -83,7 +83,7 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "เลือกเจ้าของรถไถ",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                        style: TextStyle(fontFamily: "Prompt", fontSize: 20),
                       ),
                     ],
                   ),
@@ -116,7 +116,7 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "สถานะการทำงาน",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                        style: TextStyle(fontFamily: "Prompt", fontSize: 20),
                       ),
                     ],
                   ),
@@ -149,7 +149,7 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "ประวัติ",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                        style: TextStyle(fontFamily: "Prompt", fontSize: 20),
                       ),
                     ],
                   ),
@@ -184,7 +184,7 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "ข้อมูลส่วนตัว",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                        style: TextStyle(fontFamily: "Prompt", fontSize: 20),
                       ),
                     ],
                   ),
@@ -222,7 +222,7 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                       Text(
                         "ออกจากระบบ",
-                        style: TextStyle(fontFamily: "Itim", fontSize: 20),
+                        style: TextStyle(fontFamily: "Prompt", fontSize: 20),
                       ),
                     ],
                   ),
@@ -242,17 +242,17 @@ class _MainMenuState extends State<MainMenu> {
         return AlertDialog(
           title: const Text(
             'คำตือน!',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           content: const Text(
             'กรุณาเลือกที่ดินก่อนที่จะเลือกเจ้าของรถไถ',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();  //exit from alert to main
-                Navigator.of(context).pop();  //exit from main to select Land
+                Navigator.of(context).pop(); //exit from alert to main
+                Navigator.of(context).pop(); //exit from main to select Land
               },
               child: const Text('เลือกเจ้าของรถไถ'),
             ),

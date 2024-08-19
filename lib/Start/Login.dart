@@ -37,7 +37,7 @@ class _Login_PageState extends State<Login_Page> {
                   const Text(
                     "เข้าสู่ระบบ",
                     style: TextStyle(
-                        fontFamily: "Itim",
+                        fontFamily: "Prompt",
                         fontSize: 50,
                         color: Color.fromARGB(255, 246, 177, 122)),
                   ),
@@ -51,7 +51,7 @@ class _Login_PageState extends State<Login_Page> {
                                 BorderRadius.all(Radius.circular(16))),
                         labelText: "กรอกชื่อผู้ใช้",
                         labelStyle: TextStyle(
-                          fontFamily: "Itim",
+                          fontFamily: "Prompt",
                           color: Colors.black,
                         ),
                         prefixIcon: Icon(
@@ -81,7 +81,7 @@ class _Login_PageState extends State<Login_Page> {
                                   BorderRadius.all(Radius.circular(16))),
                           labelText: "กรอกหัสผ่าน",
                           labelStyle: const TextStyle(
-                            fontFamily: "Itim",
+                            fontFamily: "Prompt",
                             color: Colors.black,
                           ),
                           prefixIcon: const Icon(
@@ -117,7 +117,7 @@ class _Login_PageState extends State<Login_Page> {
                       children: [
                         const Text("คุณยังไม่เป็นสมามาชิก ?",
                             style: TextStyle(
-                              fontFamily: "Itim",
+                              fontFamily: "Prompt",
                               color: Colors.black,
                             )),
                         TextButton(
@@ -131,7 +131,7 @@ class _Login_PageState extends State<Login_Page> {
                             child: const Text(
                               "สมัครสมาชิก",
                               style: TextStyle(
-                                  fontFamily: "Itim",
+                                  fontFamily: "Prompt",
                                   color: Color.fromARGB(255, 246, 177, 122)),
                             ))
                       ],
@@ -170,7 +170,7 @@ class _Login_PageState extends State<Login_Page> {
                             "เข้าสู่ระบบ",
                             style: TextStyle(
                                 fontSize: 20,
-                                fontFamily: "Itim",
+                                fontFamily: "Prompt",
                                 color: Colors.black),
                           )),
                     ),

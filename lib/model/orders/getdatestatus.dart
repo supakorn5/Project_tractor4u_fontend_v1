@@ -1,26 +1,26 @@
 // To parse this JSON data, do
 //
-//     final getDateStatus = getDateStatusFromJson(jsonString);
+//     final getdatestatus = getdatestatusFromJson(jsonString);
 
 import 'dart:convert';
 
-GetDateStatus getDateStatusFromJson(String str) =>
-    GetDateStatus.fromJson(json.decode(str));
+Getdatestatus getdatestatusFromJson(String str) =>
+    Getdatestatus.fromJson(json.decode(str));
 
-String getDateStatusToJson(GetDateStatus data) => json.encode(data.toJson());
+String getdatestatusToJson(Getdatestatus data) => json.encode(data.toJson());
 
-class GetDateStatus {
+class Getdatestatus {
   bool? success;
   String? message;
   List<Datum>? data;
 
-  GetDateStatus({
+  Getdatestatus({
     this.success,
     this.message,
     this.data,
   });
 
-  factory GetDateStatus.fromJson(Map<String, dynamic> json) => GetDateStatus(
+  factory Getdatestatus.fromJson(Map<String, dynamic> json) => Getdatestatus(
         success: json["success"],
         message: json["message"],
         data: json["data"] == null
@@ -49,14 +49,13 @@ class Datum {
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        dateStatusId: json["dateStatus_id"],
-        dateStatusStatus: json["dateStatus_status"],
-        date: json["date"],
-      );
+      dateStatusId: json["dateStatus_id"],
+      dateStatusStatus: json["dateStatus_status"],
+      date: json["date"]);
 
   Map<String, dynamic> toJson() => {
         "dateStatus_id": dateStatusId,
         "dateStatus_status": dateStatusStatus,
-        "date": date,
+        "date": "${date!}",
       };
 }

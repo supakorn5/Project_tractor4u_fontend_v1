@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tractor4your/model/orders/getJobbyuser_id.dart' as job;
 import 'package:tractor4your/model/orders/getdatestatus.dart';
+import 'package:tractor4your/model/orders/getuserID.dart';
+import 'package:tractor4your/page/Owner/Owner_mainMenu.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/Jobmanage.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 
@@ -20,7 +22,8 @@ class _JobState extends State<Job> {
   Map<DateTime, List<String>> _events = {};
   late Future<Getdatestatus> futuredateStatusList;
   late Future<job.GetJobbyuserId> futureQueue;
-
+  late Future<GetuserId> futureUserID;
+  int? UserID;
   Map<DateTime, int> dateStatusMap = {};
 
   List<String> Month = [
@@ -42,6 +45,7 @@ class _JobState extends State<Job> {
   void initState() {
     super.initState();
     owner_ID = widget.id;
+    futureUserID = OrderService().fetchuserID(widget.id!);
     futureQueue = OrderService().fetchOrders(widget.id!);
     futuredateStatusList = OrderService().fetchdateStatus(widget.id!);
     _initializeEvents();
@@ -50,6 +54,13 @@ class _JobState extends State<Job> {
 
   bool _eventsInitialized = false;
   bool _dateStatusInitialized = false;
+  bool isRefresh = false;
+
+  void RefreshData() {
+    setState(() {
+      isRefresh = true;
+    });
+  }
 
   Future<void> _initializeDateStatus() async {
     if (!_dateStatusInitialized) {
@@ -119,38 +130,38 @@ class _JobState extends State<Job> {
 
   void _navigateToDetailsPage() {
     if (_selectedDay != null) {
-      // Print the selected day and the keys of dateStatusMap for debugging
       DateTime strippedSelectedDay =
           DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
-      print('Selected Day: $strippedSelectedDay');
-      print('Date Status Map Keys: ${dateStatusMap.keys}');
-
       int? dateStatusId = dateStatusMap[strippedSelectedDay];
-      print('Date Status ID: $dateStatusMap');
-      print('Widget ID: ${widget.id}');
-      print(_selectedDay!.toString().split(" ").first);
+
       if (dateStatusId != null) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => JobManege(
-              date: _selectedDay!.toString().split(" ").first,
-              datestatusID: dateStatusId,
-              id: widget.id!,
+              date: _selectedDay.toString().split(" ").first,
+              id: widget.id,
             ),
           ),
         );
       } else {
-        // Handle case where dateStatusId is null
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('No date status available for the selected day.')),
+            content: Text(
+              'วันที่คุณเลือกไม่มีข้อมูลกรุณาเลือกวันอื่น',
+              style: TextStyle(fontFamily: "Prompt"),
+            ),
+          ),
         );
       }
     } else {
-      // Handle case where no day is selected
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('กรุณากดเลือกวันที่.')),
+        SnackBar(
+          content: Text(
+            'กรุณากดเลือกวันที่',
+            style: TextStyle(fontFamily: "Prompt"),
+          ),
+        ),
       );
     }
   }
@@ -166,14 +177,51 @@ class _JobState extends State<Job> {
             "รับงาน",
             style: TextStyle(fontFamily: "Itim"),
           ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
+          leading: FutureBuilder<GetuserId>(
+            future: futureUserID, // ใช้ futureUserID ที่ดึงมา
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // ขณะรอโหลดข้อมูล
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                // แสดงข้อผิดพลาดเมื่อมีปัญหาในการดึงข้อมูล
+                return IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                );
+              } else if (snapshot.hasData && snapshot.data!.data != null) {
+                // เมื่อข้อมูลพร้อมแล้ว
+                final ownersUsersId = snapshot.data!.data!.first.ownersUsersId;
+                UserID = ownersUsersId;
+
+                return IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Owner_mainMenu(id: UserID),
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                  ),
+                );
+              } else {
+                // กรณีไม่มีข้อมูล
+                return IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                );
+              }
             },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
           ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -188,85 +236,84 @@ class _JobState extends State<Job> {
             child: Column(
               children: [
                 FutureBuilder(
-                  future: Future.delayed(Duration(seconds: 2)),
-                  builder: (context, snapshot) {
-                    return Container(
-                      child: TableCalendar(
-                        locale: "th_TH",
-                        rowHeight: 43,
-                        calendarFormat: CalendarFormat.month,
-                        availableGestures: AvailableGestures.all,
-                        headerStyle: HeaderStyle(
-                          formatButtonVisible: false,
-                          titleCentered: true,
-                          titleTextFormatter: (date, locale) {
-                            final formattedYear = _formatYearToBE(date.year);
-                            return '${Month[date.month - 1]} พ.ศ. $formattedYear';
+                    future: Future.delayed(Duration(seconds: 2)),
+                    builder: (context, snapshot) {
+                      return Container(
+                        child: TableCalendar(
+                          locale: "th_TH",
+                          rowHeight: 43,
+                          calendarFormat: CalendarFormat.month,
+                          availableGestures: AvailableGestures.all,
+                          headerStyle: HeaderStyle(
+                            formatButtonVisible: false,
+                            titleCentered: true,
+                            titleTextFormatter: (date, locale) {
+                              final formattedYear = _formatYearToBE(date.year);
+                              return '${Month[date.month - 1]} พ.ศ. $formattedYear';
+                            },
+                          ),
+                          focusedDay: Today,
+                          firstDay: DateTime.utc(2020, 1, 1),
+                          lastDay: DateTime.utc(2040, 12, 31),
+                          selectedDayPredicate: (day) {
+                            return isSameDay(_selectedDay, day);
                           },
-                        ),
-                        focusedDay: Today,
-                        firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: DateTime.utc(2040, 12, 31),
-                        selectedDayPredicate: (day) {
-                          return isSameDay(_selectedDay, day);
-                        },
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _selectedDay = selectedDay;
-                            Today = focusedDay;
-                          });
-                        },
-                        eventLoader: (day) {
-                          return _getEventsForDay(day);
-                        },
-                        calendarBuilders: CalendarBuilders(
-                          defaultBuilder: (context, day, focusedDay) {
-                            DateTime strippedDay =
-                                DateTime(day.year, day.month, day.day);
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              Today = focusedDay;
+                            });
+                          },
+                          eventLoader: (day) {
+                            return _getEventsForDay(day);
+                          },
+                          calendarBuilders: CalendarBuilders(
+                            defaultBuilder: (context, day, focusedDay) {
+                              DateTime strippedDay =
+                                  DateTime(day.year, day.month, day.day);
 
-                            if (dateStatusMap.containsKey(strippedDay)) {
-                              int status = dateStatusMap[strippedDay]!;
-                              Color bgColor;
+                              if (dateStatusMap.containsKey(strippedDay)) {
+                                int status = dateStatusMap[strippedDay]!;
+                                Color bgColor;
 
-                              if (status == 2) {
-                                bgColor = Colors.yellow.withOpacity(0.6);
-                              } else if (status == 3) {
-                                bgColor = Colors.red.withOpacity(0.6);
-                              } else {
-                                bgColor = Colors.blue.withOpacity(0.3);
+                                if (status == 2) {
+                                  bgColor = Colors.yellow.withOpacity(0.6);
+                                } else if (status == 3) {
+                                  bgColor = Colors.red.withOpacity(0.6);
+                                } else {
+                                  bgColor = Colors.blue.withOpacity(0.3);
+                                }
+
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: bgColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${day.day}',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                );
                               }
 
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: bgColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '${day.day}',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return null;
-                          },
-                          markerBuilder: (context, day, events) {
-                            if (events.isNotEmpty) {
-                              return Positioned(
-                                bottom: 1,
-                                right: -1,
-                                child: _buildEventMarker(events.length),
-                              );
-                            }
-                            return null;
-                          },
+                              return null;
+                            },
+                            markerBuilder: (context, day, events) {
+                              if (events.isNotEmpty) {
+                                return Positioned(
+                                  bottom: 1,
+                                  right: -1,
+                                  child: _buildEventMarker(events.length),
+                                );
+                              }
+                              return null;
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    }),
                 SizedBox(height: 20),
                 _selectedDay != null
                     ? Column(
@@ -275,8 +322,14 @@ class _JobState extends State<Job> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 15),
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.greenAccent.shade100),
                               onPressed: _navigateToDetailsPage,
-                              child: Text(''),
+                              child: Text(
+                                'ต่อไป',
+                                style: TextStyle(
+                                    fontFamily: "Prompt", color: Colors.black),
+                              ),
                             ),
                           ),
                           Text(
@@ -298,25 +351,25 @@ class _JobState extends State<Job> {
       ),
     );
   }
+}
 
-  Widget _buildEventMarker(int eventCount) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.blue,
-      ),
-      width: 15.0,
-      height: 15.0,
-      child: Center(
-        child: Text(
-          eventCount.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-          ),
+Widget _buildEventMarker(int eventCount) {
+  return Container(
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Colors.blue,
+    ),
+    width: 15.0,
+    height: 15.0,
+    child: Center(
+      child: Text(
+        eventCount.toString(),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
         ),
       ),
-    );
-  }
+    ),
+  );
 }

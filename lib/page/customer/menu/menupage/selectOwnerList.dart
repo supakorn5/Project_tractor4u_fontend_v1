@@ -219,18 +219,18 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
           focusedDay: _focusedDay,
           calendarFormat: _calendarFormat,
           availableCalendarFormats: {CalendarFormat.month: 'Month'},
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            if (!isSameDay(_selectedDay, selectedDay)) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-              showQueueByDate(context, owners_id, selectedDay);
-            }
-          },
+          // selectedDayPredicate: (day) {
+          //   return isSameDay(_selectedDay, day);
+          // },
+          // onDaySelected: (selectedDay, focusedDay) {
+          //   if (!isSameDay(_selectedDay, selectedDay)) {
+          //     setState(() {
+          //       _selectedDay = selectedDay;
+          //       _focusedDay = focusedDay;
+          //     });
+          //     showQueueByDate(context, owners_id, selectedDay);
+          //   }
+          // },
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
             year = '${(focusedDay.year + 543)}';

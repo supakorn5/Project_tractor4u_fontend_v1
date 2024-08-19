@@ -3,12 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:tractor4your/model/lands/getlandsnotreserve.dart';
 import '../../../model/lands/getlandsbyuser_id.dart';
 
-String ip = '10.0.2.47';
+String ip = '192.168.96.151';
 
 class LandService {
   final String apiUrl = 'http://${ip}:5000/api/lands/GetLandsByUserid';
-  final String apiUrl1 =
-      'http://10.0.2.47:5000/api/lands/GetLandNotReserve';
+  final String apiUrl1 = 'http://${ip}:5000/api/lands/GetLandNotReserve';
 
   Future<GetLandsByUserid> fetchLand(int id) async {
     final response = await http.get(

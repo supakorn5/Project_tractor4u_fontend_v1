@@ -1,9 +1,6 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/widget/selectimage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -179,7 +176,7 @@ class _Register_pageState extends State<Register_page> {
       int userType,
       String img) async {
     final url = Uri.parse(
-        "http://192.168.96.151:5000/api/users/register_users"); // Replace with your machine's IP address
+        "http://10.33.13.75:5000/api/users/register_users"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
@@ -411,9 +408,17 @@ class _Register_pageState extends State<Register_page> {
                                       try {
                                         await _Register(users, password, phone,
                                             GroupValue, _getImageBase64(_img!));
-                                      } catch (e) {
-                                        _AlertNoImg(context);
-                                      }
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'ลงทะเบียนเสร็จสำเร็จ',
+                                              style: TextStyle(
+                                                  fontFamily: "Prompt"),
+                                            ),
+                                          ),
+                                        );
+                                      } catch (e) {}
                                     } else {
                                       _AlertCheckBox(context);
                                     }

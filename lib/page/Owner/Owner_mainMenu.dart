@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/model/orders/getownerID.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
@@ -76,10 +77,10 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          settings: RouteSettings(name: '/screenA'),
-                          builder: (context) => Job(id: ownerId[0].ownersId),
-                        ));
+                        Get.to(() => Job(id: ownerId[0].ownersId));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //   builder: (context) => Job(id: ownerId[0].ownersId),
+                        // ));
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -215,12 +216,7 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
                     child: GestureDetector(
-                      onTap: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (context) => const Login_Page(),
-                        ),
-                        (Route<dynamic> route) => false, // Remove all routes
-                      ),
+                      onTap: () => Get.to(Login_Page()),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),

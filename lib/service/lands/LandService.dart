@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/Ipglobals.dart';
 import 'package:tractor4your/model/lands/getlandsnotreserve.dart';
 import '../../../model/lands/getlandsbyuser_id.dart';
 
-String ip = '192.168.96.151';
+String ip = IPGlobals;
 
 class LandService {
   final String apiUrl = 'http://${ip}:5000/api/lands/GetLandsByUserid';

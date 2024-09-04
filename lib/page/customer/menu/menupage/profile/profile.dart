@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/model/users/getuserbyid.dart'; // Correct import path
 import 'package:tractor4your/page/customer/menu/menupage/profile/editprofile.dart';
 import 'package:tractor4your/service/users/ProfileService.dart';
@@ -36,7 +37,7 @@ class _ProfileState extends State<Profile> {
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -51,9 +52,7 @@ class _ProfileState extends State<Profile> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => EditProfile(id: widget.id!),
-                ));
+                Get.to(() => EditProfile(id: widget.id!));
               },
               icon: const Icon(Icons.edit))
         ],

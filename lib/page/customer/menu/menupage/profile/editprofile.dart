@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/widget/selectimage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -61,7 +62,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -276,7 +277,7 @@ class _EditProfileState extends State<EditProfile> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ยกเลิก',
@@ -286,7 +287,7 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
               onPressed: () {
                 // Perform some action
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ตกลง',
@@ -320,7 +321,7 @@ class _EditProfileState extends State<EditProfile> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ยกเลิก',
@@ -330,7 +331,7 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
               onPressed: () {
                 // Perform some action
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ตกลง',
@@ -364,7 +365,7 @@ class _EditProfileState extends State<EditProfile> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ยกเลิก',
@@ -374,7 +375,7 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
               onPressed: () {
                 // Perform some action
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ตกลง',
@@ -416,9 +417,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                   onPressed: () {
                     // Perform some action
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Login_Page(),
-                    ));
+                    Get.off(() => Login_Page());
                   },
                   child: const Text(
                     'ใช่',
@@ -431,7 +430,7 @@ class _EditProfileState extends State<EditProfile> {
                           255, 224, 251, 226) // Set the width and height
                       ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Get.back();
                   },
                   child: const Text(
                     'ไม่',
@@ -468,7 +467,7 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
               onPressed: () {
                 try {
-                  Navigator.of(context).pop();
+                  Get.back();
                 } catch (e) {}
               },
               child: const Text(

@@ -1,6 +1,12 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
+import 'package:tractor4your/Ipglobals.dart';
+import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/widget/selectimage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -14,10 +20,12 @@ class Register_page extends StatefulWidget {
 
 class _Register_pageState extends State<Register_page> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController users = TextEditingController();
-  final TextEditingController password = TextEditingController();
-  final TextEditingController phone = TextEditingController();
-  late int GroupValue = 0;
+  final TextEditingController usersController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController tellController = TextEditingController();
+  String? _selectedItem;
+  final List<String> _items = ['เกษตกร', 'เจ้าของรถไถ'];
+  int types = 0;
 
   Uint8List? _img;
   void selectImage() async {
@@ -58,7 +66,7 @@ class _Register_pageState extends State<Register_page> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ยกเลิก',
@@ -68,7 +76,7 @@ class _Register_pageState extends State<Register_page> {
             TextButton(
               onPressed: () {
                 // Perform some action
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ตกลง',
@@ -102,7 +110,7 @@ class _Register_pageState extends State<Register_page> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ยกเลิก',
@@ -112,7 +120,7 @@ class _Register_pageState extends State<Register_page> {
             TextButton(
               onPressed: () {
                 // Perform some action
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ตกลง',
@@ -146,7 +154,7 @@ class _Register_pageState extends State<Register_page> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ยกเลิก',
@@ -156,7 +164,7 @@ class _Register_pageState extends State<Register_page> {
             TextButton(
               onPressed: () {
                 // Perform some action
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text(
                 'ตกลง',
@@ -176,7 +184,7 @@ class _Register_pageState extends State<Register_page> {
       int userType,
       String img) async {
     final url = Uri.parse(
-        "http://10.33.13.75:5000/api/users/register_users"); // Replace with your machine's IP address
+        "http://${IPGlobals}:5000/api/users/register_users"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_username": users.text,
@@ -200,260 +208,239 @@ class _Register_pageState extends State<Register_page> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.arrow_back_ios_new)),
-            ),
-            body: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(16, 58, 16, 0),
-                          child: Text(
-                            "สมัครสมาชิก",
-                            style: TextStyle(
-                                fontFamily: "Prompt",
-                                fontSize: 50,
-                                color: Color.fromARGB(255, 246, 177, 122)),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                          child: Stack(
-                            children: [
-                              _img != null
-                                  ? CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: MemoryImage(_img!),
-                                    )
-                                  : const CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage:
-                                          AssetImage("assets/image/user.png"),
-                                    ),
-                              Positioned(
-                                bottom: -10,
-                                right: -10,
-                                child: IconButton(
-                                    onPressed: selectImage,
-                                    icon: const Icon(
-                                      Icons.add_a_photo,
-                                    )),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: 300,
-                                height: 100,
-                                child: TextFormField(
-                                  controller: users,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(16))),
-                                    labelText: "ชื่อผู้ใช้",
-                                    labelStyle: TextStyle(
-                                      fontFamily: "Prompt",
-                                      color: Colors.black,
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.person,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    String pattern = r'^[a-zA-Z0-9]{0,500}$';
-                                    RegExp regex = RegExp(pattern);
-                                    if (value == null || value.isEmpty) {
-                                      return "กรุณากรอกชื่อผู้ใช้";
-                                    } else if (!regex.hasMatch(value)) {
-                                      return 'ตรวจสอบชื่อผู้ใช้ของคุณ';
-                                    } else if (RegExp(r'[ก-๙]')
-                                        .hasMatch(value)) {
-                                      return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: 300,
-                                height: 100,
-                                child: TextFormField(
-                                  controller: password,
-                                  obscureText: true,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(16))),
-                                    labelText: "รหัสผ่าน",
-                                    labelStyle: TextStyle(
-                                      fontFamily: "Prompt",
-                                      color: Colors.black,
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.lock,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "กรุณากรอกรหัสผ่าน";
-                                    } else if (value.length < 6) {
-                                      return "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";
-                                    } else if (RegExp(r'[ก-๙]')
-                                        .hasMatch(value)) {
-                                      return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: 300,
-                                height: 100,
-                                child: TextFormField(
-                                  controller: phone,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(16))),
-                                    labelText: "เบอร์โทรศัพท์",
-                                    labelStyle: TextStyle(
-                                      fontFamily: "Prompt",
-                                      color: Colors.black,
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.phone,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  keyboardType: TextInputType.phone,
-                                  validator: (value) {
-                                    String pattern = r'^\d{10}$';
-                                    RegExp regex = RegExp(pattern);
-                                    if (value == null || value.isEmpty) {
-                                      return "กรุณากรอกเบอร์โทรศัพท์";
-                                    } else if (!regex.hasMatch(value)) {
-                                      return "เบอร์โทรศัพท์ไม่ถูกต้อง";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Radio(
-                                        value: 0,
-                                        groupValue: GroupValue,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            print(value);
-                                            GroupValue = value as int;
-                                          });
-                                        },
-                                      ),
-                                      const Text(
-                                        "เกษตรกร",
-                                        style: TextStyle(
-                                            fontFamily: "Prompt",
-                                            fontSize: 20,
-                                            color: Colors.black),
-                                      ),
-                                      Radio(
-                                        value: 1,
-                                        groupValue: GroupValue,
-                                        onChanged: (value) {
-                                          print(value);
-                                          setState(() {
-                                            GroupValue = value as int;
-                                          });
-                                        },
-                                      ),
-                                      const Text(
-                                        "เจ้าของรถไถ",
-                                        style: TextStyle(
-                                            fontFamily: "Prompt",
-                                            fontSize: 20,
-                                            color: Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 250,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      try {
-                                        await _Register(users, password, phone,
-                                            GroupValue, _getImageBase64(_img!));
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'ลงทะเบียนเสร็จสำเร็จ',
-                                              style: TextStyle(
-                                                  fontFamily: "Prompt"),
-                                            ),
-                                          ),
-                                        );
-                                      } catch (e) {}
-                                    } else {
-                                      _AlertCheckBox(context);
-                                    }
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Color.fromARGB(255, 246, 177, 122)),
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      side: const BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 246, 177, 122)),
-                                    )),
-                                  ),
-                                  child: const Text(
-                                    "ลงทะเบียน",
-                                    style: TextStyle(
-                                      fontFamily: "Prompt",
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                            ],
-                          ),
-                        )
-                      ]),
-                ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(children: [
+            Container(
+              height: MediaQuery.sizeOf(context).height * 0.22,
+              child: Stack(
+                children: [
+                  Positioned(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/image/register.png"),
+                            fit: BoxFit.fill)),
+                  )),
+                ],
               ),
-            )));
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+              child: Stack(
+                children: [
+                  _img != null
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundImage: MemoryImage(_img!),
+                        )
+                      : const CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage("assets/image/user.png"),
+                        ),
+                  Positioned(
+                    bottom: -10,
+                    right: -10,
+                    child: IconButton(
+                        onPressed: selectImage,
+                        icon: const Icon(
+                          Icons.add_a_photo,
+                        )),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "สมัครสมาชิก",
+                    style: TextStyle(
+                        fontFamily: "Prompt",
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: TextFormField(
+                controller: usersController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(FontAwesomeIcons.userLarge),
+                    prefixIconColor: Colors.black,
+                    labelText: "กรอกชื่อผู้ใช้งาน",
+                    labelStyle: TextStyle(fontFamily: "Prompt"),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "กรุณากรอกชื่อผู้ใช้";
+                  }
+                  if (RegExp(r'[ก-๙]').hasMatch(value)) {
+                    return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: TextFormField(
+                controller: passwordController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(FontAwesomeIcons.lock),
+                    prefixIconColor: Colors.black,
+                    labelText: "รหัสผ่าน",
+                    labelStyle: TextStyle(fontFamily: "Prompt"),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "กรุณากรอกรหัสผ่าน";
+                  }
+                  if (RegExp(r'[ก-๙]').hasMatch(value)) {
+                    return 'ชื่อรหัสผ่านห้ามมีตัวอักษรภาษาไทย';
+                  }
+                  if (value.length < 6) {
+                    return "รหัสผ่านต้องยาวมากกว่า 6 ตัว";
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: TextFormField(
+                controller: tellController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(FontAwesomeIcons.phone),
+                  prefixIconColor: Colors.black,
+                  labelText: "เบอร์โทรศัพท์",
+                  labelStyle: TextStyle(fontFamily: "Prompt"),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "กรุณากรอกเบอร์โทรศัพท์";
+                  }
+                  if (RegExp(r'[ก-๙]').hasMatch(value)) {
+                    return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
+                  }
+                  if (!RegExp(r'^0[0-9]{9}$').hasMatch(value)) {
+                    return 'กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (10 หลัก)';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: DropdownButtonFormField<String>(
+                value: _selectedItem,
+                hint: Text(
+                  'เลือกประเภทผู้ใช้งาน',
+                  style: TextStyle(fontFamily: "Prompt"),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedItem = newValue;
+                    if (_selectedItem == "เกษตกร") {
+                      types = 0;
+                    } else if (_selectedItem == "เจ้าของรถไถ") {
+                      types = 1;
+                    }
+                    log("ประเภทผู้ใช้งาน : ${_selectedItem}");
+                    log("types : ${types}");
+                  });
+                },
+                items: _items.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: TextStyle(fontFamily: "Prompt"),
+                    ),
+                  );
+                }).toList(),
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    labelText: "ตัวเลือก",
+                    labelStyle: TextStyle(fontFamily: "Prompt")),
+                validator: (value) {
+                  if (value == null) {}
+                  return null;
+                },
+              ),
+            ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    fixedSize: Size(320, 50),
+                    backgroundColor: Color.fromARGB(a, r, g, b)),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    if (_img == null) {
+                      Get.snackbar("แจ้งเตือน", "เลือกรูปภาพของคุณ");
+                    } else if (_selectedItem == null) {
+                      Get.snackbar("แจ้งเตือน", "กรุณาเลือกประเภทผู้ใช้งาน");
+                    } else {
+                      await _Register(usersController, passwordController,
+                          tellController, types, _getImageBase64(_img!));
+                      Get.snackbar("แจ้งเตือน", "สมัครสมาชิกสำเร็จ");
+                      Get.off(() => Login_Page());
+                    }
+                  } else {
+                    Get.snackbar("แจ้งเตือน", "โปรดตรวจสอบข้อมูลของคุณ");
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Text(
+                        "สมัครสมาชิก",
+                        style: TextStyle(
+                            fontFamily: "Prompt",
+                            fontSize: 20,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Icon(
+                      FontAwesomeIcons.arrowRightLong,
+                      color: Colors.black,
+                    )
+                  ],
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "คุณเป็นสมาชิกแล้ว?",
+                  style: TextStyle(fontFamily: "Prompt"),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Get.to(() => Login_Page());
+                    },
+                    child: Text(
+                      "เข้าสู่ระบบ",
+                      style:
+                          TextStyle(fontFamily: "Prompt", color: Colors.blue),
+                    ))
+              ],
+            )
+          ]),
+        ),
+      ),
+    ));
   }
 }

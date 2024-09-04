@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'makeReserve.dart';
-import 'package:tractor4your/service/owners/owners_services.dart';
+import '../../../../Ipglobals.dart';
 
 class SelectOwner extends StatefulWidget {
   final int? users_id;
@@ -54,15 +52,10 @@ class _SelectOwnerState extends State<SelectOwner> {
             //   snippet: 'Description',
             // ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => makeReserve(
-                      owners_id: ownersData[i]['owners_id'],
-                      users_id: widget.users_id,
-                      lands_id: widget.lands_id),
-                ),
-              );
+              Get.to(() => makeReserve(
+                  owners_id: ownersData[i]['owners_id'],
+                  users_id: widget.users_id,
+                  lands_id: widget.lands_id));
             },
           ),
         );
@@ -96,7 +89,7 @@ class _SelectOwnerState extends State<SelectOwner> {
         ),
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -130,7 +123,7 @@ class _SelectOwnerState extends State<SelectOwner> {
 
   Future<void> _SelectOwnerOpen() async {
     final url = Uri.parse(
-        "http://192.168.96.151:5000/api/owners/GetOwnersOpen"); //My laptop
+        "http://${IPGlobals}:5000/api/owners/GetOwnersOpen"); //My laptop
     final headers = {'Content-Type': 'application/json'};
 
     final response = await http.post(url, headers: headers);

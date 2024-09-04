@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/page/customer/menu/menupage/profile/profile.dart';
 import 'package:tractor4your/page/customer/menu/menupage/selectOwnerList.dart';
-import 'package:tractor4your/page/customer/menu/menupage/selectowner.dart';
 
 class MainMenu extends StatefulWidget {
   final int? id;
@@ -35,7 +35,8 @@ class _MainMenuState extends State<MainMenu> {
           ),
           leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
+                // Navigator.of(context).pop();
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
@@ -56,9 +57,10 @@ class _MainMenuState extends State<MainMenu> {
                   if (widget.lands_id == 0) {
                     alertGobackSelectLand();
                   } else {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SelectOwnerList(
-                            users_id: id!, lands_id: widget.lands_id)));
+                    Get.to(() => SelectOwnerList(
+                        users_id: id!, lands_id: widget.lands_id));
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: (context) => ));
                   }
                 },
                 child: Container(
@@ -159,9 +161,7 @@ class _MainMenuState extends State<MainMenu> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Profile(id: id!),
-                )),
+                onTap: () => Get.to(() => Profile(id: id!)),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -194,12 +194,7 @@ class _MainMenuState extends State<MainMenu> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
-                onTap: () => Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const Login_Page(),
-                  ),
-                  (Route<dynamic> route) => false, // Remove all routes
-                ),
+                onTap: () => Get.off(() => Login_Page()),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -251,14 +246,14 @@ class _MainMenuState extends State<MainMenu> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); //exit from alert to main
-                Navigator.of(context).pop(); //exit from main to select Land
+                Get.back();
+                Get.back();
               },
               child: const Text('เลือกเจ้าของรถไถ'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               child: const Text('เลือกภายหลัง'),
             ),

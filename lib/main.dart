@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/widget/splash_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
+import './CodeColorscustom.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -14,8 +14,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      
+    return GetMaterialApp(
       // chang calendar to thailand local
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -27,11 +26,11 @@ class MyApp extends StatelessWidget {
       locale: const Locale('th'),
       //End chang calendar to thailand local
 
-
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(a, r, g, b)),
         useMaterial3: true,
       ),
       home: const splash_screen(),

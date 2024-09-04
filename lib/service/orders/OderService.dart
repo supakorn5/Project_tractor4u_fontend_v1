@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/Ipglobals.dart';
 import 'package:tractor4your/model/orders/getdatestatus_id.dart';
 import 'package:tractor4your/model/orders/getownerID.dart';
 import 'package:tractor4your/model/orders/getqueuebydate.dart';
@@ -7,7 +8,7 @@ import 'package:tractor4your/model/orders/getdatestatus.dart';
 import 'package:tractor4your/model/orders/getuserID.dart';
 import '../../model/orders/getJobbyuser_id.dart';
 
-String IP = "192.168.96.151";
+String IP = IPGlobals;
 
 class OrderService {
   final String apiUrl = 'http://${IP}:5000/api/orders/GetJobByUserId';

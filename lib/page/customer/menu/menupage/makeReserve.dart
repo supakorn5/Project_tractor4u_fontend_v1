@@ -1,13 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/service/users/users_services.dart';
-import 'selectowner.dart';
-import 'selectOwnerList.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:http/http.dart' as http;
 import 'package:tractor4your/service/owners/owners_services.dart';
 
 class makeReserve extends StatefulWidget {
@@ -22,7 +19,6 @@ class makeReserve extends StatefulWidget {
 }
 
 class _makeReserveState extends State<makeReserve> {
-  String ip = '10.0.2.35';
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -263,7 +259,7 @@ class _makeReserveState extends State<makeReserve> {
             TextButton(
               child: Text("OK"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],
@@ -358,7 +354,7 @@ class _makeReserveState extends State<makeReserve> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Get.back();
                 },
                 child: const Text('ตกลง'),
               ),
@@ -377,7 +373,7 @@ class _makeReserveState extends State<makeReserve> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Get.back();
                 },
                 child: const Text('ตกลง'),
               ),

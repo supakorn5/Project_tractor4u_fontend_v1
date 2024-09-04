@@ -1,12 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:http/http.dart' as http;
-import 'package:tractor4your/service/users/users_services.dart';
 import 'makeReserve.dart';
 import 'package:tractor4your/service/owners/owners_services.dart';
 
@@ -58,7 +55,7 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
         ),
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -265,15 +262,10 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 246, 177, 122)),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => makeReserve(
-                      owners_id: owners_id,
-                      users_id: widget.users_id,
-                      lands_id: widget.lands_id),
-                ),
-              );
+              Get.to(() => makeReserve(
+                  owners_id: owners_id,
+                  users_id: widget.users_id,
+                  lands_id: widget.lands_id));
             },
             child: const Text(
               "เพิ่มเติม",
@@ -328,15 +320,10 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 246, 177, 122)),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => makeReserve(
-                      owners_id: owners_id,
-                      users_id: widget.users_id,
-                      lands_id: widget.lands_id),
-                ),
-              );
+              Get.to(() => makeReserve(
+                  owners_id: owners_id,
+                  users_id: widget.users_id,
+                  lands_id: widget.lands_id));
             },
             child: const Text(
               "เพิ่มเติม",
@@ -441,7 +428,7 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             TextButton(
               child: Text("OK"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],

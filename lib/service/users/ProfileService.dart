@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/Ipglobals.dart';
 import 'package:tractor4your/model/users/getuserbyid.dart'; // Correct import path
 
 class ProfileService {
-  final String apiUrl = 'http://192.168.96.151:5000/api/users/GetUserById';
+  final String apiUrl = 'http://${IPGlobals}:5000/api/users/GetUserById';
 
   Future<Getuserbyid> getUsersById(int id) async {
     final response = await http.get(

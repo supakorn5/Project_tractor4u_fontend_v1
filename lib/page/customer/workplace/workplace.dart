@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tractor4your/model/lands/getlandsnotreserve.dart';
 import 'package:tractor4your/page/customer/menu/menubottombar.dart';
 import 'package:tractor4your/page/customer/workplace/addworkplace.dart';
@@ -101,12 +102,13 @@ class _WorkplaceState extends State<Workplace> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      Addworkplace(id: widget.id, mapdata: const []),
-                ),
-              );
+              Get.to(() => Addworkplace(id: widget.id, mapdata: const []));
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) =>
+              //         Addworkplace(id: widget.id, mapdata: const []),
+              //   ),
+              // );
             },
             icon: const Icon(Icons.add_location_alt_rounded),
           ),
@@ -160,16 +162,23 @@ class _WorkplaceState extends State<Workplace> {
                                   LandsDataNotReserve.isNotEmpty
                                       ? GestureDetector(
                                           onTap: () {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MenuBottombar(
-                                                      id: widget.id,
-                                                      lands_id:
-                                                          LandsDataNotReserve[
-                                                                  index]
-                                                              .landsId),
-                                            ));
+                                            Get.to(
+                                              () => MenuBottombar(
+                                                  id: widget.id,
+                                                  lands_id:
+                                                      LandsDataNotReserve[index]
+                                                          .landsId),
+                                            );
+                                            // Navigator.of(context)
+                                            //     .push(MaterialPageRoute(
+                                            //   builder: (context) =>
+                                            //       MenuBottombar(
+                                            //           id: widget.id,
+                                            //           lands_id:
+                                            //               LandsDataNotReserve[
+                                            //                       index]
+                                            //                   .landsId),
+                                            // ));
                                           },
                                           child: Container(
                                             width: double.infinity,
@@ -353,10 +362,12 @@ class _WorkplaceState extends State<Workplace> {
                           backgroundColor:
                               const Color.fromARGB(255, 246, 177, 122)),
                       onPressed: () {
-                        print('on press');
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                MenuBottombar(id: widget.id!, lands_id: 0)));
+                        Get.to(
+                            () => MenuBottombar(id: widget.id!, lands_id: 0));
+                        // print('on press');
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         ));
                       },
                       child: const Text(
                         "เลือกภายหลัง",

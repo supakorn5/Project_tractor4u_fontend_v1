@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tractor4your/page/customer/workplace/map_page.dart';
 import 'package:tractor4your/page/customer/workplace/workplace.dart';
 import 'package:http/http.dart' as http;
+import '../../../../Ipglobals.dart';
 
 class Addworkplace extends StatefulWidget {
   final double? latitude;
@@ -270,7 +271,7 @@ class _AddworkplaceState extends State<Addworkplace> {
   Future<void> _addnewlands(String landinfoControllers, int raiControllers,
       int nganControllers, double lat, double lon, int id) async {
     final url = Uri.parse(
-        "http://192.168.96.151:5000/api/lands/Addnewlands"); // Replace with your machine's IP address
+        "http://${IPGlobals}:5000/api/lands/Addnewlands"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "lands_info": landinfoControllers,

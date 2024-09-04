@@ -3,9 +3,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:tractor4your/model/orders/getJobbyuser_id.dart' as job;
 import 'package:tractor4your/model/orders/getdatestatus.dart';
 import 'package:tractor4your/model/orders/getuserID.dart';
-import 'package:tractor4your/page/Owner/Owner_mainMenu.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/Jobmanage.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
+import 'package:tractor4your/widget/Drawer.dart';
 
 class Job extends StatefulWidget {
   final int? id;
@@ -170,58 +170,13 @@ class _JobState extends State<Job> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: DrawerBar(),
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color.fromARGB(255, 246, 177, 122),
           title: const Text(
             "รับงาน",
             style: TextStyle(fontFamily: "Itim"),
-          ),
-          leading: FutureBuilder<GetuserId>(
-            future: futureUserID, // ใช้ futureUserID ที่ดึงมา
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // ขณะรอโหลดข้อมูล
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                // แสดงข้อผิดพลาดเมื่อมีปัญหาในการดึงข้อมูล
-                return IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                );
-              } else if (snapshot.hasData && snapshot.data!.data != null) {
-                // เมื่อข้อมูลพร้อมแล้ว
-                final ownersUsersId = snapshot.data!.data!.first.ownersUsersId;
-                UserID = ownersUsersId;
-
-                return IconButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Owner_mainMenu(id: UserID),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                  ),
-                );
-              } else {
-                // กรณีไม่มีข้อมูล
-                return IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                );
-              }
-            },
           ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

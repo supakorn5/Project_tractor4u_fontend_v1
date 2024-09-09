@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
 import 'package:tractor4your/page/customer/workplace/map_page.dart';
 import 'package:tractor4your/page/customer/workplace/workplace.dart';
 import 'package:http/http.dart' as http;
@@ -68,7 +70,7 @@ class _AddworkplaceState extends State<Addworkplace> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 246, 177, 122),
+          backgroundColor: Color.fromARGB(a, r, g, b),
           title: const Text(
             "เพิ่มตำแหน่งของงาน",
             style: TextStyle(fontFamily: "Prompt"),
@@ -220,8 +222,7 @@ class _AddworkplaceState extends State<Addworkplace> {
                       width: 320,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 246, 177, 122),
+                          backgroundColor: Color.fromARGB(a, r, g, b),
                         ),
                         onPressed: () {
                           try {
@@ -244,7 +245,7 @@ class _AddworkplaceState extends State<Addworkplace> {
                                   mapdata[i]['longitude'],
                                   _ID);
                             }
-                            addlandcomplete(_ID);
+                            Get.off(() => Workplace(id: widget.id));
                           } catch (e) {
                             print(e);
                           }
@@ -288,33 +289,5 @@ class _AddworkplaceState extends State<Addworkplace> {
     } else if (response.statusCode == 404 || response.statusCode == 401) {
       print("FAIL LOAD DATA");
     }
-  }
-
-  Future<dynamic> addlandcomplete(int id) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'บันทึกข้อมูลสำเร็จ',
-            style: TextStyle(fontFamily: "Prompt"),
-          ),
-          content: const Text(
-            'ไปกันต่อ !!!!!!',
-            style: TextStyle(fontFamily: "Prompt"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => Workplace(id: id),
-                )); // Close the dialog
-              },
-              child: const Text('ตกลง'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

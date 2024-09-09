@@ -4,7 +4,7 @@ import 'package:tractor4your/widget/splash_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import './CodeColorscustom.dart';
 
-void main() async {
+void main() {
   runApp(const MyApp());
 }
 

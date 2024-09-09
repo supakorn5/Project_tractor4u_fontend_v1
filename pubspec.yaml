@@ -28,6 +28,7 @@ dependencies:
   google_maps_flutter: ^2.5.3
   curved_navigation_bar: ^1.0.3
   location: ^5.0.0
+  another_carousel_pro: ^1.0.2
 
 dev_dependencies:
   flutter_test:

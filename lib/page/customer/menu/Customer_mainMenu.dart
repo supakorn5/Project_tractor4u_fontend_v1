@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/page/customer/menu/menupage/profile/profile.dart';
 import 'package:tractor4your/page/customer/menu/menupage/selectOwnerList.dart';
@@ -28,7 +29,7 @@ class _MainMenuState extends State<MainMenu> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 246, 177, 122),
+          backgroundColor: Color.fromARGB(a, r, g, b),
           title: const Text(
             "หน้าหลัก",
             style: TextStyle(fontFamily: "Prompt"),

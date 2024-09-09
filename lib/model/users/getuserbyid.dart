@@ -10,54 +10,50 @@ Getuserbyid getuserbyidFromJson(String str) =>
 String getuserbyidToJson(Getuserbyid data) => json.encode(data.toJson());
 
 class Getuserbyid {
-  bool? success;
-  String? message;
-  List<Datum>? data;
+  bool success;
+  String message;
+  List<Datum> data;
 
   Getuserbyid({
-    this.success,
-    this.message,
-    this.data,
+    required this.success,
+    required this.message,
+    required this.data,
   });
 
   factory Getuserbyid.fromJson(Map<String, dynamic> json) => Getuserbyid(
         success: json["success"],
         message: json["message"],
-        data: json["data"] == null
-            ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "success": success,
         "message": message,
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
       };
 }
 
 class Datum {
-  int? usersId;
-  String? usersUsername;
-  String? usersPassword;
-  String? usersPhone;
-  int? usersType;
-  String? usersImage;
-  String? usersAddress;
+  int usersId;
+  String usersUsername;
+  String usersPassword;
+  String usersPhone;
+  int usersType;
+  String usersImage;
+  dynamic usersAddress;
   dynamic usersLat;
   dynamic usersLon;
 
   Datum({
-    this.usersId,
-    this.usersUsername,
-    this.usersPassword,
-    this.usersPhone,
-    this.usersType,
-    this.usersImage,
-    this.usersAddress,
-    this.usersLat,
-    this.usersLon,
+    required this.usersId,
+    required this.usersUsername,
+    required this.usersPassword,
+    required this.usersPhone,
+    required this.usersType,
+    required this.usersImage,
+    required this.usersAddress,
+    required this.usersLat,
+    required this.usersLon,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(

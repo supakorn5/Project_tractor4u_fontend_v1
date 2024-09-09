@@ -170,7 +170,7 @@ class _JobState extends State<Job> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: DrawerBar(),
+        drawer: DrawerBarCustom(),
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color.fromARGB(255, 246, 177, 122),

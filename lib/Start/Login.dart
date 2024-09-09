@@ -22,8 +22,7 @@ class _Login_PageState extends State<Login_Page> {
   final usersController = TextEditingController();
   final passwordController = TextEditingController();
   bool passToggle = true;
-  List<int> userData = []; // Initialized with default values
-
+  List<int> userData = [0, 0];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -111,9 +110,6 @@ class _Login_PageState extends State<Login_Page> {
                     if (RegExp(r'[ก-๙]').hasMatch(value)) {
                       return 'ชื่อผู้ใช้ห้ามมีตัวอักษรภาษาไทย';
                     }
-                    // if (value.length < 6) {
-                    //   return "รหัสผ่านต้องยาวมากกว่า 6 ตัว";
-                    // }
                     return null;
                   },
                 ),
@@ -125,7 +121,8 @@ class _Login_PageState extends State<Login_Page> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       await _Login(usersController, passwordController);
-
+                      log("Users ID : ${userData[0]}");
+                      log("Users Type : ${userData[1]}");
                       if (userData.isNotEmpty) {
                         log("Navigating to the next page");
                         if (userData[1] == 0) {
@@ -133,7 +130,7 @@ class _Login_PageState extends State<Login_Page> {
                           Get.off(() => Workplace(
                                 id: userData[0],
                               ));
-                        } else if (userData[1] == 3) {
+                        } else if (userData[1] == 1) {
                           log("Navigating to Job with id: 3");
                           Get.off(() => Job(
                                 id: 3,
@@ -205,8 +202,8 @@ class _Login_PageState extends State<Login_Page> {
       final data = jsonDecode(response.body);
       if (response.body.isNotEmpty) {
         setState(() {
-          userData.add(data['data']['users_id']);
-          userData.add(data['data']['users_type']);
+          userData[0] = data['data']['users_id'];
+          userData[1] = data['data']['users_type'];
         });
       }
     } else {

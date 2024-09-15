@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
+import 'package:tractor4your/Ipglobals.dart';
 import 'package:tractor4your/model/orders/getdatestatus_id.dart';
 import 'package:tractor4your/model/orders/getqueuebydate.dart';
-import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 import 'package:http/http.dart' as http;
 
@@ -51,14 +53,14 @@ class _JobManegeState extends State<JobManege> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 246, 177, 122),
+          backgroundColor: Color.fromARGB(a, r, g, b),
           title: const Text(
             "จัดการงาน",
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Get.back(result: 1);
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -114,8 +116,8 @@ class _JobManegeState extends State<JobManege> {
                             children: [
                               Text(
                                 "งานของวันที่ ${int.parse(dateParts[2])}",
-                                style:
-                                    TextStyle(fontFamily: "Itim", fontSize: 25),
+                                style: TextStyle(
+                                    fontFamily: "Prompt", fontSize: 25),
                               ),
                             ],
                           ),
@@ -127,7 +129,8 @@ class _JobManegeState extends State<JobManege> {
                                 Color backgroundColor;
                                 switch (ordersQueue[index].ordersStatus) {
                                   case 1:
-                                    backgroundColor = Colors.amber;
+                                    backgroundColor =
+                                        Color.fromARGB(a, r, g, b);
                                     break;
                                   case 6:
                                     backgroundColor = Colors.red;
@@ -183,7 +186,7 @@ class _JobManegeState extends State<JobManege> {
                                               Text(
                                                 "ลำดับคิวที่ ${index + 1}",
                                                 style: const TextStyle(
-                                                    fontFamily: "Itim",
+                                                    fontFamily: "Prompt",
                                                     fontSize: 15),
                                               ),
                                             ],
@@ -191,7 +194,7 @@ class _JobManegeState extends State<JobManege> {
                                           Text(
                                             "${ordersQueue[index].usersUsername}",
                                             style: TextStyle(
-                                                fontFamily: "Itim",
+                                                fontFamily: "Prompt",
                                                 fontSize: 15),
                                           ),
                                           Column(
@@ -201,7 +204,7 @@ class _JobManegeState extends State<JobManege> {
                                               Text(
                                                 "${ordersQueue[index].landsSizeRai} ไร่",
                                                 style: TextStyle(
-                                                    fontFamily: "Itim",
+                                                    fontFamily: "Prompt",
                                                     fontSize: 15),
                                               ),
                                             ],
@@ -226,7 +229,7 @@ class _JobManegeState extends State<JobManege> {
                               "ปิดรับงาน",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontFamily: "Itim",
+                                  fontFamily: "Prompt",
                                   fontSize: 12),
                             ),
                           ),
@@ -250,14 +253,14 @@ class _JobManegeState extends State<JobManege> {
         return AlertDialog(
           title: const Text(
             '',
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
                 'ท่านต้องการรับงานของลูกค้าคนนี้หรือไม่',
-                style: TextStyle(fontFamily: "Itim"),
+                style: TextStyle(fontFamily: "Prompt", fontSize: 19),
               ),
             ],
           ),
@@ -278,7 +281,7 @@ class _JobManegeState extends State<JobManege> {
                       ),
                       Text(
                         "  ไม่รับ",
-                        style: TextStyle(fontFamily: "Itim"),
+                        style: TextStyle(fontFamily: "Prompt"),
                       ),
                     ],
                   ),
@@ -297,7 +300,7 @@ class _JobManegeState extends State<JobManege> {
                       ),
                       Text(
                         "  รับ",
-                        style: TextStyle(fontFamily: "Itim"),
+                        style: TextStyle(fontFamily: "Prompt"),
                       ),
                     ],
                   ),
@@ -311,7 +314,7 @@ class _JobManegeState extends State<JobManege> {
   }
 
   Future<void> _ConfirmJob(int OrderID, int status) async {
-    final url = Uri.parse("http://192.168.96.151:5000/api/orders/Resever");
+    final url = Uri.parse("http://${IPGlobals}:5000/api/orders/Resever");
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({"orders_id": OrderID, "orders_status": status});
 
@@ -327,7 +330,7 @@ class _JobManegeState extends State<JobManege> {
 
   Future<void> _updateDateStatus(int datestatus, int statusID) async {
     final url =
-        Uri.parse("http://192.168.96.151:5000/api/orders/UpdateDateStatus");
+        Uri.parse("http://${IPGlobals}:5000/api/orders/UpdateDateStatus");
     final headers = {'Content-Type': 'application/json'};
     final body =
         jsonEncode({"datestatus": datestatus, "dateStatus_id": statusID});
@@ -374,8 +377,8 @@ class _JobManegeState extends State<JobManege> {
                       color: Colors.redAccent,
                     ),
                     Text(
-                      " ยกเลิก",
-                      style: TextStyle(fontFamily: "Itim", fontSize: 12),
+                      " ไม่ปิด",
+                      style: TextStyle(fontFamily: "Prompt", fontSize: 12),
                     ),
                   ],
                 ),
@@ -383,12 +386,7 @@ class _JobManegeState extends State<JobManege> {
               ElevatedButton(
                 onPressed: () {
                   _updateDateStatus(3, statusID);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Job(id: owner_ID),
-                      ));
+                  Get.back(result: 1);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -398,8 +396,8 @@ class _JobManegeState extends State<JobManege> {
                       color: Colors.greenAccent,
                     ),
                     Text(
-                      " ปิดรับงาน",
-                      style: TextStyle(fontFamily: "Itim", fontSize: 12),
+                      " ปิด",
+                      style: TextStyle(fontFamily: "Prompt", fontSize: 12),
                     ),
                   ],
                 ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tractor4your/Start/Login.dart';
@@ -5,6 +7,9 @@ import 'package:tractor4your/model/orders/getownerID.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 import 'package:lottie/lottie.dart';
+import '../../../widget/Drawer.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
+import 'package:another_carousel_pro/another_carousel_pro.dart';
 
 class Owner_mainMenu extends StatefulWidget {
   final int? id;
@@ -21,7 +26,7 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
   @override
   void initState() {
     super.initState();
-    print(widget.id);
+    log("${widget.id}");
     // Initialize futureOwnerID with a default value
     owner_ID = widget.id;
     futureOwnerID = Future.value(GetOwnerId());
@@ -33,226 +38,170 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 246, 177, 122),
-          title: const Text(
-            "หน้าหลัก",
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          leading: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.transparent,
+        child: Scaffold(
+            drawer: DrawerBarCustom(id: widget.id),
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Color.fromARGB(a, r, g, b),
+              title: const Text(
+                "หน้าหลัก",
+                style: TextStyle(fontFamily: "Prompt"),
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
+              ),
             ),
-          ),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25),
-            ),
-          ),
-        ),
-        body: FutureBuilder<GetOwnerId>(
-          future: Future.delayed(Duration(seconds: 2), () => futureOwnerID),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Lottie.asset(
-                    "assets/animation/Animation - 1723570737186.json"),
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data?.data == null) {
-              return Center(child: Text('No owner data available'));
-            } else {
-              final ownerId = snapshot.data!.data!;
-              return GridView.count(
-                crossAxisCount: 2,
-                padding: EdgeInsets.only(top: 30),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.to(() => Job(id: ownerId[0].ownersId));
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //   builder: (context) => Job(id: ownerId[0].ownersId),
-                        // ));
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(5, 5),
-                              blurRadius: 1,
-                            )
-                          ],
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage("assets/icon/job-search.png"),
-                              width: 100,
-                              height: 100,
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(children: [
+                  FutureBuilder(
+                      future: futureOwnerID,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator(); // Handle loading state
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          final userData = snapshot.data!.data!;
+                          return SizedBox(
+                            // Add height constraint
+                            height: 150, // or any height you prefer
+                            child: ListView.builder(
+                              itemCount: userData.length,
+                              itemBuilder: (context, index) {
+                                final data = userData[index];
+                                return Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  child: AnotherCarousel(
+                                    images: [
+                                      GestureDetector(
+                                        child: Image.asset(
+                                          "assets/image/reservePoster.png",
+                                          fit: BoxFit.cover,
+                                        ),
+                                        onTap: () {
+                                          Get.to(() => Job(
+                                                id: data.ownersId,
+                                              ));
+                                          log("รับงาน");
+                                        },
+                                      ),
+                                      GestureDetector(
+                                        child: Image.asset(
+                                          "assets/image/statusPoster.png",
+                                          fit: BoxFit.cover,
+                                        ),
+                                        onTap: () {
+                                          log("สถานะการทำงาน");
+                                        },
+                                      ),
+                                      GestureDetector(
+                                        child: Image.asset(
+                                          "assets/image/historyPoster.png",
+                                          fit: BoxFit.cover,
+                                        ),
+                                        onTap: () {
+                                          log("ประวัติ");
+                                        },
+                                      ),
+                                    ],
+                                    dotSize: 3,
+                                    boxFit: BoxFit.cover,
+                                  ),
+                                );
+                              },
                             ),
-                            Text(
-                              "รับงาน",
-                              style:
-                                  TextStyle(fontFamily: "Itim", fontSize: 20),
-                            ),
-                          ],
+                          );
+                        }
+                      }),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      log("");
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 1,
+                            color: Colors.grey,
+                            offset: Offset(4, 5),
+                          ),
+                        ],
+                      ),
+                      height: 100,
+                      width: MediaQuery.sizeOf(context).width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match with container's borderRadius
+                        child: Image.asset(
+                          "assets/image/reserve.png",
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () => print(2),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.blue.shade100,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(5, 5),
-                              blurRadius: 1,
-                            )
-                          ],
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage("assets/icon/hard-work.png"),
-                              width: 100,
-                              height: 100,
-                            ),
-                            Text(
-                              "สถานะการทำงาน",
-                              style:
-                                  TextStyle(fontFamily: "Itim", fontSize: 20),
-                            ),
-                          ],
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 1,
+                            color: Colors.grey,
+                            offset: Offset(4, 5),
+                          ),
+                        ],
+                      ),
+                      height: 100,
+                      width: MediaQuery.sizeOf(context).width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match with container's borderRadius
+                        child: Image.asset(
+                          "assets/image/status.png",
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () => print(3),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.grey.shade400,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(5, 5),
-                              blurRadius: 1,
-                            )
-                          ],
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage("assets/icon/time.png"),
-                              width: 100,
-                              height: 100,
-                            ),
-                            Text(
-                              "ประวัติ",
-                              style:
-                                  TextStyle(fontFamily: "Itim", fontSize: 20),
-                            ),
-                          ],
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 1,
+                            color: Colors.grey,
+                            offset: Offset(4, 5),
+                          ),
+                        ],
+                      ),
+                      height: 100,
+                      width: MediaQuery.sizeOf(context).width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match with container's borderRadius
+                        child: Image.asset(
+                          "assets/image/history.png",
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.grey.shade50,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(5, 5),
-                              blurRadius: 1,
-                            )
-                          ],
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage("assets/icon/user.png"),
-                              width: 100,
-                              height: 100,
-                            ),
-                            Text(
-                              "ข้อมูลส่วนตัว",
-                              style:
-                                  TextStyle(fontFamily: "Itim", fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
-                    child: GestureDetector(
-                      onTap: () => Get.to(Login_Page()),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.grey.shade50,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(5, 5),
-                              blurRadius: 1,
-                            )
-                          ],
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage("assets/icon/logout.png"),
-                              width: 100,
-                              height: 100,
-                            ),
-                            Text(
-                              "ออกจากระบบ",
-                              style:
-                                  TextStyle(fontFamily: "Itim", fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }
-          },
-        ),
-      ),
-    );
+                ]),
+              ),
+            )));
   }
 }

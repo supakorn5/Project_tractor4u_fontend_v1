@@ -60,8 +60,6 @@ class _MainMenuState extends State<MainMenu> {
                   } else {
                     Get.to(() => SelectOwnerList(
                         users_id: id!, lands_id: widget.lands_id));
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (context) => ));
                   }
                 },
                 child: Container(

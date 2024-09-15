@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:tractor4your/Start/Login.dart';
 import 'package:tractor4your/model/users/getuserbyid.dart';
+import 'package:tractor4your/page/customer/menu/menupage/profile/profile.dart';
 import 'package:tractor4your/service/users/ProfileService.dart';
 import 'package:lottie/lottie.dart';
 
@@ -68,7 +69,7 @@ class _DrawerBarCustomState extends State<DrawerBarCustom> {
                             ),
                       currentAccountPicture: CircleAvatar(
                         backgroundImage: userData.usersImage != null
-                            ? MemoryImage(base64Decode(userData.usersImage))
+                            ? MemoryImage(base64Decode(userData.usersImage!))
                             : AssetImage('assets/image/default_profile.png')
                                 as ImageProvider, // or NetworkImage if you prefer
                       ),
@@ -86,10 +87,20 @@ class _DrawerBarCustomState extends State<DrawerBarCustom> {
                         color: Colors.black,
                       ),
                       title: Text(
-                        'โปรไฟล์',
+                        'ข้อมูลส่วนตัว',
                         style: TextStyle(fontFamily: "Prompt"),
                       ),
-                      onTap: () {},
+                      onTap: () async {
+                        final update = await Get.to(() => Profile(
+                              id: userData.usersId,
+                            ));
+                        if (update == 1) {
+                          setState(() {
+                            futureUsers =
+                                ProfileService().getUsersById(widget.id!);
+                          });
+                        }
+                      },
                     ),
                     ListTile(
                       leading: Icon(

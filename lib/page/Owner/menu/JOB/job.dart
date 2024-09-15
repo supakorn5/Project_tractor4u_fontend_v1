@@ -1,11 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
 import 'package:tractor4your/model/orders/getJobbyuser_id.dart' as job;
 import 'package:tractor4your/model/orders/getdatestatus.dart';
 import 'package:tractor4your/model/orders/getuserID.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/Jobmanage.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
-import 'package:tractor4your/widget/Drawer.dart';
 
 class Job extends StatefulWidget {
   final int? id;
@@ -54,13 +57,6 @@ class _JobState extends State<Job> {
 
   bool _eventsInitialized = false;
   bool _dateStatusInitialized = false;
-  bool isRefresh = false;
-
-  void RefreshData() {
-    setState(() {
-      isRefresh = true;
-    });
-  }
 
   Future<void> _initializeDateStatus() async {
     if (!_dateStatusInitialized) {
@@ -128,55 +124,16 @@ class _JobState extends State<Job> {
     return (year + 543).toString();
   }
 
-  void _navigateToDetailsPage() {
-    if (_selectedDay != null) {
-      DateTime strippedSelectedDay =
-          DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
-      int? dateStatusId = dateStatusMap[strippedSelectedDay];
-
-      if (dateStatusId != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => JobManege(
-              date: _selectedDay.toString().split(" ").first,
-              id: widget.id,
-            ),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'วันที่คุณเลือกไม่มีข้อมูลกรุณาเลือกวันอื่น',
-              style: TextStyle(fontFamily: "Prompt"),
-            ),
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'กรุณากดเลือกวันที่',
-            style: TextStyle(fontFamily: "Prompt"),
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: DrawerBarCustom(),
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 246, 177, 122),
+          backgroundColor: Color.fromARGB(a, r, g, b),
           title: const Text(
             "รับงาน",
-            style: TextStyle(fontFamily: "Itim"),
+            style: TextStyle(fontFamily: "Prompt"),
           ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -184,13 +141,25 @@ class _JobState extends State<Job> {
               bottomRight: Radius.circular(25),
             ),
           ),
+          leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+          ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                FutureBuilder(
+        body: RefreshIndicator(
+          onRefresh: _refreshData, // Trigger refresh
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  FutureBuilder(
                     future: Future.delayed(Duration(seconds: 2)),
                     builder: (context, snapshot) {
                       return Container(
@@ -206,6 +175,8 @@ class _JobState extends State<Job> {
                               final formattedYear = _formatYearToBE(date.year);
                               return '${Month[date.month - 1]} พ.ศ. $formattedYear';
                             },
+                            titleTextStyle:
+                                TextStyle(fontFamily: "Prompt", fontSize: 20),
                           ),
                           focusedDay: Today,
                           firstDay: DateTime.utc(2020, 1, 1),
@@ -268,43 +239,116 @@ class _JobState extends State<Job> {
                           ),
                         ),
                       );
-                    }),
-                SizedBox(height: 20),
-                _selectedDay != null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.greenAccent.shade100),
-                              onPressed: _navigateToDetailsPage,
-                              child: Text(
-                                'ต่อไป',
-                                style: TextStyle(
-                                    fontFamily: "Prompt", color: Colors.black),
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  _selectedDay != null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    fixedSize: Size(100, 50),
+                                    backgroundColor:
+                                        Colors.greenAccent.shade100),
+                                onPressed: () async {
+                                  if (_selectedDay != null) {
+                                    DateTime strippedSelectedDay = DateTime(
+                                      _selectedDay!.year,
+                                      _selectedDay!.month,
+                                      _selectedDay!.day,
+                                    );
+                                    int? dateStatusId =
+                                        dateStatusMap[strippedSelectedDay];
+
+                                    if (dateStatusId != null) {
+                                      // Wait for the result from JobManege page
+                                      final update = await Get.to(
+                                        () => JobManege(
+                                          date: _selectedDay
+                                              .toString()
+                                              .split(" ")
+                                              .first,
+                                          id: widget.id,
+                                        ),
+                                      );
+
+                                      if (update == 1) {
+                                        setState(() {
+                                          log("${update}");
+                                          log("Refreshing data...");
+                                          futureUserID = OrderService()
+                                              .fetchuserID(widget.id!);
+                                          futureQueue = OrderService()
+                                              .fetchOrders(widget.id!);
+                                          futuredateStatusList = OrderService()
+                                              .fetchdateStatus(widget.id!);
+
+                                          _initializeEvents(); // re-initialize events
+                                          _initializeDateStatus(); // re-initialize date status
+                                        });
+                                      }
+                                    } else {
+                                      Get.snackbar("แจ้งเตือน",
+                                          "วันที่คุณเลือกไม่มีข้อมูลกรุณาเลือกวันอื่น");
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'กรุณากดเลือกวันที่',
+                                          style:
+                                              TextStyle(fontFamily: "Prompt"),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  'ต่อไป',
+                                  style: TextStyle(
+                                      fontFamily: "Prompt",
+                                      color: Colors.black),
+                                ),
                               ),
                             ),
-                          ),
-                          Text(
-                            'ลูกค้าที่มาจองวันที่ ${_selectedDay!.day} ${Month[_selectedDay!.month - 1]} ${_formatYearToBE(_selectedDay!.year)}',
-                            style: TextStyle(fontSize: 16, fontFamily: "Itim"),
-                          ),
-                          ..._getEventsForDay(_selectedDay!).map(
-                            (event) => ListTile(
-                              title: Text(event),
+                            Text(
+                              'ลูกค้าที่มาจองวันที่ ${_selectedDay!.day} ${Month[_selectedDay!.month - 1]} ${_formatYearToBE(_selectedDay!.year)}',
+                              style:
+                                  TextStyle(fontSize: 16, fontFamily: "Prompt"),
                             ),
-                          ),
-                        ],
-                      )
-                    : Text(""),
-              ],
+                            ..._getEventsForDay(_selectedDay!).map(
+                              (event) => ListTile(
+                                title: Text(
+                                  event,
+                                  style: TextStyle(fontFamily: "Prompt"),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(""),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _refreshData() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      futureUserID = OrderService().fetchuserID(widget.id!);
+      futureQueue = OrderService().fetchOrders(widget.id!);
+      futuredateStatusList = OrderService().fetchdateStatus(widget.id!);
+
+      _initializeEvents();
+      _initializeDateStatus();
+    });
   }
 }
 

@@ -21,9 +21,11 @@ class Getuserbyid {
   });
 
   factory Getuserbyid.fromJson(Map<String, dynamic> json) => Getuserbyid(
-        success: json["success"],
-        message: json["message"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        success: json["success"] ?? false, // Provide default value if null
+        message: json["message"] ?? '', // Provide default value if null
+        data: json["data"] != null
+            ? List<Datum>.from(json["data"].map((x) => Datum.fromJson(x)))
+            : [], // Handle null data field
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,8 +41,8 @@ class Datum {
   String usersPassword;
   String usersPhone;
   int usersType;
-  String usersImage;
-  dynamic usersAddress;
+  String? usersImage; // Nullable
+  String? usersAddress; // Nullable
   dynamic usersLat;
   dynamic usersLon;
 
@@ -50,22 +52,24 @@ class Datum {
     required this.usersPassword,
     required this.usersPhone,
     required this.usersType,
-    required this.usersImage,
-    required this.usersAddress,
-    required this.usersLat,
-    required this.usersLon,
+    this.usersImage, // Nullable
+    this.usersAddress, // Nullable
+    this.usersLat,
+    this.usersLon,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        usersId: json["users_id"],
-        usersUsername: json["users_username"],
-        usersPassword: json["users_password"],
-        usersPhone: json["users_phone"],
-        usersType: json["users_type"],
-        usersImage: json["users_image"],
-        usersAddress: json["users_address"],
-        usersLat: json["users_lat"],
-        usersLon: json["users_lon"],
+        usersId: json["users_id"] ?? 0, // Provide default value if null
+        usersUsername:
+            json["users_username"] ?? '', // Provide default value if null
+        usersPassword:
+            json["users_password"] ?? '', // Provide default value if null
+        usersPhone: json["users_phone"] ?? '', // Provide default value if null
+        usersType: json["users_type"] ?? 0, // Provide default value if null
+        usersImage: json["users_image"], // It can be null
+        usersAddress: json["users_address"], // It can be null
+        usersLat: json["users_lat"], // It can be null
+        usersLon: json["users_lon"], // It can be null
       );
 
   Map<String, dynamic> toJson() => {

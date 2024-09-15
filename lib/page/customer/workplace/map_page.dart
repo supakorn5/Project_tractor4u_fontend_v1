@@ -3,7 +3,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:tractor4your/page/customer/workplace/addworkplace.dart';
-import 'package:tractor4your/page/customer/workplace/workplace.dart';
 
 class MapPage extends StatefulWidget {
   final int? id;

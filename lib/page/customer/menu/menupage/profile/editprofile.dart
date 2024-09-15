@@ -34,7 +34,7 @@ class _EditProfileState extends State<EditProfile> {
   Uint8List? _img;
   void selectImage() async {
     try {
-      Uint8List img = await pickImage(ImageSource.gallery);
+      Uint8List? img = await pickImage(ImageSource.gallery);
       setState(() {
         _img = img;
       });

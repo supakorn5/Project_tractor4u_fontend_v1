@@ -29,6 +29,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   location: ^5.0.0
   another_carousel_pro: ^1.0.2
+  line_awesome_flutter: ^3.0.1
 
 dev_dependencies:
   flutter_test:

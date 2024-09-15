@@ -30,7 +30,7 @@ class _Register_pageState extends State<Register_page> {
   Uint8List? _img;
   void selectImage() async {
     try {
-      Uint8List img = await pickImage(ImageSource.gallery);
+      Uint8List? img = await pickImage(ImageSource.gallery);
       setState(() {
         _img = img;
       });
@@ -39,7 +39,6 @@ class _Register_pageState extends State<Register_page> {
     }
   }
 
-  var _imgbase64;
   String _getImageBase64(Uint8List img) {
     var _base64 = base64Encode(img);
     return _base64;
@@ -317,6 +316,7 @@ class _Register_pageState extends State<Register_page> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: TextFormField(
                 controller: tellController,
+                keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   prefixIcon: Icon(FontAwesomeIcons.phone),
                   prefixIconColor: Colors.black,

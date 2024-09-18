@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tractor4your/model/users/provinceinTH.dart' as model;
-import '../../model/users/provinceinTH.dart' as service;
 
 Future<List<model.ProvinceinTh>> fetchProvinces() async {
   final response = await http.get(Uri.parse(

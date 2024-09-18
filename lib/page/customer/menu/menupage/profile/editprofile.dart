@@ -1,11 +1,17 @@
-import 'dart:ffi';
+import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:tractor4your/Start/Login.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:tractor4your/CodeColorscustom.dart';
+import 'package:tractor4your/Ipglobals.dart';
+import 'package:tractor4your/model/users/getuserbyid.dart';
+import 'package:tractor4your/service/users/ProfileService.dart';
+import 'package:tractor4your/widget/ProfileWidget.dart';
+import 'package:tractor4your/widget/Profile_addAdress_user.dart';
+import 'package:tractor4your/widget/changeTellnumber.dart';
 import 'package:tractor4your/widget/selectimage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -19,486 +25,272 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  final _formKey = GlobalKey<FormState>();
-  int? ID;
-  final TextEditingController password = TextEditingController();
-  final TextEditingController phone = TextEditingController();
+  late Future<Getuserbyid> futureUsers;
+  Uint8List? _img;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    ID = widget.id;
+    futureUsers =
+        ProfileService().getUsersById(widget.id!); // Initialize futureUsers
   }
 
-  Uint8List? _img;
-  void selectImage() async {
-    try {
-      Uint8List? img = await pickImage(ImageSource.gallery);
-      setState(() {
-        _img = img;
-      });
-    } catch (e) {
-      _AlertImage(context);
+  String _getImageBase64(Uint8List img) {
+    return base64Encode(img);
+  }
+
+  Future<void> updataProfilePic(String Img) async {
+    if (Img.isEmpty) {
+      log("Image data is empty");
+      return;
+    }
+
+    final url =
+        Uri.parse("http://${IPGlobals}:5000/api/users/updateProfilePic");
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({"users_image": Img, "user_id": widget.id});
+
+    final response = await http.put(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      log("${data}");
+    } else if (response.statusCode == 404 || response.statusCode == 401) {
+      print("FAIL LOAD DATA");
     }
   }
 
-  var _imgbase64;
-  String _getImageBase64(Uint8List img) {
-    var _base64 = base64Encode(img);
-    return _base64;
+  Future<void> selectImage() async {
+    try {
+      Uint8List? img = await pickImage(ImageSource.gallery);
+      if (img == null) {
+        print("No image selected");
+        return;
+      }
+
+      _img = img;
+      if (_img != null) {
+        await updataProfilePic(_getImageBase64(_img!));
+        setState(() {
+          futureUsers = ProfileService().getUsersById(widget.id!);
+        });
+      }
+    } catch (e) {
+      log("Error selecting image: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 246, 177, 122),
-          title: const Text(
-            "แก้ไขข้อมูลส่วนตัว",
-            style: TextStyle(fontFamily: "Prompt"),
-          ),
-          leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-            ),
-          ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  _AlertDelete(context);
-                },
-                icon: const Icon(Icons.delete))
-          ],
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25),
-            ),
+        child: Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(a, r, g, b),
+        title: const Text(
+          "แก้ไขข้อมูลส่วนตัว",
+          style: TextStyle(fontFamily: "Prompt"),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Get.back(result: 1);
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
-                    child: Stack(
-                      children: [
-                        _img != null
-                            ? CircleAvatar(
-                                radius: 50,
-                                backgroundImage: MemoryImage(_img!),
-                              )
-                            : const CircleAvatar(
-                                radius: 50,
-                                backgroundImage:
-                                    AssetImage("assets/image/user.png"),
-                              ),
-                        Positioned(
-                          bottom: -10,
-                          right: -10,
-                          child: IconButton(
-                              onPressed: selectImage,
-                              icon: const Icon(
-                                Icons.add_a_photo,
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
-                  // Padding(
-                  //   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  //   child: SizedBox(
-                  //     width: 300,
-                  //     height: 100,
-                  //     child: TextFormField(
-                  //       controller: users,
-                  //       decoration: const InputDecoration(
-                  //         border: OutlineInputBorder(
-                  //             borderRadius:
-                  //                 BorderRadius.all(Radius.circular(16))),
-                  //         labelText: "ชื่อผู้ใช้",
-                  //         labelStyle: TextStyle(
-                  //           fontFamily: "Itim",
-                  //           color: Colors.black,
-                  //         ),
-                  //         prefixIcon: Icon(
-                  //           Icons.person,
-                  //           color: Colors.black,
-                  //         ),
-                  //       ),
-                  //       validator: (value) {
-                  //         String pattern = r'^[a-zA-Z0-9]{0,500}$';
-                  //         RegExp regex = RegExp(pattern);
-                  //         if (value == null || value.isEmpty) {
-                  //           return "กรุณากรอกชื่อผู้ใช้";
-                  //         } else if (!regex.hasMatch(value)) {
-                  //           return 'ตรวจสอบชื่อผู้ใช้ของคุณว่ามี อักขระพิเศษ';
-                  //         }
-                  //         return null;
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: TextFormField(
-                        controller: password,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          labelText: "รหัสผ่าน",
-                          labelStyle: TextStyle(
-                            fontFamily: "Prompt",
-                            color: Colors.black,
-                          ),
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.unlockKeyhole,
-                            color: Colors.black,
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "กรุณากรอกรหัสผ่าน";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: TextFormField(
-                        controller: phone,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          labelText: "เบอร์โทรศัพท์",
-                          labelStyle: TextStyle(
-                            fontFamily: "Prompt",
-                            color: Colors.black,
-                          ),
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.phone,
-                            color: Colors.black,
-                          ),
-                        ),
-                        validator: (value) {
-                          String pattern = r'^(0[689]\d{8}|0\d{1,2}\d{6,7})$';
-                          RegExp regex = RegExp(pattern);
-                          if (value == null || value.isEmpty) {
-                            return "กรุณาเบอร์โทรศัพท์";
-                          } else if (!regex.hasMatch(value)) {
-                            return 'ตรวจสอบหมายเลขโทรศัพท์ของคุณ';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.phone,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(() => EditProfile(id: widget.id!));
+            },
+            icon: const Icon(LineAwesomeIcons.trash_alt),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: Column(
+              children: [
+                Container(
+                  child: Row(
                     children: [
-                      SizedBox(
-                        width: 200,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 246, 177, 122)),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                try {
-                                  _imgbase64 = _getImageBase64(_img!);
-                                  UpdateProfile(
-                                      password, phone, _imgbase64, ID!);
-                                  _AlertUpdateComplete(context);
-                                } catch (e) {
-                                  _AlertNoImg(context);
-                                }
-                              } else {
-                                _AlertCheckBox(context);
-                              }
-                            },
-                            child: const Text(
-                              "ยืนยัน",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: "Prompt",
-                                  color: Colors.black),
-                            )),
+                      Expanded(
+                        child: FutureBuilder<Getuserbyid>(
+                          future: futureUsers,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.success == false ||
+                                snapshot.data!.data!.isEmpty) {
+                              return const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: []);
+                            } else {
+                              final users = snapshot.data!.data;
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
+                                itemCount: users.length,
+                                itemBuilder: (context, index) {
+                                  final user = users[index];
+                                  return Container(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              16, 20, 16, 0),
+                                          child: Stack(
+                                            children: [
+                                              user.usersImage != null
+                                                  ? CircleAvatar(
+                                                      radius: 50,
+                                                      backgroundImage:
+                                                          MemoryImage(
+                                                              base64Decode(user
+                                                                  .usersImage!)),
+                                                    )
+                                                  : Container(),
+                                              Positioned(
+                                                bottom: -10,
+                                                right: -10,
+                                                child: IconButton(
+                                                  onPressed: () {
+                                                    selectImage();
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.add_a_photo),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: Color.fromARGB(a, r, g, b)
+                                                  .withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 16),
+                                                child: ProfileWidget(
+                                                  title:
+                                                      "ชื่อผู้ใช้งาน : ${user.usersUsername}",
+                                                  onPress: () {
+                                                    // log("Profile");
+                                                    //log("${base64Encode(_img!)}");
+                                                  },
+                                                  endIcon: false,
+                                                  textColor: Colors.black,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 16),
+                                                child: ProfileWidget(
+                                                  title: user.usersType == 1
+                                                      ? "ประเภทผู้ใช้งาน : เจ้าของรถไถ"
+                                                      : "ประเภทผู้ใช้งาน : ลูกค้า",
+                                                  onPress: () {},
+                                                  endIcon: false,
+                                                  textColor: Colors.black,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 16),
+                                                child: ProfileWidget(
+                                                  title:
+                                                      "เบอร์โทรศัพท์ : ${user.usersPhone}",
+                                                  onPress: () async {
+                                                    final update =
+                                                        await Get.dialog(
+                                                            changeTellNum(
+                                                      id: widget.id,
+                                                    ));
+                                                    if (update == 1) {
+                                                      setState(() {
+                                                        log("${update}");
+                                                        futureUsers =
+                                                            ProfileService()
+                                                                .getUsersById(
+                                                                    widget.id!);
+                                                      });
+                                                      Get.snackbar("แจ้งเตือน",
+                                                          "เปลี่ยนเบอร์โทรศัพท์");
+                                                    }
+                                                  },
+                                                  endIcon: true,
+                                                  textColor: Colors.black,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 16),
+                                                child: ProfileWidget(
+                                                  title: user.usersAddress !=
+                                                          null
+                                                      ? "ที่อยู่ : " +
+                                                          user.usersAddress!
+                                                      : "กดที่ปุ่มเพื่อเพิ่มข้อมูล",
+                                                  onPress: () async {
+                                                    final update =
+                                                        await Get.dialog(
+                                                            ProfilAddAddressUser(
+                                                      userID: widget.id,
+                                                    ));
+                                                    if (update == 1) {
+                                                      setState(() {
+                                                        futureUsers =
+                                                            ProfileService()
+                                                                .getUsersById(
+                                                                    widget.id!);
+                                                        Get.snackbar(
+                                                            "แจ้งเตือน",
+                                                            "กรอกข้อมูลที่อยู่สำเร็จ");
+                                                      });
+                                                    }
+                                                  },
+                                                  endIcon: true,
+                                                  textColor: Colors.black,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void _AlertImage(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'เลือกรูปภาพจากในคลังเท่านั้น !!!',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text(
-                'ยกเลิก',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Perform some action
-                Get.back();
-              },
-              child: const Text(
-                'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _AlertNoImg(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'ไม่มีรูปภาพ !!!',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text(
-                'ยกเลิก',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Perform some action
-                Get.back();
-              },
-              child: const Text(
-                'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _AlertCheckBox(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'กรุณากรอกข้อมูลให้ครบ !!!',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text(
-                'ยกเลิก',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Perform some action
-                Get.back();
-              },
-              child: const Text(
-                'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _AlertDelete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'แจ้งเตือน !!!',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'ทำต้องการลบบัญชีของท่าน ใช่ หรือ ไม่!!!',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 238, 149, 149) // Set the width and height
-                      ),
-                  onPressed: () {
-                    // Perform some action
-                    Get.off(() => Login_Page());
-                  },
-                  child: const Text(
-                    'ใช่',
-                    style: TextStyle(fontFamily: "Itim", color: Colors.black),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 224, 251, 226) // Set the width and height
-                      ),
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: const Text(
-                    'ไม่',
-                    style: TextStyle(fontFamily: "Itim", color: Colors.black),
-                  ),
-                ),
-              ],
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void _AlertUpdateComplete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'แก้ไขเสร็จสิ้น',
-            style: TextStyle(fontFamily: "Itim"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'แก้ไขข้อมูลสำเร็จ',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                try {
-                  Get.back();
-                } catch (e) {}
-              },
-              child: const Text(
-                'ตกลง',
-                style: TextStyle(fontFamily: "Itim"),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> UpdateProfile(TextEditingController password,
-      TextEditingController phone, String img, int _ID) async {
-    final url = Uri.parse(
-        "http://10.0.2.47:5000/api/users/updataProfile/${_ID}"); // Replace with your machine's IP address
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({
-      "users_password": password.text,
-      "users_phone": phone.text,
-      "users_image": img.toString(),
-    });
-
-    final respone = await http.put(url, headers: headers, body: body);
-    if (respone.statusCode == 200) {
-      final data = jsonDecode(respone.body);
-      print(data['message']);
-    } else {
-      final data = jsonDecode(respone.body);
-      print(data['message']);
-    }
+    ));
   }
 }

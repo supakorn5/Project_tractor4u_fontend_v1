@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:tractor4your/page/customer/menu/Customer_mainMenu.dart';
+import 'package:tractor4your/page/customer/menu/customerMenuPage.dart';
 import 'package:tractor4your/page/customer/menu/paymoney.dart';
 
 class MenuBottombar extends StatefulWidget {
@@ -23,7 +23,7 @@ class _MenuBottombarState extends State<MenuBottombar> {
 
     Id = widget.id;
     _pages = <Widget>[
-      MainMenu(id: Id!, lands_id: widget.lands_id),
+      customerMenupage(id: Id!, lands_id: widget.lands_id),
       const PayMoney()
     ]; // Explicitly specify the type as List<Widget>
   }

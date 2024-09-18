@@ -22,12 +22,21 @@ class JobManege extends StatefulWidget {
 }
 
 class _JobManegeState extends State<JobManege> {
+  List<bool> isExpandedList = [];
   List<String> dateParts = [];
   late String date;
   int? owner_ID;
   late Future<GetDateStatusId> futuredataStatusID;
   late Future<GetQueueByDate> futureQueue;
   int? statusID;
+  List<String> Status = [
+    "รอรับคิว",
+    "อยู่ระหว่างรอดำเนินงาน",
+    "กำลังดำเนินงาน",
+    "รอชำระ",
+    "เสร็จงาน",
+    "ยกเลิก"
+  ];
 
   @override
   void initState() {
@@ -104,6 +113,11 @@ class _JobManegeState extends State<JobManege> {
 
                 final ordersQueue = snapshot.data!.data!;
 
+                if (isExpandedList.isEmpty) {
+                  isExpandedList =
+                      List.generate(ordersQueue.length, (_) => false);
+                }
+
                 return SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(12),
@@ -121,117 +135,213 @@ class _JobManegeState extends State<JobManege> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height - 200,
-                            child: ListView.builder(
-                              itemCount: ordersQueue.length,
-                              itemBuilder: (context, index) {
-                                Color backgroundColor;
-                                switch (ordersQueue[index].ordersStatus) {
-                                  case 1:
-                                    backgroundColor =
-                                        Color.fromARGB(a, r, g, b);
-                                    break;
-                                  case 6:
-                                    backgroundColor = Colors.red;
-                                    break;
-                                  case 2:
-                                    backgroundColor =
-                                        Color.fromARGB(255, 161, 233, 161);
-                                    break;
-                                  default:
-                                    backgroundColor = Colors.grey;
-                                }
+                          Column(
+                            children: ordersQueue.map((order) {
+                              int index = ordersQueue.indexOf(order);
+                              Color backgroundColor;
+                              switch (ordersQueue[index].ordersStatus) {
+                                case 1:
+                                  backgroundColor = Color.fromARGB(a, r, g, b);
+                                  break;
+                                case 6:
+                                  backgroundColor = Colors.red;
+                                  break;
+                                case 2:
+                                  backgroundColor =
+                                      Color.fromARGB(255, 161, 233, 161);
+                                  break;
+                                default:
+                                  backgroundColor = Colors.grey;
+                              }
 
-                                for (var data in dateStatusData) {
-                                  statusID = data.dateStatusId!;
-                                }
-                                return GestureDetector(
-                                  onTap: () async {
-                                    print("date : " + widget.date!);
-                                    print("ID : " + widget.id.toString());
-                                    print("statusID : " + statusID.toString());
-                                    if (ordersQueue[index].ordersStatus == 1) {
-                                      _AlertJobconfirm(
-                                        context,
-                                        ordersQueue[index].ordersId!,
-                                      );
-                                    }
-                                  },
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isExpandedList[index] =
+                                        !isExpandedList[index];
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(16),
                                       boxShadow: [
                                         BoxShadow(
-                                            color: Colors.grey,
-                                            blurRadius: 2,
-                                            offset: Offset(4, 5)),
+                                          color: Colors.grey,
+                                          blurRadius: 2,
+                                          offset: Offset(4, 5),
+                                        ),
                                       ],
                                       color: backgroundColor,
                                     ),
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    width: 350,
-                                    height: 70,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Column(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                MainAxisAlignment.spaceAround,
                                             children: [
                                               Text(
-                                                "ลำดับคิวที่ ${index + 1}",
+                                                "ลูกค้าที่มาจองคนที่ : ${index + 1}",
                                                 style: const TextStyle(
-                                                    fontFamily: "Prompt",
-                                                    fontSize: 15),
+                                                  fontFamily: "Prompt",
+                                                  fontSize: 15,
+                                                ),
                                               ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "${ordersQueue[index].usersUsername}",
-                                            style: TextStyle(
-                                                fontFamily: "Prompt",
-                                                fontSize: 15),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
                                               Text(
-                                                "${ordersQueue[index].landsSizeRai} ไร่",
+                                                "ชื่อลูกค้า : ${ordersQueue[index].usersUsername}",
                                                 style: TextStyle(
-                                                    fontFamily: "Prompt",
-                                                    fontSize: 15),
+                                                  fontFamily: "Prompt",
+                                                  fontSize: 15,
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        if (isExpandedList[index])
+                                          AnimatedContainer(
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            curve: Curves.easeInOut,
+                                            margin: const EdgeInsets.all(8),
+                                            width: 300,
+                                            height:
+                                                150, // You can adjust this height as necessary
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 3),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "รายละเอียดงานเพิ่มเติม",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "Prompt",
+                                                            fontSize: 18),
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "ผู้รับผิดชอบ: ${ordersQueue[index].usersUsername}",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Prompt"),
+                                                          ),
+                                                          Text(
+                                                            "พื้นที่: ${ordersQueue[index].landsSizeRai} ไร่",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Prompt"),
+                                                          ),
+                                                          Text(
+                                                            "สถานะ: ${Status[ordersQueue[index].ordersStatus! - 1]}",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Prompt"),
+                                                          ),
+                                                          ordersQueue[index]
+                                                                      .ordersStatus ==
+                                                                  1
+                                                              ? Row(
+                                                                  children: [
+                                                                    ElevatedButton(
+                                                                        style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: Colors
+                                                                                .red.shade100),
+                                                                        onPressed:
+                                                                            () {
+                                                                          _ConfirmJob(
+                                                                              ordersQueue[index].ordersId!,
+                                                                              6);
+                                                                        },
+                                                                        child:
+                                                                            Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              FontAwesomeIcons.x,
+                                                                              color: Colors.red,
+                                                                              size: 15,
+                                                                            ),
+                                                                            Text(
+                                                                              " ไม่รับงาน",
+                                                                              style: TextStyle(fontFamily: "Prompt", color: Colors.black),
+                                                                            )
+                                                                          ],
+                                                                        )),
+                                                                    SizedBox(
+                                                                      width:
+                                                                          48.5,
+                                                                    ),
+                                                                    ElevatedButton(
+                                                                        style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: Colors
+                                                                                .green.shade100),
+                                                                        onPressed:
+                                                                            () {
+                                                                          _ConfirmJob(
+                                                                              ordersQueue[index].ordersId!,
+                                                                              2);
+                                                                          _updateDateStatus(
+                                                                              2,
+                                                                              ordersQueue[index].ordersStatus!);
+                                                                        },
+                                                                        child:
+                                                                            Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              FontAwesomeIcons.check,
+                                                                              color: Colors.green,
+                                                                              size: 20,
+                                                                            ),
+                                                                            Text(
+                                                                              " รับงาน",
+                                                                              style: TextStyle(fontFamily: "Prompt", color: Colors.black),
+                                                                            )
+                                                                          ],
+                                                                        ))
+                                                                  ],
+                                                                )
+                                                              : Container()
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
-                            ),
-                            onPressed: () {
-                              print(statusID);
-                              _AlertCloseJob(context, statusID!);
-                            },
-                            child: const Text(
-                              "ปิดรับงาน",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Prompt",
-                                  fontSize: 12),
-                            ),
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ],
                       ),
@@ -243,73 +353,6 @@ class _JobManegeState extends State<JobManege> {
           },
         ),
       ),
-    );
-  }
-
-  void _AlertJobconfirm(BuildContext context, int OrderID) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            '',
-            style: TextStyle(fontFamily: "Prompt"),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'ท่านต้องการรับงานของลูกค้าคนนี้หรือไม่',
-                style: TextStyle(fontFamily: "Prompt", fontSize: 19),
-              ),
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _ConfirmJob(OrderID, 6);
-                    Navigator.of(context).pop();
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(
-                        FontAwesomeIcons.xmark,
-                        color: Colors.redAccent,
-                      ),
-                      Text(
-                        "  ไม่รับ",
-                        style: TextStyle(fontFamily: "Prompt"),
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _ConfirmJob(OrderID, 2);
-                    _updateDateStatus(2, statusID!);
-                    Navigator.of(context).pop();
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(
-                        FontAwesomeIcons.check,
-                        color: Colors.greenAccent,
-                      ),
-                      Text(
-                        "  รับ",
-                        style: TextStyle(fontFamily: "Prompt"),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
     );
   }
 

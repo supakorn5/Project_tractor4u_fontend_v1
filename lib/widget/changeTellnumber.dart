@@ -53,16 +53,17 @@ class _changeTellNumState extends State<changeTellNum> {
                   onPressed: () {
                     if (_tellController.text != null) {
                       log(_tellController.text);
-                      updataTellNumber();
+                      updataTellNumber(_tellController);
                       Get.back(result: 1);
-                    }
+                    } else {}
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "ยืนยัน",
-                        style: TextStyle(fontFamily: "Prompt"),
+                        style: TextStyle(
+                            fontFamily: "Prompt", color: Colors.black),
                       ),
                     ],
                   )),
@@ -73,12 +74,12 @@ class _changeTellNumState extends State<changeTellNum> {
     );
   }
 
-  Future<void> updataTellNumber() async {
+  Future<void> updataTellNumber(TextEditingController _tellnumber) async {
     final url = Uri.parse(
         "http://${IPGlobals}:5000/api/users/updateTellnumber"); // Replace with your machine's IP address
     final headers = {'Content-Type': 'application/json'};
     final body =
-        jsonEncode({"users_Tell": _tellController.text, "user_id": widget.id});
+        jsonEncode({"users_Tell": _tellnumber.text, "user_id": widget.id});
     final response = await http.put(url, headers: headers, body: body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

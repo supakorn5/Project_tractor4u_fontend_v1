@@ -19,7 +19,7 @@ class ProfilAddAddressUser extends StatefulWidget {
 
 class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
   final banLekte = TextEditingController();
-
+  final Muban = TextEditingController();
   late Future<List<model.ProvinceinTh>> _provincesFuture;
   List<model.ProvinceinTh> _districts = [];
   List<model.ProvinceinTh> _subDistricts = [];
@@ -45,7 +45,6 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
           key: _formKey,
           child: Container(
             width: MediaQuery.of(context).size.width,
-            height: 556,
             padding: EdgeInsets.all(16),
             child: FutureBuilder<List<model.ProvinceinTh>>(
               future: _provincesFuture,
@@ -81,7 +80,6 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                           label: Text("จังหวัด"),
                           labelStyle: TextStyle(
                               fontFamily: "Prompt", color: Colors.black)),
-                      borderRadius: BorderRadius.circular(20),
                       isExpanded: true,
                       value: _selectedProvince,
                       items: provinces.map((province) {
@@ -102,7 +100,6 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                           _districts = newValue?.amphure ?? [];
                           _subDistricts = [];
                         });
-                        log('Selected Province: ${newValue?.nameTh}');
                       },
                     ),
                     SizedBox(height: 16),
@@ -131,7 +128,6 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                           _selectedSubDistrict = null;
                           _subDistricts = newValue?.tambon ?? [];
                         });
-                        log('Selected Province: ${newValue?.nameTh}');
                       },
                     ),
                     SizedBox(height: 16),
@@ -165,37 +161,54 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                           _selectZipCode =
                               _zipCode.isNotEmpty ? _zipCode.first : null;
                         });
-                        log('Selected Sub-District: ${newValue?.nameTh}');
                       },
                     ),
                     SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: TextFormField(
-                        controller: banLekte,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'กรุณากรอกบ้านเลขที่';
-                          }
-                          if (!RegExp(r'^[0-9]+(/[0-9]+)?[A-Za-z]?$')
-                              .hasMatch(value)) {
-                            return 'กรอกบ้านเลขที่เท่านั้น';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            labelText: "บ้านเลขที่",
-                            labelStyle: TextStyle(
-                                fontFamily: "Prompt", color: Colors.black)),
-                      ),
+                    TextFormField(
+                      controller: banLekte,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'กรุณากรอกบ้านเลขที่';
+                        }
+                        if (!RegExp(r'^[0-9]+(/[0-9]+)?[A-Za-z]?$')
+                            .hasMatch(value)) {
+                          return 'กรอกบ้านเลขที่เท่านั้น';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          labelText: "บ้านเลขที่",
+                          labelStyle: TextStyle(
+                              fontFamily: "Prompt", color: Colors.black)),
                     ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      controller: Muban,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'กรุณากรอกบ้านเลขที่';
+                        }
+                        if (!RegExp(r'^[0-9]+(/[0-9]+)?[A-Za-z]?$')
+                            .hasMatch(value)) {
+                          return 'กรอกบ้านเลขที่เท่านั้น';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          labelText: "หมู่ที่",
+                          labelStyle: TextStyle(
+                              fontFamily: "Prompt", color: Colors.black)),
+                    ),
+                    SizedBox(height: 16),
                     DropdownButtonFormField<model.ProvinceinTh>(
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20)),
-                          label: Text("รหัสไปรสณีย์"),
+                          label: Text("รหัสไปรษณีย์"),
                           labelStyle: TextStyle(
                               fontFamily: "Prompt", color: Colors.black)),
                       isExpanded: true,
@@ -204,8 +217,7 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                         return DropdownMenuItem<model.ProvinceinTh>(
                           value: zipCode,
                           child: Text(
-                            zipCode.zipCode?.toString() ??
-                                'ไม่มี', // Display the zip code here
+                            zipCode.zipCode?.toString() ?? 'ไม่มี',
                             style: TextStyle(
                                 fontFamily: "Prompt", color: Colors.black),
                           ),
@@ -215,46 +227,35 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                         setState(() {
                           _selectZipCode = newValue;
                         });
-                        log('Selected zipCode: ${newValue?.zipCode}');
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(
-                                  Color.fromARGB(a, r, g, b))),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              log("${widget.userID}");
-                              if (_selectedProvince != null ||
-                                  _selectedDistrict != null ||
-                                  _selectedSubDistrict != null ||
-                                  banLekte != null) {
-                                addUserAdress();
-                              } else {
-                                Get.snackbar(
-                                    "แจ้งเตือน", "ตรวจสอบข้อมูลของคุณ");
-                              }
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "ยืนยัน",
-                                style: TextStyle(
-                                    fontFamily: "Prompt",
-                                    color: Colors.black,
-                                    fontSize: 20),
-                              ),
-                              Icon(
-                                Icons.arrow_forward,
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                              Color.fromARGB(a, r, g, b))),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          addUserAdress();
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "ยืนยัน",
+                            style: TextStyle(
+                                fontFamily: "Prompt",
                                 color: Colors.black,
-                              ),
-                            ],
-                          )),
-                    )
+                                fontSize: 20),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 );
               },
@@ -271,6 +272,7 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "users_address": "${banLekte.text} "
+          "หมู่ที่ ${Muban.text} "
           "ต.${_selectedSubDistrict?.nameTh} "
           "อ.${_selectedDistrict?.nameTh} "
           "จ.${_selectedProvince?.nameTh} "

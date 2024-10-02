@@ -188,7 +188,7 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                       controller: Muban,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'กรุณากรอกบ้านเลขที่';
+                          return 'กรุณากรอกหมู่ที่คุณอาศัย';
                         }
                         if (!RegExp(r'^[0-9]+(/[0-9]+)?[A-Za-z]?$')
                             .hasMatch(value)) {
@@ -230,31 +230,44 @@ class _ProfilAddAddressUserState extends State<ProfilAddAddressUser> {
                       },
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(
-                              Color.fromARGB(a, r, g, b))),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          addUserAdress();
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                Colors.redAccent.shade200),
+                          ),
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: Text(
+                            "ยกเลิก",
+                            style: TextStyle(
+                              fontFamily: "Prompt",
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  Colors.lightGreen[300])),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              addUserAdress();
+                            }
+                          },
+                          child: Text(
                             "ยืนยัน",
                             style: TextStyle(
                                 fontFamily: "Prompt",
                                 color: Colors.black,
                                 fontSize: 20),
                           ),
-                          Icon(
-                            Icons.arrow_forward,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 );

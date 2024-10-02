@@ -125,17 +125,19 @@ class _Login_PageState extends State<Login_Page> {
                         await _Login(usersController, passwordController);
                         log("Users ID : ${userData[0]}");
                         log("Users Type : ${userData[1]}");
-                        if (userData.isNotEmpty) {
+                        if (userData.isNotEmpty && userData[0] != 0) {
                           log("Navigating to the next page");
-                          if (userData[1] == 0) {
+                          if (userData[1] == 1) {
                             log("Navigating to Workplace with id: ${userData[0]}");
                             Get.off(() => Workplace(
                                   id: userData[0],
+                                  type: 0,
                                 ));
-                          } else if (userData[1] == 1) {
+                          } else if (userData[1] == 2) {
                             log("Navigating to Job with id: 3");
                             Get.off(() => Owner_mainMenu(
                                   id: userData[0],
+                                  type: userData[1],
                                 ));
                           } else {
                             log("Unhandled user type: ${userData[1]}");

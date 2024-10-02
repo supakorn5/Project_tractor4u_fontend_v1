@@ -103,8 +103,10 @@ class _Profile_PageState extends State<Profile_Page> {
                                             ));
                                     if (update == 1) {
                                       log("${update}");
-                                      futureUsers = ProfileService()
-                                          .getUsersById(widget.id!);
+                                      setState(() {
+                                        futureUsers = ProfileService()
+                                            .getUsersById(widget.id!);
+                                      });
                                     }
                                   },
                                   icon: Icon(
@@ -174,24 +176,31 @@ class _Profile_PageState extends State<Profile_Page> {
                                               bottomRight:
                                                   Radius.circular(20))),
                                       child: ListTile(
-                                        horizontalTitleGap: 20,
-                                        leading: Icon(
-                                          Icons.location_history,
-                                          color: Colors.black,
-                                          size: 50,
-                                        ),
-                                        title: Text(
-                                          "ที่อยู่",
-                                          style:
-                                              TextStyle(fontFamily: "Prompt"),
-                                        ),
-                                        subtitle: Text(
-                                          "${users[0].usersAddress}",
-                                          style: TextStyle(
-                                              fontFamily: "Prompt",
-                                              color: Colors.black),
-                                        ),
-                                      ),
+                                          horizontalTitleGap: 20,
+                                          leading: Icon(
+                                            Icons.location_history,
+                                            color: Colors.black,
+                                            size: 50,
+                                          ),
+                                          title: Text(
+                                            "ที่อยู่",
+                                            style:
+                                                TextStyle(fontFamily: "Prompt"),
+                                          ),
+                                          subtitle:
+                                              users[0].usersAddress != null
+                                                  ? Text(
+                                                      "${users[0].usersAddress}",
+                                                      style: TextStyle(
+                                                          fontFamily: "Prompt",
+                                                          color: Colors.black),
+                                                    )
+                                                  : Text(
+                                                      "ยังไม่มีข้อมูล",
+                                                      style: TextStyle(
+                                                          fontFamily: "Prompt",
+                                                          color: Colors.black),
+                                                    )),
                                     ),
                                   ),
                                 ],

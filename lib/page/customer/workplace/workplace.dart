@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:tractor4your/CodeColorscustom.dart';
 import 'package:tractor4your/model/lands/getlandsnotreserve.dart';
 import 'package:tractor4your/page/customer/menu/customerMenuPage.dart';
-import 'package:tractor4your/page/customer/menu/menubottombar.dart';
 import 'package:tractor4your/page/customer/workplace/addworkplace.dart';
 import '../../../service/lands/LandService.dart';
 import '../../../model/lands/getlandsbyuser_id.dart';
@@ -11,7 +10,8 @@ import 'package:lottie/lottie.dart';
 
 class Workplace extends StatefulWidget {
   final int? id;
-  const Workplace({Key? key, this.id}) : super(key: key);
+  final int? type;
+  const Workplace({Key? key, this.id, this.type}) : super(key: key);
 
   @override
   State<Workplace> createState() => _WorkplaceState();
@@ -166,7 +166,7 @@ class _WorkplaceState extends State<Workplace> {
                                                 ? GestureDetector(
                                                     onTap: () {
                                                       Get.to(
-                                                        () => MenuBottombar(
+                                                        () => customerMenupage(
                                                             id: widget.id,
                                                             lands_id:
                                                                 LandsDataNotReserve[
@@ -281,7 +281,7 @@ class _WorkplaceState extends State<Workplace> {
                                                 GestureDetector(
                                                   onTap: () {
                                                     Get.to(
-                                                      () => MenuBottombar(
+                                                      () => customerMenupage(
                                                           id: widget.id,
                                                           lands_id:
                                                               LandsData[index]

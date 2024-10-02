@@ -12,7 +12,8 @@ import 'package:another_carousel_pro/another_carousel_pro.dart';
 
 class Owner_mainMenu extends StatefulWidget {
   final int? id;
-  Owner_mainMenu({super.key, this.id});
+  final int? type;
+  Owner_mainMenu({super.key, this.id, this.type});
 
   @override
   State<Owner_mainMenu> createState() => _Owner_mainMenuState();
@@ -26,6 +27,7 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
   void initState() {
     super.initState();
     log("${widget.id}");
+    log("${widget.type}");
     // Initialize futureOwnerID with a default value
     owner_ID = widget.id;
     futureOwnerID = Future.value(GetOwnerId());
@@ -38,7 +40,10 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            drawer: DrawerBarCustom(id: widget.id),
+            drawer: DrawerBarCustom(
+              id: widget.id,
+              type: widget.type,
+            ),
             appBar: AppBar(
               centerTitle: true,
               backgroundColor: Color.fromARGB(a, r, g, b),
@@ -58,67 +63,72 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(children: [
                   FutureBuilder(
-                      future: futureOwnerID,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator(); // Handle loading state
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          final userData = snapshot.data!.data!;
-                          return SizedBox(
-                            // Add height constraint
-                            height: 150, // or any height you prefer
-                            child: ListView.builder(
-                              itemCount: userData.length,
-                              itemBuilder: (context, index) {
-                                final data = userData[index];
-                                return Container(
-                                  height: 150,
-                                  width: double.infinity,
-                                  child: AnotherCarousel(
-                                    images: [
-                                      GestureDetector(
-                                        child: Image.asset(
-                                          "assets/image/reservePoster.png",
-                                          fit: BoxFit.cover,
-                                        ),
-                                        onTap: () {
-                                          Get.to(() => Job(
-                                                id: data.ownersId,
-                                              ));
-                                          log("รับงาน");
-                                        },
+                    future: futureOwnerID,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // Handle loading state
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final userData = snapshot.data?.data;
+                        return SizedBox(
+                          height: 150, // Set a preferred height
+                          child: ListView.builder(
+                            itemCount: 1, // Always show the same images
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 150,
+                                width: double.infinity,
+                                child: AnotherCarousel(
+                                  images: [
+                                    GestureDetector(
+                                      child: Image.asset(
+                                        "assets/image/reservePoster.png",
+                                        fit: BoxFit.cover,
                                       ),
-                                      GestureDetector(
-                                        child: Image.asset(
-                                          "assets/image/statusPoster.png",
-                                          fit: BoxFit.cover,
-                                        ),
-                                        onTap: () {
-                                          log("สถานะการทำงาน");
-                                        },
+                                      onTap: userData != null
+                                          ? () {
+                                              Get.to(() => Job(
+                                                    id: userData[index]
+                                                        .ownersId,
+                                                  ));
+                                              log("รับงาน");
+                                            }
+                                          : null, // Disable onTap if userData is null
+                                    ),
+                                    GestureDetector(
+                                      child: Image.asset(
+                                        "assets/image/statusPoster.png",
+                                        fit: BoxFit.cover,
                                       ),
-                                      GestureDetector(
-                                        child: Image.asset(
-                                          "assets/image/historyPoster.png",
-                                          fit: BoxFit.cover,
-                                        ),
-                                        onTap: () {
-                                          log("ประวัติ");
-                                        },
+                                      onTap: userData != null
+                                          ? () {
+                                              log("สถานะการทำงาน");
+                                            }
+                                          : null, // Disable onTap if userData is null
+                                    ),
+                                    GestureDetector(
+                                      child: Image.asset(
+                                        "assets/image/historyPoster.png",
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
-                                    dotSize: 3,
-                                    boxFit: BoxFit.cover,
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        }
-                      }),
+                                      onTap: userData != null
+                                          ? () {
+                                              log("ประวัติ");
+                                            }
+                                          : null, // Disable onTap if userData is null
+                                    ),
+                                  ],
+                                  dotSize: 3,
+                                  boxFit: BoxFit.cover,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    },
+                  ),
                   SizedBox(
                     height: 16,
                   ),

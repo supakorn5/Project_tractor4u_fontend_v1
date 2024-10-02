@@ -8,8 +8,9 @@ import 'package:another_carousel_pro/another_carousel_pro.dart';
 
 class customerMenupage extends StatefulWidget {
   final int? id;
+  final int? type;
   final int? lands_id;
-  customerMenupage({super.key, this.id, this.lands_id});
+  customerMenupage({super.key, this.id, this.lands_id, this.type});
 
   @override
   State<customerMenupage> createState() => _customerMenupageState();
@@ -20,7 +21,7 @@ class _customerMenupageState extends State<customerMenupage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            drawer: DrawerBarCustom(id: widget.id),
+            drawer: DrawerBarCustom(id: widget.id, type: widget.type),
             appBar: AppBar(
               centerTitle: true,
               backgroundColor: Color.fromARGB(a, r, g, b),
@@ -51,6 +52,7 @@ class _customerMenupageState extends State<customerMenupage> {
                           ),
                           onTap: () {
                             log("จองคิว");
+                            log("${widget.type}");
                           },
                         ),
                         GestureDetector(

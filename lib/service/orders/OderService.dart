@@ -47,13 +47,7 @@ class OrderService {
       Uri.parse('$apiUrl3/$id'),
       headers: {'Content-Type': 'application/json'},
     );
-
-    if (response.statusCode == 200) {
-      // Parse the JSON response into your data model
-      return getOwnerIdFromJson(response.body);
-    } else {
-      throw Exception('Failed to load owner ID');
-    }
+    return getOwnerIdFromJson(response.body);
   }
 
   Future<Getdatestatus> fetchdateStatus(int id) async {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -121,8 +122,8 @@ class _DrawerBarCustomState extends State<DrawerBarCustom> {
 
                         final ownerId =
                             snapshot.data?.data; // Safely access the data
-
-                        return widget.type == 0
+                        log("${widget.type}");
+                        return widget.type == 1
                             ? ListTile(
                                 leading: Icon(
                                   Icons.access_time,
@@ -132,7 +133,9 @@ class _DrawerBarCustomState extends State<DrawerBarCustom> {
                                   'จองคิว',
                                   style: TextStyle(fontFamily: "Prompt"),
                                 ),
-                                onTap: () {},
+                                onTap: () {
+                                  log("จองคิว");
+                                },
                               )
                             : ListTile(
                                 leading: Icon(

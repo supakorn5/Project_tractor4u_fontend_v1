@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:tractor4your/Ipglobals.dart';
 import 'makeReserve.dart';
-import '../../../../Ipglobals.dart';
 
 class SelectOwner extends StatefulWidget {
   final int? users_id;

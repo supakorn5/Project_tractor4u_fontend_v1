@@ -11,8 +11,8 @@ class SelectOwnerList extends StatefulWidget {
   final int? users_id;
   final int? lands_id;
 
-  const SelectOwnerList(
-      {super.key, required this.users_id, this.lands_id}); //from main menu
+  //const SelectOwnerList({super.key, required this.users_id, this.lands_id});
+  SelectOwnerList({super.key, this.users_id, this.lands_id});
 
   @override
   State<SelectOwnerList> createState() => _SelectOwnerListState();
@@ -40,6 +40,8 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
     super.initState();
     loadOwnersData(); // Preload data
     //load_api_selectOwnerOpenFullInfo();
+    print(widget.users_id);
+    print(widget.lands_id);
   }
 
   @override

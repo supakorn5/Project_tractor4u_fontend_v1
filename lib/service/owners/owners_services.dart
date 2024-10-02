@@ -100,7 +100,6 @@ Future<List<dynamic>> api_getDateStatus(int owners_id) async {
       ip +
       ":5000/api/users/GetDateStatus"); // Update with your actual endpoint
   final headers = {'Content-Type': 'application/json'};
-
   final body = jsonEncode({
     "owners_id": owners_id,
   });

@@ -111,20 +111,38 @@ class _WorkplaceState extends State<Workplace> {
                     ),
                   ],
                   bottom: TabBar(
-                      labelStyle:
-                          TextStyle(fontFamily: "Prompt", color: Colors.black),
-                      dividerColor: Colors.transparent,
-                      tabs: [
-                        Tab(
-                          text: "ที่ดินที่ยังไม่จอง",
-                          style: TextStyle(
-                              fontFamily: "Prompt", color: Colors.black),
-                        ),
-                        Tab(
-                            text: "ที่ดินที่จองแล้ว",
-                            style: TextStyle(
-                                fontFamily: "Prompt", color: Colors.black)),
-                      ]),
+                    labelStyle: TextStyle(
+                      fontFamily: "Prompt",
+                      fontSize: 16,
+                    ),
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey,
+                    indicatorColor: Colors.transparent,
+                    tabs: [
+                      Tab(
+                        text: "ที่ดินที่ยังไม่จอง",
+                      ),
+                      Tab(
+                        text: "ที่ดินที่จองแล้ว",
+                      ),
+                    ],
+                  ),
+
+                  // bottom: TabBar(
+                  //     labelStyle:
+                  //         TextStyle(fontFamily: "Prompt", color: Colors.black),
+                  //     dividerColor: Colors.transparent,
+                  //     tabs: [
+                  //       Tab(
+                  //         text: "ที่ดินที่ยังไม่จอง",
+                  //         style: TextStyle(
+                  //             fontFamily: "Prompt", color: Colors.black),
+                  //       ),
+                  //       Tab(
+                  //           text: "ที่ดินที่จองแล้ว",
+                  //           style: TextStyle(
+                  //               fontFamily: "Prompt", color: Colors.black)),
+                  //     ]),
                 ),
                 body: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -263,7 +281,7 @@ class _WorkplaceState extends State<Workplace> {
                                       } else if (!snapshot.hasData ||
                                           snapshot.data!.data!.isEmpty) {
                                         return Center(
-                                          child: Text("No land data available"),
+                                          child: Text("ว่าง"),
                                         );
                                       } else {
                                         final LandsData = snapshot.data!.data!;

@@ -240,12 +240,12 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             defaultBuilder: (context, day, focusedDay) {
               for (var status in data) {
                 if (DateFormat('yyyy-MM-dd').format(day) ==
-                    status['dateStatus_date']) {
+                    status['ownerCalendar_date']) {
                   return Container(
                     margin: const EdgeInsets.all(2.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: _getColorForStatus(status['dateStatus_status']),
+                      color: _getColorForStatus(status['ownerCalendar_status']),
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     child: Text(

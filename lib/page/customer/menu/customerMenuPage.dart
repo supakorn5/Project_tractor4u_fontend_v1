@@ -112,27 +112,33 @@ class _customerMenupageState extends State<customerMenupage> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 1,
-                            color: Colors.grey,
-                            offset: Offset(4, 5),
+                  GestureDetector(
+                    onTap: () {
+                      log("สถานะการทำงาน");
+                      Get.off(() => SelectOwnerList(users_id: widget.id));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 1,
+                              color: Colors.grey,
+                              offset: Offset(4, 5),
+                            ),
+                          ],
+                        ),
+                        height: 100,
+                        width: MediaQuery.sizeOf(context).width,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              20), // Match with container's borderRadius
+                          child: Image.asset(
+                            "assets/image/status.png",
+                            fit: BoxFit.fill,
                           ),
-                        ],
-                      ),
-                      height: 100,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            20), // Match with container's borderRadius
-                        child: Image.asset(
-                          "assets/image/status.png",
-                          fit: BoxFit.fill,
                         ),
                       ),
                     ),

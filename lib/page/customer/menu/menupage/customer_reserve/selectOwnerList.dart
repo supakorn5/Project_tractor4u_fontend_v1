@@ -11,8 +11,8 @@ class SelectOwnerList extends StatefulWidget {
   final int? users_id;
   final int? lands_id;
 
-  const SelectOwnerList(
-      {super.key, required this.users_id, this.lands_id}); //from main menu
+  //const SelectOwnerList({super.key, required this.users_id, this.lands_id});
+  SelectOwnerList({super.key, this.users_id, this.lands_id});
 
   @override
   State<SelectOwnerList> createState() => _SelectOwnerListState();
@@ -238,12 +238,12 @@ class _SelectOwnerListState extends State<SelectOwnerList> {
             defaultBuilder: (context, day, focusedDay) {
               for (var status in data) {
                 if (DateFormat('yyyy-MM-dd').format(day) ==
-                    status['dateStatus_date']) {
+                    status['ownerCalendar_status']) {
                   return Container(
                     margin: const EdgeInsets.all(2.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: _getColorForStatus(status['dateStatus_status']),
+                      color: _getColorForStatus(status['ownerCalendar_status']),
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     child: Text(

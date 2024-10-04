@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tractor4your/page/customer/menu/menupage/customer_reserve/selectOwnerList.dart';
 import '../../../widget/Drawer.dart';
 import 'package:tractor4your/CodeColorscustom.dart';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
@@ -81,30 +82,12 @@ class _customerMenupageState extends State<customerMenupage> {
                   SizedBox(
                     height: 16,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 1,
-                          color: Colors.grey,
-                          offset: Offset(4, 5),
-                        ),
-                      ],
-                    ),
-                    height: 100,
-                    width: MediaQuery.sizeOf(context).width,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          20), // Match with container's borderRadius
-                      child: Image.asset(
-                        "assets/image/reserve.png",
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                  GestureDetector(
+                    onTap: () {
+                      log("จองคิว");
+                      Get.off(() => SelectOwnerList(
+                          users_id: widget.id, lands_id: widget.lands_id));
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -122,8 +105,39 @@ class _customerMenupageState extends State<customerMenupage> {
                         borderRadius: BorderRadius.circular(
                             20), // Match with container's borderRadius
                         child: Image.asset(
-                          "assets/image/status.png",
+                          "assets/image/reserve.png",
                           fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      log("สถานะการทำงาน");
+                      Get.off(() => SelectOwnerList(users_id: widget.id));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 1,
+                              color: Colors.grey,
+                              offset: Offset(4, 5),
+                            ),
+                          ],
+                        ),
+                        height: 100,
+                        width: MediaQuery.sizeOf(context).width,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              20), // Match with container's borderRadius
+                          child: Image.asset(
+                            "assets/image/status.png",
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),

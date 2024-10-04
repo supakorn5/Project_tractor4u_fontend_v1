@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tractor4your/model/orders/getownerID.dart';
 import 'package:tractor4your/page/Owner/menu/JOB/job.dart';
+import 'package:tractor4your/page/Owner/menu/workStatus/workStatus.dart';
 import 'package:tractor4your/service/orders/OderService.dart';
 import 'package:lottie/lottie.dart';
 import '../../../widget/Drawer.dart';
@@ -60,157 +61,134 @@ class _Owner_mainMenuState extends State<Owner_mainMenu> {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(children: [
-                  FutureBuilder(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FutureBuilder(
                     future: futureOwnerID,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator(); // Handle loading state
+                        return CircularProgressIndicator();
                       } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        final userData = snapshot.data?.data;
-                        return SizedBox(
-                          height: 150, // Set a preferred height
-                          child: ListView.builder(
-                            itemCount: 1, // Always show the same images
-                            itemBuilder: (context, index) {
-                              return Container(
-                                height: 150,
-                                width: double.infinity,
-                                child: AnotherCarousel(
-                                  images: [
-                                    GestureDetector(
-                                      child: Image.asset(
-                                        "assets/image/reservePoster.png",
-                                        fit: BoxFit.cover,
-                                      ),
-                                      onTap: userData != null
-                                          ? () {
-                                              Get.to(() => Job(
-                                                    id: userData[index]
-                                                        .ownersId,
-                                                  ));
-                                              log("รับงาน");
-                                            }
-                                          : null, // Disable onTap if userData is null
-                                    ),
-                                    GestureDetector(
-                                      child: Image.asset(
-                                        "assets/image/statusPoster.png",
-                                        fit: BoxFit.cover,
-                                      ),
-                                      onTap: userData != null
-                                          ? () {
-                                              log("สถานะการทำงาน");
-                                            }
-                                          : null, // Disable onTap if userData is null
-                                    ),
-                                    GestureDetector(
-                                      child: Image.asset(
-                                        "assets/image/historyPoster.png",
-                                        fit: BoxFit.cover,
-                                      ),
-                                      onTap: userData != null
-                                          ? () {
-                                              log("ประวัติ");
-                                            }
-                                          : null, // Disable onTap if userData is null
-                                    ),
-                                  ],
-                                  dotSize: 3,
-                                  boxFit: BoxFit.cover,
-                                ),
-                              );
-                            },
-                          ),
-                        );
+                        return Text("ERROR : ${snapshot.error}");
                       }
+                      final ownerData = snapshot.data!.data;
+                      return Column(children: [
+                        Container(
+                          height: 150,
+                          width: double.infinity,
+                          child: AnotherCarousel(
+                            images: [
+                              GestureDetector(
+                                child: Image.asset(
+                                  "assets/image/reservePoster.png",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              GestureDetector(
+                                child: Image.asset(
+                                  "assets/image/statusPoster.png",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              GestureDetector(
+                                child: Image.asset(
+                                  "assets/image/historyPoster.png",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ],
+                            dotSize: 3,
+                            boxFit: BoxFit.cover,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => Job(
+                                  id: ownerData?[0].ownersId,
+                                ));
+                            log("${ownerData?[0].ownersId}");
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.grey,
+                                  offset: Offset(4, 5),
+                                ),
+                              ],
+                            ),
+                            height: 100,
+                            width: MediaQuery.sizeOf(context).width,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  20), // Match with container's borderRadius
+                              child: Image.asset(
+                                "assets/image/reserve.png",
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Get.to(() => workStatus()),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 1,
+                                    color: Colors.grey,
+                                    offset: Offset(4, 5),
+                                  ),
+                                ],
+                              ),
+                              height: 100,
+                              width: MediaQuery.sizeOf(context).width,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    20), // Match with container's borderRadius
+                                child: Image.asset(
+                                  "assets/image/status.png",
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.grey,
+                                  offset: Offset(4, 5),
+                                ),
+                              ],
+                            ),
+                            height: 100,
+                            width: MediaQuery.sizeOf(context).width,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  20), // Match with container's borderRadius
+                              child: Image.asset(
+                                "assets/image/history.png",
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]);
                     },
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      log("");
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 1,
-                            color: Colors.grey,
-                            offset: Offset(4, 5),
-                          ),
-                        ],
-                      ),
-                      height: 100,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            20), // Match with container's borderRadius
-                        child: Image.asset(
-                          "assets/image/reserve.png",
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 1,
-                            color: Colors.grey,
-                            offset: Offset(4, 5),
-                          ),
-                        ],
-                      ),
-                      height: 100,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            20), // Match with container's borderRadius
-                        child: Image.asset(
-                          "assets/image/status.png",
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 1,
-                            color: Colors.grey,
-                            offset: Offset(4, 5),
-                          ),
-                        ],
-                      ),
-                      height: 100,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            20), // Match with container's borderRadius
-                        child: Image.asset(
-                          "assets/image/history.png",
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
+                  )),
             )));
   }
 }

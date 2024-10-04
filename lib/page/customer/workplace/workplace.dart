@@ -171,7 +171,8 @@ class _WorkplaceState extends State<Workplace> {
                                                             lands_id:
                                                                 LandsDataNotReserve[
                                                                         index]
-                                                                    .landsId),
+                                                                    .landsId,
+                                                            type: widget.type),
                                                       );
                                                     },
                                                     child: Container(

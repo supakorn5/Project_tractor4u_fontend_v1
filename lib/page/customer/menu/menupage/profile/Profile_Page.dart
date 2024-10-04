@@ -144,7 +144,7 @@ class _Profile_PageState extends State<Profile_Page> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              users[0].usersType == 0
+                              users[0].usersType == 1
                                   ? Text(
                                       "ประเภทผู้ใช้ : ลูกค้า",
                                       style: TextStyle(

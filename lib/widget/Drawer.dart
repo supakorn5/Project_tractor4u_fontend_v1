@@ -122,8 +122,8 @@ class _DrawerBarCustomState extends State<DrawerBarCustom> {
 
                         final ownerId =
                             snapshot.data?.data; // Safely access the data
-                        log("${widget.type}");
-                        return widget.type == 1
+                        log("type : ${widget.type}");
+                        return widget.type == 0
                             ? ListTile(
                                 leading: Icon(
                                   Icons.access_time,

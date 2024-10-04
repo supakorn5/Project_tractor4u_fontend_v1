@@ -116,14 +116,23 @@ class _WorkplaceState extends State<Workplace> {
                       dividerColor: Colors.transparent,
                       tabs: [
                         Tab(
-                          text: "ที่ดินที่ยังไม่จอง",
-                          style: TextStyle(
-                              fontFamily: "Prompt", color: Colors.black),
+                          child: Text(
+                            "ที่ดินที่ยังไม่จอง",
+                            style: TextStyle(
+                              fontFamily: "Prompt",
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                         Tab(
-                            text: "ที่ดินที่จองแล้ว",
+                          child: Text(
+                            "ที่ดินที่จองแล้ว",
                             style: TextStyle(
-                                fontFamily: "Prompt", color: Colors.black)),
+                              fontFamily: "Prompt",
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ]),
                 ),
                 body: Padding(

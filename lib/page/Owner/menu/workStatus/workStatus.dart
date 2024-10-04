@@ -68,17 +68,32 @@ class _workStatusState extends State<workStatus> {
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                  text: "รอทำงาน",
-                  style: TextStyle(fontFamily: "Prompt", color: Colors.black),
+                  child: Text(
+                    "รอทำงาน",
+                    style: TextStyle(
+                      fontFamily: "Prompt",
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
                 Tab(
-                    text: "รอการชำระเงิน",
-                    style:
-                        TextStyle(fontFamily: "Prompt", color: Colors.black)),
+                  child: Text(
+                    "รอการชำระเงิน",
+                    style: TextStyle(
+                      fontFamily: "Prompt",
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
                 Tab(
-                    text: "เสร็จสิ้น",
-                    style:
-                        TextStyle(fontFamily: "Prompt", color: Colors.black)),
+                  child: Text(
+                    "เสร็จสิ้น",
+                    style: TextStyle(
+                      fontFamily: "Prompt",
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ]),
         ),
         body: TabBarView(children: [
